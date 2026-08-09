@@ -1,2483 +1,460 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Vexoria Ranked Bedwars</title>
-
-<meta
-    name="description"
-    content="Vexoria Ranked Bedwars statistics, leaderboards, player comparisons and match recaps."
->
-
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
-<link
-    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
-    rel="stylesheet"
->
-
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vexoria Network — Ranked Bedwars</title>
+<meta name="description" content="Vexoria Network competitive Minecraft and Ranked Bedwars portal.">
 <style>
-    :root {
-        --blue: #4287f5;
-        --blue-light: #72a7ff;
+:root{
+  --bg:#07090d;--panel:#0d1118;--panel2:#111722;--line:#202938;
+  --text:#f4f7fb;--muted:#8d99aa;--blue:#4287f5;--blue2:#6ecff6;
+  --green:#74e38c;--red:#ef7070;--gold:#f0c96a;
+}
+*{box-sizing:border-box} html{scroll-behavior:smooth}
+body{margin:0;background:radial-gradient(circle at 50% -20%,#13213a 0,#090c12 34%,#06080c 70%);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+button,input,select{font:inherit} button,a{transition:.18s ease}
+a{color:inherit;text-decoration:none}.hidden{display:none!important}
+.shell{width:min(1180px,calc(100% - 36px));margin:auto}
+.topbar{position:sticky;top:0;z-index:50;background:rgba(6,8,12,.88);backdrop-filter:blur(18px);border-bottom:1px solid var(--line)}
+.topbar-inner{height:72px;display:flex;align-items:center;justify-content:space-between;gap:18px}
+.brand{display:flex;align-items:center;gap:12px;background:none;border:0;color:white;cursor:pointer;padding:0}
+.logo{width:38px;height:38px;border:1px solid #2c3c56;background:linear-gradient(145deg,#13223a,#0b111b);display:grid;place-items:center;font-weight:950;font-size:22px;clip-path:polygon(12% 0,88% 0,100% 18%,100% 82%,88% 100%,12% 100%,0 82%,0 18%)}
+.brand strong{letter-spacing:.13em}.brand small{display:block;color:var(--muted);font-size:10px;letter-spacing:.18em;margin-top:2px}
+.nav{display:flex;align-items:center;gap:5px;overflow:auto}.nav button{white-space:nowrap;border:0;background:none;color:#9ba7b7;padding:10px 11px;cursor:pointer;font-size:13px;font-weight:750}.nav button:hover,.nav button.active{color:white}
+.discord{border:1px solid #304464;background:#111a28;padding:10px 15px;font-size:13px;font-weight:800}
+.page{display:none;min-height:calc(100vh - 72px)}.page.active{display:block}
+.hero{padding:108px 0 68px;text-align:center}.kicker{font-size:11px;letter-spacing:.24em;color:var(--blue2);font-weight:900;text-transform:uppercase;margin-bottom:18px}
+.hero h1,.page-title h1{font-size:clamp(48px,8vw,92px);line-height:.9;letter-spacing:-.055em;margin:0;font-weight:950}.hero h1 span{color:var(--blue)}
+.hero p{max-width:690px;margin:24px auto;color:#a6b1c0;font-size:17px;line-height:1.75}
+.actions{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:30px}
+.btn{border:1px solid #293448;background:#10151e;color:white;padding:13px 18px;cursor:pointer;font-weight:850}.btn:hover{transform:translateY(-2px);border-color:#4d6486}.btn.primary{background:var(--blue);border-color:var(--blue);color:#fff}.btn.long{width:min(760px,100%);padding:19px;text-align:left;display:flex;justify-content:space-between;align-items:center;margin:42px auto 0;background:linear-gradient(90deg,#101722,#0c1119);border-color:#293a54}
+.network-grid,.summary-grid,.stats-grid{display:grid;border:1px solid var(--line);background:rgba(13,17,24,.7)}
+.network-grid{grid-template-columns:repeat(2,1fr);max-width:760px;margin:0 auto 80px}.summary-grid{grid-template-columns:repeat(2,1fr);margin:35px 0 52px}
+.metric{padding:25px;border-right:1px solid var(--line)}.metric:last-child{border-right:0}.metric label{display:block;color:var(--muted);font-size:10px;letter-spacing:.18em;font-weight:900;margin-bottom:9px}.metric strong{font-size:25px}
+.section{padding:74px 0}.page-title{padding:76px 0 24px}.page-title h1{font-size:clamp(42px,7vw,76px)}.page-title p{max-width:700px;color:var(--muted);line-height:1.7}
+.ranked-tabs{display:flex;gap:6px;overflow:auto;padding:0 0 18px;border-bottom:1px solid var(--line);margin-bottom:38px}.ranked-tabs button{border:0;background:none;color:#8390a1;padding:11px 12px;white-space:nowrap;font-size:12px;font-weight:900;letter-spacing:.06em;cursor:pointer}.ranked-tabs button.active,.ranked-tabs button:hover{color:white;background:#101722}
+.subpage{display:none}.subpage.active{display:block}
+.section-head{display:flex;justify-content:space-between;align-items:end;gap:20px;margin-bottom:22px}.section-head h2{font-size:32px;margin:0;letter-spacing:-.03em}.section-head p{color:var(--muted);max-width:610px;line-height:1.6;margin:7px 0 0}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.card{border:1px solid var(--line);background:linear-gradient(145deg,#0e131b,#0a0e14);padding:24px}.card .num{color:var(--blue2);font-size:11px;font-weight:900;letter-spacing:.15em}.card h3{margin:35px 0 8px}.card p{color:var(--muted);line-height:1.6;font-size:14px}
+.rule-layout{display:grid;grid-template-columns:260px 1fr;gap:22px}.rule-menu{border:1px solid var(--line);background:var(--panel);padding:8px;height:max-content;position:sticky;top:92px}.rule-menu button{display:block;width:100%;text-align:left;border:0;background:none;color:#8793a4;padding:13px;cursor:pointer;font-weight:800}.rule-menu button.active,.rule-menu button:hover{background:#141c28;color:white}.rule-content{border:1px solid var(--line);background:var(--panel);padding:28px}.rule-content h2{margin-top:0}.rule-content li{color:#b2bcc9;line-height:1.8}
+.season-switch{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:28px}.season-switch button{border:1px solid var(--line);background:#0c1118;color:#9ca8b8;padding:11px 14px;cursor:pointer;font-weight:800}.season-switch button.active{border-color:#41669c;color:white;background:#101b2b}
+.rule-band{border-top:1px solid var(--line);padding:25px 0}.rule-band:first-of-type{border-top:0}.rule-band-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:15px}.rule-band h3{margin:0;font-size:18px}.tag{font-size:10px;letter-spacing:.15em;font-weight:900;color:var(--muted)}
+.item-grid{display:flex;flex-wrap:wrap;gap:9px}.item{width:54px;height:54px;border:1px solid #283344;background:#0b1017;display:grid;place-items:center;position:relative;cursor:default}.item img{width:38px;height:38px;image-rendering:pixelated}.item:hover{border-color:var(--blue)}.item[data-name]:after{content:attr(data-name);position:absolute;bottom:62px;left:50%;transform:translateX(-50%);background:#05070a;border:1px solid #283344;padding:7px 9px;font-size:11px;white-space:nowrap;opacity:0;pointer-events:none}.item:hover:after{opacity:1}
+.searchbar{display:flex;gap:9px;margin:18px 0 26px}.searchbar input,.searchbar select{background:#0a0f16;border:1px solid #263142;color:white;padding:13px 14px;outline:none}.searchbar input{flex:1}.searchbar input:focus,.searchbar select:focus{border-color:#426fae}
+.table-wrap{border:1px solid var(--line);overflow:auto;background:#0b0f15}table{width:100%;border-collapse:collapse;min-width:760px}th,td{text-align:left;padding:15px;border-bottom:1px solid #1b2330}th{font-size:10px;color:#78869a;letter-spacing:.14em}td{font-size:14px}.pos{color:var(--blue2);font-weight:900}.playercell{display:flex;align-items:center;gap:10px;font-weight:850}.head{width:30px;height:30px;image-rendering:pixelated}
+.empty{border:1px dashed #293445;padding:54px 20px;text-align:center;color:#748196}.empty strong{display:block;color:#dbe2ec;margin-bottom:8px}
+.profile{display:none}.profile.show{display:block}.profile-top{display:flex;align-items:center;justify-content:space-between;gap:18px;border:1px solid var(--line);background:#0c1118;padding:24px}.profile-id{display:flex;align-items:center;gap:16px}.profile-id img{width:70px;height:70px;image-rendering:pixelated}.profile-id h2{margin:0;font-size:28px}.profile-id span{color:var(--muted);font-size:13px}.elo{text-align:right}.elo strong{font-size:34px}.elo small{display:block;color:var(--muted)}
+.stats-grid{grid-template-columns:repeat(4,1fr);margin-top:12px}.stat{padding:20px;border-right:1px solid var(--line);border-bottom:1px solid var(--line)}.stat label{display:block;color:#768498;font-size:10px;letter-spacing:.12em;font-weight:900}.stat strong{font-size:23px;display:block;margin-top:6px}
+.analytics-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}.analytics{border:1px solid var(--line);background:#0c1118;padding:22px}.analytics h3{margin-top:0}.minirow{display:grid;grid-template-columns:1fr repeat(3,70px);gap:8px;padding:11px 0;border-top:1px solid #1b2330;font-size:13px}.minirow span:not(:first-child){text-align:right;color:#aab5c3}
+.matches{display:grid;gap:10px}.match{border:1px solid var(--line);background:#0c1118;padding:19px}.matchtop{display:flex;justify-content:space-between;color:#8491a3;font-size:11px;font-weight:900;letter-spacing:.1em}.teams{display:grid;grid-template-columns:1fr 90px 1fr;gap:16px;align-items:center;margin-top:16px}.teams .score{text-align:center;font-size:25px;font-weight:950}.teams .right{text-align:right}.winner{color:var(--green)}
+.pagination{display:flex;justify-content:center;gap:7px;margin-top:22px}.pagination button{border:1px solid var(--line);background:#0b1017;color:#9aa6b6;padding:9px 12px}
+.compare-inputs{display:grid;grid-template-columns:1fr 70px 1fr;align-items:end;gap:12px}.compare-inputs label{display:block;color:#79869a;font-size:10px;font-weight:900;letter-spacing:.12em;margin-bottom:7px}.compare-inputs input{width:100%;padding:13px;background:#0a0f16;border:1px solid #263142;color:white}.vs{text-align:center;padding-bottom:13px;font-weight:950;color:var(--blue2)}
+.compare-result{margin-top:22px;border:1px solid var(--line);background:#0c1118}.crow{display:grid;grid-template-columns:1fr 150px 1fr;border-top:1px solid #1b2330}.crow:first-child{border-top:0}.crow div{padding:14px}.crow div:nth-child(2){text-align:center;color:#77869a;font-size:11px;font-weight:900}.crow div:last-child{text-align:right}
+.team-builder{display:grid;grid-template-columns:1fr 80px 1fr;gap:15px}.team-box{border:1px solid var(--line);padding:18px;background:#0c1118}.team-box input{width:100%;padding:12px;background:#080c12;border:1px solid #263142;color:white;margin-top:7px}
+.store-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.product{border:1px solid var(--line);background:#0d121a;padding:25px}.product h3{font-size:23px}.product p{color:var(--muted);line-height:1.6}.price{font-size:28px;font-weight:950;margin:22px 0}
+.notice{border-left:3px solid var(--blue);background:#0d1521;padding:15px 17px;color:#aab6c6;margin:18px 0}
+footer{border-top:1px solid var(--line);padding:38px 0;color:#778496;margin-top:80px;font-size:13px}.footerline{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
+@media(max-width:850px){.nav{display:none}.cards,.store-grid{grid-template-columns:1fr}.rule-layout{grid-template-columns:1fr}.rule-menu{position:static}.stats-grid{grid-template-columns:repeat(2,1fr)}.analytics-grid{grid-template-columns:1fr}.compare-inputs,.team-builder{grid-template-columns:1fr}.vs{padding:0}.teams{grid-template-columns:1fr}.teams .right{text-align:left}.summary-grid{grid-template-columns:1fr}.metric{border-right:0;border-bottom:1px solid var(--line)}}
+
+.ranked-entry{width:min(820px,100%);margin:46px auto 0;border:1px solid rgba(66,135,245,.55);background:
+radial-gradient(circle at 12% 50%,rgba(66,135,245,.18),transparent 34%),
+linear-gradient(110deg,#101722,#0b1017);padding:25px 26px;display:flex;align-items:center;justify-content:space-between;gap:24px;box-shadow:0 0 40px rgba(66,135,245,.12),inset 0 0 32px rgba(66,135,245,.04)}
+.ranked-entry h3{font-size:24px;margin:7px 0}.ranked-entry p{margin:0;color:#8e9bad;font-size:13px;text-align:left}.entry-button{white-space:nowrap}
+.network-grid-3{grid-template-columns:repeat(3,1fr)}.metric small{display:block;color:#77869a;font-size:10px;margin-top:7px;line-height:1.4}
+.ranked-centered{text-align:center}.ranked-centered p{margin-left:auto;margin-right:auto}.summary-grid-4{grid-template-columns:repeat(4,1fr)}
+.ranked-ip-strip{max-width:560px;margin:-24px auto 45px;border:1px solid var(--line);background:#0b1017;padding:10px 10px 10px 16px;display:flex;justify-content:space-between;align-items:center;gap:18px}
+.ranked-ip-strip span{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;color:#cdd8e8;font-size:13px}
+.conduct-pane,.penalty-pane{display:none}.conduct-pane.active,.penalty-pane.active{display:block}
+.conduct-list{display:grid;gap:0}.conduct-rule{padding:18px 0;border-top:1px solid var(--line)}.conduct-rule:first-child{border-top:0}.conduct-rule p{color:#aab5c3;line-height:1.75;margin-bottom:0}
+.penalty-table-wrap{overflow:auto;border:1px solid var(--line);background:#0b0f15}.penalty-table{min-width:1120px}.penalty-table td:first-child{min-width:310px}.penalty-table td small{display:block;color:#8491a3;line-height:1.55;margin-top:6px;font-size:11px}.penalty-table td:not(:first-child){font-size:12px;white-space:nowrap}
+@media(max-width:850px){.network-grid-3,.summary-grid-4{grid-template-columns:1fr 1fr}.ranked-entry{align-items:stretch;flex-direction:column}.entry-button{width:100%}}
+@media(max-width:520px){.network-grid-3,.summary-grid-4{grid-template-columns:1fr}.ranked-ip-strip{flex-direction:column;align-items:stretch}}
 
-        --bg: #05070b;
-        --bg-2: #080b11;
-
-        --card: #0a0e16;
-        --card-2: #0d121d;
-
-        --border: #18202e;
-        --border-blue: rgba(66, 135, 245, 0.35);
-
-        --text: #f5f7fb;
-        --muted: #8993a3;
-        --muted-2: #5e6877;
-
-        --green: #42d392;
-        --red: #ff5b68;
-
-        --max-width: 1180px;
-    }
-
-    * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-    }
-
-    html {
-        scroll-behavior: smooth;
-    }
-
-    body {
-        font-family: "Inter", sans-serif;
-        background:
-            radial-gradient(
-                circle at 50% -20%,
-                rgba(66, 135, 245, 0.12),
-                transparent 35%
-            ),
-            var(--bg);
-
-        color: var(--text);
-        min-height: 100vh;
-    }
-
-    button,
-    input {
-        font-family: inherit;
-    }
-
-    button,
-    a {
-        -webkit-tap-highlight-color: transparent;
-    }
-
-    a {
-        color: inherit;
-        text-decoration: none;
-    }
-
-    /* HEADER */
-
-    header {
-        height: 74px;
-        position: sticky;
-        top: 0;
-        z-index: 100;
-
-        background: rgba(5, 7, 11, 0.88);
-        backdrop-filter: blur(18px);
-
-        border-bottom: 1px solid rgba(255,255,255,0.055);
-    }
-
-    .nav {
-        max-width: var(--max-width);
-        height: 100%;
-        margin: auto;
-        padding: 0 24px;
-
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 30px;
-    }
-
-    .brand {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        min-width: 210px;
-    }
-
-    .brand-logo {
-        width: 38px;
-        height: 38px;
-
-        border: 1px solid var(--border-blue);
-        background: rgba(66, 135, 245, 0.1);
-
-        border-radius: 9px;
-
-        display: flex;
-        align-items: center;
-        justify-content: center;
-
-        color: white;
-        font-weight: 800;
-        font-size: 20px;
-    }
-
-    .brand-title {
-        font-size: 14px;
-        font-weight: 800;
-        letter-spacing: 0.9px;
-    }
-
-    .brand-subtitle {
-        color: var(--muted);
-        font-size: 9px;
-        font-weight: 600;
-        letter-spacing: 1.5px;
-        margin-top: 3px;
-    }
-
-    .nav-links {
-        display: flex;
-        align-items: center;
-        gap: 5px;
-    }
-
-    .nav-link {
-        border: none;
-        background: transparent;
-        color: var(--muted);
-
-        padding: 9px 12px;
-        border-radius: 7px;
-
-        font-size: 13px;
-        font-weight: 600;
-
-        cursor: pointer;
-        transition: 0.2s;
-    }
-
-    .nav-link:hover {
-        color: white;
-        background: rgba(255,255,255,0.04);
-    }
-
-    .nav-link.active {
-        color: white;
-        background: rgba(66,135,245,0.09);
-    }
-
-    .discord-button {
-        background: var(--blue);
-        border: none;
-        color: white;
-
-        padding: 10px 15px;
-        border-radius: 7px;
-
-        font-size: 12px;
-        font-weight: 700;
-
-        cursor: pointer;
-        transition: 0.2s;
-    }
-
-    .discord-button:hover {
-        background: #5594f8;
-        transform: translateY(-1px);
-    }
-
-    /* GENERAL */
-
-    .container {
-        max-width: var(--max-width);
-        margin: auto;
-        padding: 0 24px;
-    }
-
-    .page {
-        display: none;
-        min-height: calc(100vh - 74px);
-    }
-
-    .page.active {
-        display: block;
-    }
-
-    .eyebrow {
-        color: var(--blue);
-        font-size: 10px;
-        font-weight: 800;
-        letter-spacing: 2px;
-        text-transform: uppercase;
-    }
-
-    .page-header {
-        padding: 80px 0 42px;
-    }
-
-    .page-header h1 {
-        margin-top: 12px;
-        font-size: clamp(36px, 6vw, 64px);
-        line-height: 1;
-        letter-spacing: -3px;
-    }
-
-    .page-header p {
-        color: var(--muted);
-        margin-top: 18px;
-        max-width: 590px;
-        font-size: 14px;
-        line-height: 1.7;
-    }
-
-    /* HOME HERO */
-
-    .hero {
-        min-height: 620px;
-
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-
-        text-align: center;
-        padding: 80px 20px 40px;
-    }
-
-    .hero-badge {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-
-        border: 1px solid var(--border-blue);
-        background: rgba(66,135,245,0.07);
-
-        color: var(--blue-light);
-
-        padding: 7px 11px;
-        border-radius: 50px;
-
-        font-size: 9px;
-        font-weight: 800;
-        letter-spacing: 1.5px;
-    }
-
-    .hero-badge-dot {
-        width: 5px;
-        height: 5px;
-        background: var(--blue);
-        border-radius: 50%;
-    }
-
-    .hero h1 {
-        margin-top: 24px;
-
-        font-size: clamp(48px, 8vw, 88px);
-        line-height: 0.92;
-        letter-spacing: -5px;
-        font-weight: 800;
-    }
-
-    .hero h1 span {
-        color: var(--blue);
-    }
-
-    .hero-description {
-        max-width: 590px;
-        margin: 24px auto 0;
-
-        color: var(--muted);
-
-        font-size: 15px;
-        line-height: 1.7;
-    }
-
-    .hero-buttons {
-        margin-top: 30px;
-        display: flex;
-        gap: 10px;
-        justify-content: center;
-    }
-
-    .primary-button,
-    .secondary-button {
-        border-radius: 7px;
-        padding: 12px 17px;
-
-        font-size: 12px;
-        font-weight: 700;
-
-        cursor: pointer;
-        transition: 0.2s;
-    }
-
-    .primary-button {
-        background: var(--blue);
-        border: 1px solid var(--blue);
-        color: white;
-    }
-
-    .primary-button:hover {
-        background: #5594f8;
-        transform: translateY(-1px);
-    }
-
-    .secondary-button {
-        color: #dce3ed;
-        background: #0b1018;
-        border: 1px solid var(--border);
-    }
-
-    .secondary-button:hover {
-        border-color: #2b3749;
-        background: #0e141f;
-    }
-
-    .quick-stats {
-        width: 100%;
-        max-width: 730px;
-
-        margin-top: 60px;
-
-        display: grid;
-        grid-template-columns: repeat(4, 1fr);
-
-        border-top: 1px solid var(--border);
-        border-bottom: 1px solid var(--border);
-    }
-
-    .quick-stat {
-        padding: 20px;
-        border-right: 1px solid var(--border);
-    }
-
-    .quick-stat:last-child {
-        border-right: none;
-    }
-
-    .quick-stat-value {
-        font-size: 17px;
-        font-weight: 700;
-    }
-
-    .quick-stat-label {
-        color: var(--muted-2);
-        font-size: 8px;
-        font-weight: 800;
-        letter-spacing: 1.4px;
-        margin-top: 5px;
-    }
-
-    /* SERVER */
-
-    .server-section {
-        padding: 40px 0 100px;
-    }
-
-    .server-card {
-        border: 1px solid var(--border);
-        background: var(--card);
-
-        border-radius: 12px;
-
-        padding: 30px;
-
-        display: grid;
-        grid-template-columns: 1fr auto;
-        gap: 40px;
-
-        position: relative;
-        overflow: hidden;
-    }
-
-    .server-card::after {
-        content: "";
-        position: absolute;
-        width: 250px;
-        height: 250px;
-        right: -130px;
-        top: -130px;
-
-        background: rgba(66,135,245,0.07);
-        filter: blur(60px);
-        border-radius: 50%;
-    }
-
-    .server-name {
-        display: flex;
-        align-items: center;
-        gap: 14px;
-    }
-
-    .server-icon {
-        width: 50px;
-        height: 50px;
-        border-radius: 10px;
-
-        display: flex;
-        align-items: center;
-        justify-content: center;
-
-        background: rgba(66,135,245,0.1);
-        border: 1px solid var(--border-blue);
-
-        font-size: 23px;
-        font-weight: 800;
-    }
-
-    .server-name h3 {
-        font-size: 17px;
-    }
-
-    .online {
-        color: var(--green);
-        font-size: 10px;
-        font-weight: 700;
-        margin-top: 6px;
-    }
-
-    .server-description {
-        color: var(--muted);
-        font-size: 12px;
-        line-height: 1.6;
-        margin-top: 20px;
-        max-width: 520px;
-    }
-
-    .ip-box {
-        margin-top: 22px;
-
-        display: inline-flex;
-        align-items: center;
-        gap: 14px;
-
-        background: #070a10;
-        border: 1px solid var(--border);
-
-        padding: 10px 10px 10px 14px;
-        border-radius: 7px;
-    }
-
-    .ip-box code {
-        color: #dce5f3;
-        font-size: 12px;
-    }
-
-    .copy-button {
-        border: none;
-        background: #121925;
-        color: var(--muted);
-
-        padding: 7px 10px;
-        border-radius: 5px;
-
-        font-size: 10px;
-        font-weight: 700;
-        cursor: pointer;
-    }
-
-    .server-meta {
-        min-width: 260px;
-
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 1px;
-
-        background: var(--border);
-        border: 1px solid var(--border);
-
-        border-radius: 8px;
-        overflow: hidden;
-        z-index: 2;
-    }
-
-    .server-meta-item {
-        background: #080c13;
-        padding: 18px;
-    }
-
-    .server-meta-label {
-        color: var(--muted-2);
-        font-size: 8px;
-        font-weight: 800;
-        letter-spacing: 1.2px;
-    }
-
-    .server-meta-value {
-        font-size: 13px;
-        font-weight: 700;
-        margin-top: 7px;
-    }
-
-    /* FEATURES */
-
-    .features-section {
-        padding: 0 0 100px;
-    }
-
-    .section-heading {
-        margin-bottom: 30px;
-    }
-
-    .section-heading h2 {
-        font-size: 35px;
-        letter-spacing: -1.7px;
-        margin-top: 10px;
-    }
-
-    .section-heading p {
-        color: var(--muted);
-        font-size: 13px;
-        line-height: 1.6;
-        margin-top: 10px;
-    }
-
-    .feature-grid {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 12px;
-    }
-
-    .feature-card {
-        background: var(--card);
-        border: 1px solid var(--border);
-        border-radius: 10px;
-
-        padding: 26px;
-
-        cursor: pointer;
-        transition: 0.2s;
-    }
-
-    .feature-card:hover {
-        transform: translateY(-3px);
-        border-color: var(--border-blue);
-        background: var(--card-2);
-    }
-
-    .feature-number {
-        color: var(--blue);
-        font-size: 10px;
-        font-weight: 800;
-        letter-spacing: 1px;
-    }
-
-    .feature-card h3 {
-        font-size: 16px;
-        margin-top: 34px;
-    }
-
-    .feature-card p {
-        color: var(--muted);
-        font-size: 11px;
-        line-height: 1.7;
-        margin-top: 9px;
-        min-height: 38px;
-    }
-
-    .feature-link {
-        color: var(--blue-light);
-        font-size: 10px;
-        font-weight: 700;
-        margin-top: 20px;
-    }
-
-    /* SEARCH */
-
-    .search-wrap {
-        display: flex;
-        gap: 8px;
-        max-width: 630px;
-        margin-bottom: 40px;
-    }
-
-    .search-input {
-        flex: 1;
-
-        background: #080c13;
-        border: 1px solid var(--border);
-
-        color: white;
-
-        padding: 13px 14px;
-        border-radius: 7px;
-
-        outline: none;
-        font-size: 12px;
-    }
-
-    .search-input:focus {
-        border-color: rgba(66,135,245,0.6);
-    }
-
-    .search-input::placeholder {
-        color: #515c6c;
-    }
-
-    /* STATS */
-
-    .empty-state {
-        border: 1px solid var(--border);
-        background: var(--card);
-
-        border-radius: 10px;
-        padding: 70px 30px;
-
-        text-align: center;
-        margin-bottom: 100px;
-    }
-
-    .empty-icon {
-        width: 50px;
-        height: 50px;
-
-        margin: auto;
-
-        border: 1px solid var(--border);
-        border-radius: 50%;
-
-        display: flex;
-        align-items: center;
-        justify-content: center;
-
-        color: var(--muted);
-        font-size: 20px;
-    }
-
-    .empty-state h3 {
-        font-size: 14px;
-        margin-top: 16px;
-    }
-
-    .empty-state p {
-        color: var(--muted);
-        font-size: 11px;
-        margin-top: 7px;
-    }
-
-    .player-profile {
-        display: none;
-        margin-bottom: 100px;
-    }
-
-    .player-profile.show {
-        display: block;
-    }
-
-    .profile-header {
-        background: var(--card);
-        border: 1px solid var(--border);
-        border-radius: 11px;
-
-        padding: 25px;
-
-        display: flex;
-        align-items: center;
-        gap: 18px;
-    }
-
-    .minecraft-head {
-        width: 64px;
-        height: 64px;
-        border-radius: 8px;
-        image-rendering: pixelated;
-        background: #111722;
-    }
-
-    .profile-name {
-        font-size: 22px;
-        font-weight: 800;
-    }
-
-    .profile-rank {
-        color: var(--blue-light);
-        font-size: 10px;
-        font-weight: 800;
-        margin-top: 6px;
-    }
-
-    .profile-elo {
-        margin-left: auto;
-        text-align: right;
-    }
-
-    .profile-elo strong {
-        font-size: 27px;
-    }
-
-    .profile-elo span {
-        display: block;
-        color: var(--muted-2);
-        font-size: 8px;
-        font-weight: 800;
-        letter-spacing: 1.3px;
-        margin-top: 3px;
-    }
-
-    .stats-grid {
-        display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        gap: 10px;
-        margin-top: 12px;
-    }
-
-    .stat-card {
-        background: var(--card);
-        border: 1px solid var(--border);
-        border-radius: 9px;
-        padding: 20px;
-    }
-
-    .stat-card-label {
-        color: var(--muted-2);
-        font-size: 8px;
-        font-weight: 800;
-        letter-spacing: 1.2px;
-    }
-
-    .stat-card-value {
-        font-size: 20px;
-        font-weight: 700;
-        margin-top: 8px;
-    }
-
-    /* LEADERBOARD */
-
-    .leaderboard {
-        border: 1px solid var(--border);
-        border-radius: 10px;
-        overflow: hidden;
-        margin-bottom: 100px;
-    }
-
-    .leaderboard-row {
-        display: grid;
-        grid-template-columns: 70px 2fr repeat(5, 1fr);
-        align-items: center;
-
-        min-height: 61px;
-        padding: 0 18px;
-
-        background: var(--card);
-        border-bottom: 1px solid var(--border);
-    }
-
-    .leaderboard-row:last-child {
-        border-bottom: none;
-    }
-
-    .leaderboard-header {
-        min-height: 43px;
-        background: #080c13;
-
-        color: var(--muted-2);
-
-        font-size: 8px;
-        font-weight: 800;
-        letter-spacing: 1px;
-    }
-
-    .rank-number {
-        color: var(--muted);
-        font-size: 12px;
-        font-weight: 700;
-    }
-
-    .rank-number.top {
-        color: var(--blue-light);
-    }
-
-    .lb-player {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-
-        font-size: 12px;
-        font-weight: 700;
-    }
-
-    .lb-head {
-        width: 30px;
-        height: 30px;
-        border-radius: 5px;
-        image-rendering: pixelated;
-    }
-
-    .lb-value {
-        font-size: 11px;
-        color: #c9d1dd;
-    }
-
-    .lb-elo {
-        color: white;
-        font-weight: 700;
-    }
-
-    /* COMPARE */
-
-    .compare-box {
-        border: 1px solid var(--border);
-        background: var(--card);
-
-        padding: 25px;
-        border-radius: 10px;
-        margin-bottom: 100px;
-    }
-
-    .compare-inputs {
-        display: grid;
-        grid-template-columns: 1fr 50px 1fr;
-        align-items: end;
-        gap: 12px;
-    }
-
-    .field-label {
-        color: var(--muted-2);
-        font-size: 8px;
-        font-weight: 800;
-        letter-spacing: 1.2px;
-        margin-bottom: 8px;
-    }
-
-    .versus {
-        text-align: center;
-        padding-bottom: 14px;
-
-        color: var(--blue);
-        font-size: 10px;
-        font-weight: 800;
-    }
-
-    .compare-button-wrap {
-        margin-top: 14px;
-        display: flex;
-        justify-content: flex-end;
-    }
-
-    .compare-result {
-        display: none;
-        margin-top: 18px;
-        border-top: 1px solid var(--border);
-        padding-top: 22px;
-    }
-
-    .compare-result.show {
-        display: block;
-    }
-
-    .comparison-row {
-        display: grid;
-        grid-template-columns: 1fr 120px 1fr;
-
-        padding: 12px 0;
-        border-bottom: 1px solid var(--border);
-
-        font-size: 12px;
-    }
-
-    .comparison-row:last-child {
-        border-bottom: none;
-    }
-
-    .comparison-left {
-        text-align: right;
-        font-weight: 700;
-    }
-
-    .comparison-center {
-        text-align: center;
-        color: var(--muted-2);
-        font-size: 9px;
-        font-weight: 800;
-        letter-spacing: 1px;
-    }
-
-    .comparison-right {
-        font-weight: 700;
-    }
-
-    .winner-value {
-        color: var(--blue-light);
-    }
-
-    /* RECAPS */
-
-    .match-grid {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 12px;
-        margin-bottom: 100px;
-    }
-
-    .match-card {
-        border: 1px solid var(--border);
-        background: var(--card);
-        border-radius: 10px;
-        padding: 22px;
-
-        transition: 0.2s;
-    }
-
-    .match-card:hover {
-        border-color: var(--border-blue);
-    }
-
-    .match-top {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-
-    .game-id {
-        color: var(--muted);
-        font-size: 9px;
-        font-weight: 800;
-        letter-spacing: 1px;
-    }
-
-    .game-status {
-        color: var(--green);
-        font-size: 8px;
-        font-weight: 800;
-        letter-spacing: 1px;
-    }
-
-    .match-map {
-        font-size: 16px;
-        font-weight: 700;
-        margin-top: 15px;
-    }
-
-    .match-score {
-        display: grid;
-        grid-template-columns: 1fr auto 1fr;
-        align-items: center;
-
-        margin-top: 25px;
-    }
-
-    .team {
-        font-size: 10px;
-        color: var(--muted);
-    }
-
-    .team:last-child {
-        text-align: right;
-    }
-
-    .score {
-        font-size: 25px;
-        font-weight: 800;
-        letter-spacing: 5px;
-    }
-
-    .match-footer {
-        margin-top: 22px;
-        padding-top: 15px;
-        border-top: 1px solid var(--border);
-
-        display: flex;
-        justify-content: space-between;
-
-        color: var(--muted-2);
-        font-size: 9px;
-    }
-
-    /* RULES */
-
-    .rules {
-        max-width: 800px;
-        padding-bottom: 100px;
-    }
-
-    .rule {
-        display: grid;
-        grid-template-columns: 55px 1fr;
-        gap: 15px;
-
-        padding: 26px 0;
-        border-bottom: 1px solid var(--border);
-    }
-
-    .rule-number {
-        color: var(--blue);
-        font-size: 10px;
-        font-weight: 800;
-    }
-
-    .rule h3 {
-        font-size: 14px;
-    }
-
-    .rule p {
-        color: var(--muted);
-        font-size: 11px;
-        line-height: 1.7;
-        margin-top: 8px;
-    }
-
-    /* FOOTER */
-
-    footer {
-        border-top: 1px solid var(--border);
-        padding: 50px 0 30px;
-        background: #05070a;
-    }
-
-    .footer-top {
-        display: flex;
-        justify-content: space-between;
-        gap: 40px;
-    }
-
-    .footer-brand p {
-        color: var(--muted);
-        font-size: 10px;
-        line-height: 1.6;
-        max-width: 280px;
-        margin-top: 12px;
-    }
-
-    .footer-links {
-        display: flex;
-        gap: 50px;
-    }
-
-    .footer-column h4 {
-        color: var(--muted-2);
-        font-size: 8px;
-        letter-spacing: 1px;
-        margin-bottom: 13px;
-    }
-
-    .footer-column button,
-    .footer-column a {
-        display: block;
-        border: none;
-        background: none;
-
-        color: var(--muted);
-        font-size: 10px;
-
-        margin: 8px 0;
-        cursor: pointer;
-    }
-
-    .footer-column button:hover,
-    .footer-column a:hover {
-        color: white;
-    }
-
-    .copyright {
-        margin-top: 40px;
-        padding-top: 20px;
-
-        border-top: 1px solid var(--border);
-
-        color: var(--muted-2);
-        font-size: 8px;
-
-        display: flex;
-        justify-content: space-between;
-    }
-
-    /* RESPONSIVE */
-
-    @media (max-width: 900px) {
-        .nav-links {
-            display: none;
-        }
-
-        .brand {
-            min-width: auto;
-        }
-
-        .quick-stats {
-            grid-template-columns: repeat(2, 1fr);
-        }
-
-        .quick-stat:nth-child(2) {
-            border-right: none;
-        }
-
-        .quick-stat:nth-child(-n+2) {
-            border-bottom: 1px solid var(--border);
-        }
-
-        .server-card {
-            grid-template-columns: 1fr;
-        }
-
-        .feature-grid {
-            grid-template-columns: 1fr;
-        }
-
-        .stats-grid {
-            grid-template-columns: repeat(2, 1fr);
-        }
-
-        .leaderboard-row {
-            grid-template-columns: 50px 2fr 1fr 1fr;
-        }
-
-        .leaderboard-row > *:nth-child(5),
-        .leaderboard-row > *:nth-child(6),
-        .leaderboard-row > *:nth-child(7) {
-            display: none;
-        }
-
-        .match-grid {
-            grid-template-columns: 1fr;
-        }
-    }
-
-    @media (max-width: 600px) {
-        .nav {
-            padding: 0 15px;
-        }
-
-        .brand-subtitle {
-            display: none;
-        }
-
-        .discord-button {
-            padding: 9px 10px;
-        }
-
-        .container {
-            padding: 0 16px;
-        }
-
-        .hero {
-            min-height: 570px;
-        }
-
-        .hero h1 {
-            letter-spacing: -3px;
-        }
-
-        .hero-buttons {
-            flex-direction: column;
-            width: 100%;
-            max-width: 280px;
-        }
-
-        .quick-stats {
-            margin-top: 45px;
-        }
-
-        .server-meta {
-            min-width: 0;
-        }
-
-        .compare-inputs {
-            grid-template-columns: 1fr;
-        }
-
-        .versus {
-            padding: 0;
-        }
-
-        .comparison-row {
-            grid-template-columns: 1fr 80px 1fr;
-        }
-
-        .footer-top {
-            flex-direction: column;
-        }
-
-        .footer-links {
-            gap: 35px;
-            flex-wrap: wrap;
-        }
-
-        .copyright {
-            flex-direction: column;
-            gap: 8px;
-        }
-    }
 </style>
-
 </head>
-
 <body>
-
-<!-- HEADER -->
-
-<header>
-    <nav class="nav">
-
-    <button
-        class="brand"
-        onclick="showPage('home')"
-        style="border:none;background:none;color:inherit;cursor:pointer;text-align:left;"
-    >
-        <div class="brand-logo">V</div>
-
-        <div>
-            <div class="brand-title">VEXORIA</div>
-            <div class="brand-subtitle">RANKED BEDWARS · RBW</div>
-        </div>
-    </button>
-
-    <div class="nav-links">
-        <button class="nav-link active" data-page="home" onclick="showPage('home')">
-            Home
-        </button>
-
-        <button class="nav-link" data-page="stats" onclick="showPage('stats')">
-            Stats
-        </button>
-
-        <button class="nav-link" data-page="leaderboards" onclick="showPage('leaderboards')">
-            Leaderboards
-        </button>
-
-        <button class="nav-link" data-page="compare" onclick="showPage('compare')">
-            Compare
-        </button>
-
-        <button class="nav-link" data-page="recaps" onclick="showPage('recaps')">
-            Recaps
-        </button>
-
-        <button class="nav-link" data-page="rules" onclick="showPage('rules')">
-            Rules
-        </button>
+<header class="topbar">
+  <div class="shell topbar-inner">
+    <button class="brand" onclick="openNetwork()"><div class="logo">V</div><div><strong>VEXORIA</strong><small>NETWORK</small></div></button>
+    <div class="nav" id="global-nav">
+      <button class="active" onclick="openNetwork()">Network</button>
+      <button onclick="openRanked('overview')">Ranked Bedwars</button>
+      <button onclick="openRanked('leaderboards')">Leaderboards</button>
+      <button onclick="openRanked('matches')">Games</button>
+      <button onclick="openRanked('stats')">Stats</button>
+      <button onclick="openRanked('compare')">Compare</button>
+      <button onclick="openRanked('store')">Store</button>
     </div>
-
-    <a
-        href="https://discord.gg/vexorianetwork"
-        target="_blank"
-        class="discord-button"
-    >
-        Join Discord ↗
-    </a>
-
-</nav>
-
+    <a class="discord" href="https://discord.gg/vexorianetwork" target="_blank" rel="noopener">Discord ↗</a>
+  </div>
 </header>
 
-<!-- HOME -->
-
-<main id="home" class="page active">
-
-<section class="hero">
-
-    <div class="hero-badge">
-        <span class="hero-badge-dot"></span>
-        VEXORIA COMPETITIVE
+<main id="network" class="page active">
+  <section class="hero shell">
+    <div class="kicker">VEXORIA NETWORK</div>
+    <h1>VEXORIA<br><span>NETWORK</span></h1>
+    <p>Modern competitive Minecraft with low-latency infrastructure, structured game modes and a connected community.</p>
+    <div class="actions">
+      <button class="btn primary" id="copy-button" onclick="copyIP()">Copy Server IP</button>
+      <a class="btn" href="https://discord.gg/vexorianetwork" target="_blank">Join Discord ↗</a>
+      <a class="btn" href="https://www.vexorianetwork.xyz/" target="_blank">Follow Socials ↗</a>
     </div>
-
-    <h1>
-        VEXORIA<br>
-        <span>RANKED BEDWARS</span>
-    </h1>
-
-    <p class="hero-description">
-        Compete against the strongest Ranked Bedwars players.
-        Climb the leaderboard, build your reputation and prove yourself
-        in every game.
-    </p>
-
-    <div class="hero-buttons">
-
-        <button
-            class="primary-button"
-            onclick="showPage('leaderboards')"
-        >
-            View Leaderboards →
-        </button>
-
-        <button
-            class="secondary-button"
-            onclick="showPage('stats')"
-        >
-            Search Player
-        </button>
-
+    <div class="ranked-entry">
+      <div>
+        <div class="tag">FEATURED COMPETITIVE MODE</div>
+        <h3>MODERN RANKED BEDWARS</h3>
+        <p>Seasonal competition · Recorded games · Complete player analytics</p>
+      </div>
+      <button class="btn primary entry-button" onclick="openRanked('overview')">ENTER RANKED →</button>
     </div>
-
-    <div class="quick-stats">
-
-        <div class="quick-stat">
-            <div class="quick-stat-value">—</div>
-            <div class="quick-stat-label">REGISTERED</div>
-        </div>
-
-        <div class="quick-stat">
-            <div class="quick-stat-value">—</div>
-            <div class="quick-stat-label">GAMES PLAYED</div>
-        </div>
-
-        <div class="quick-stat">
-            <div class="quick-stat-value">—</div>
-            <div class="quick-stat-label">ONLINE</div>
-        </div>
-
-        <div class="quick-stat">
-            <div class="quick-stat-value">GLOBAL</div>
-            <div class="quick-stat-label">REGION</div>
-        </div>
-
-    </div>
-
-</section>
-
-
-<section class="server-section">
-
-    <div class="container">
-
-        <div class="server-card">
-
-            <div>
-
-                <div class="server-name">
-
-                    <div class="server-icon">V</div>
-
-                    <div>
-                        <h3>Vexoria Ranked Bedwars</h3>
-                        <div class="online">● Network Online</div>
-                    </div>
-
-                </div>
-
-                <p class="server-description">
-                    Join Vexoria Network and compete in Ranked Bedwars.
-                    Queue games through our community and climb the RBW standings.
-                </p>
-
-                <div class="ip-box">
-
-                    <code id="server-ip">
-                        mc.vexorianetwork.club
-                    </code>
-
-                    <button
-                        id="copy-button"
-                        class="copy-button"
-                        onclick="copyIP()"
-                    >
-                        Copy
-                    </button>
-
-                </div>
-
-            </div>
-
-
-            <div class="server-meta">
-
-                <div class="server-meta-item">
-                    <div class="server-meta-label">VERSION</div>
-                    <div class="server-meta-value">Java 1.21+</div>
-                </div>
-
-                <div class="server-meta-item">
-                    <div class="server-meta-label">REGION</div>
-                    <div class="server-meta-value">GLOBAL</div>
-                </div>
-
-                <div class="server-meta-item">
-                    <div class="server-meta-label">PLAYERS</div>
-                    <div class="server-meta-value">—</div>
-                </div>
-
-                <div class="server-meta-item">
-                    <div class="server-meta-label">GAMES</div>
-                    <div class="server-meta-value">—</div>
-                </div>
-
-            </div>
-
-        </div>
-
-    </div>
-
-</section>
-
-
-<section class="features-section">
-
-    <div class="container">
-
-        <div class="section-heading">
-
-            <div class="eyebrow">THE COMPETITION</div>
-
-            <h2>Every game matters.</h2>
-
-            <p>
-                Track rankings, inspect player careers and revisit
-                recorded Vexoria Ranked Bedwars matches.
-            </p>
-
-        </div>
-
-
-        <div class="feature-grid">
-
-            <div
-                class="feature-card"
-                onclick="showPage('leaderboards')"
-            >
-                <div class="feature-number">01</div>
-
-                <h3>Leaderboards</h3>
-
-                <p>
-                    See who currently controls the Vexoria RBW rankings.
-                </p>
-
-                <div class="feature-link">
-                    View Leaderboards →
-                </div>
-            </div>
-
-
-            <div
-                class="feature-card"
-                onclick="showPage('recaps')"
-            >
-                <div class="feature-number">02</div>
-
-                <h3>Match Recaps</h3>
-
-                <p>
-                    Review teams, maps, match results and player performances.
-                </p>
-
-                <div class="feature-link">
-                    Browse Games →
-                </div>
-            </div>
-
-
-            <div
-                class="feature-card"
-                onclick="showPage('stats')"
-            >
-                <div class="feature-number">03</div>
-
-                <h3>Player Statistics</h3>
-
-                <p>
-                    Search a registered player and inspect their Ranked career.
-                </p>
-
-                <div class="feature-link">
-                    Search Players →
-                </div>
-            </div>
-
-        </div>
-
-    </div>
-
-</section>
-
+  </section>
+  <div class="shell network-grid network-grid-3">
+    <div class="metric"><label>VERSION</label><strong>Java 1.21+</strong></div>
+    <div class="metric"><label>REGION</label><strong>Singapore</strong><small>Low Latency For Many Regions</small></div>
+    <div class="metric"><label>ONLINE PLAYERS</label><strong id="online-count">—</strong></div>
+  </div>
 </main>
 
-<!-- STATS -->
+<main id="ranked" class="page">
+  <div class="shell">
+    <div class="page-title ranked-centered">
+      <div class="kicker">VEXORIA COMPETITIVE</div>
+      <h1>MODERN<br><span style="color:var(--blue)">RANKED BEDWARS</span></h1>
+      <p>Structured queues, fresh seasonal competition, recorded games and deep competitive analytics.</p>
+      <div class="summary-grid summary-grid-4">
+        <div class="metric"><label>PLAYERS PLAYED</label><strong id="played-count">—</strong></div>
+        <div class="metric"><label>REGISTERED PLAYERS</label><strong id="registered-count">—</strong></div>
+        <div class="metric"><label>TOTAL GAMES</label><strong id="games-count">—</strong></div>
+        <div class="metric"><label>LOCATION</label><strong>Singapore</strong></div>
+      </div>
+      <div class="ranked-ip-strip">
+        <span>mc.vexorianetwork.club</span>
+        <button class="btn primary" onclick="copyIP()">Copy IP</button>
+      </div>
+    </div>
 
-<main id="stats" class="page">
+    <div class="ranked-tabs" id="ranked-tabs">
+      <button data-tab="overview" onclick="showRanked('overview')">Overview</button>
+      <button data-tab="gameplay" onclick="showRanked('gameplay')">Conduct Rules</button>
+      <button data-tab="season" onclick="showRanked('season')">Season Rules</button>
+      <button data-tab="leaderboards" onclick="showRanked('leaderboards')">Leaderboards</button>
+      <button data-tab="matches" onclick="showRanked('matches')">Recent Games</button>
+      <button data-tab="stats" onclick="showRanked('stats')">Stats</button>
+      <button data-tab="compare" onclick="showRanked('compare')">Compare</button>
+      <button data-tab="store" onclick="showRanked('store')">Store</button>
+    </div>
 
-<div class="container">
+    <section id="r-overview" class="subpage">
+      <div class="section-head"><div><div class="kicker">COMPETITIVE HUB</div><h2>Everything that matters, in one place.</h2><p>Follow the ladder, inspect complete careers, review match history and understand the rules before entering the queue.</p></div></div>
+      <div class="cards">
+        <div class="card" onclick="showRanked('leaderboards')"><div class="num">01 · STANDINGS</div><h3>Season Leaderboards</h3><p>Track ELO, wins, K/D, beds, MVPs and your exact position.</p></div>
+        <div class="card" onclick="showRanked('matches')"><div class="num">02 · ARCHIVE</div><h3>Recorded Games</h3><p>Review recent results, lineups, maps and player performances.</p></div>
+        <div class="card" onclick="showRanked('stats')"><div class="num">03 · ANALYTICS</div><h3>Competitive Profiles</h3><p>Career stats, strongest teammates, toughest opponents and queue performance.</p></div>
+      </div>
+    </section>
 
-    <div class="page-header">
+    <section id="r-gameplay" class="subpage">
+      <div class="section-head">
+        <div>
+          <div class="kicker">CONDUCT RULES</div>
+          <h2>Competition starts with clear standards.</h2>
+          <p>Review conduct expectations, safety advisories and the enforcement ladders used across Vexoria Ranked Bedwars.</p>
+        </div>
+      </div>
 
-        <div class="eyebrow">
-            PLAYER DATABASE
+      <div class="season-switch conduct-tabs">
+        <button class="active" onclick="conductTab('general',this)">General Conduct Rules</button>
+        <button onclick="conductTab('disclaimers',this)">Disclaimers</button>
+        <button onclick="conductTab('penalties',this)">Penalties Ladder</button>
+      </div>
+
+      <div id="conduct-general" class="conduct-pane active">
+        <div class="rule-content">
+          <h2>General Community Conduct</h2>
+          <div class="conduct-list">
+            <div class="conduct-rule"><b>01 · Respect & Appropriate Behaviour</b><p>Treat all players and staff members with respect across Minecraft, Discord, and forums. Discrimination, hate speech, toxic conduct, harassment, doxxing, DDoS threats, causing drama, swearing, and rudeness are strictly forbidden.</p></div>
+            <div class="conduct-rule"><b>02 · Competitive Integrity & Fair Play</b><p>Any modification, cheat, auto-clicker, macro, or exploit offering an unfair advantage over unmodded launchers is illegal. Stat boosting, stat farming, team griefing, illegal trapping, and teaming with cheaters can result in severe restrictions.</p></div>
+            <div class="conduct-rule"><b>03 · Public Language Policy</b><p>All public Minecraft chat, including global and spectator chat, must be in English for active staff moderation. Non-English languages are permitted in private messages, party chat, and designated Discord channels.</p></div>
+            <div class="conduct-rule"><b>04 · Punishment Evasion & Accounts</b><p>Using alternative accounts to play or chat while IP-banned or IP-muted is forbidden and can escalate the punishment. Account actions remain the responsibility of the account owner.</p></div>
+            <div class="conduct-rule"><b>05 · Staff Interactions & Impersonation</b><p>Staff directives during matches, queue checks, or screenshares must be followed. Impersonating staff members or attempting to deceive staff is prohibited.</p></div>
+            <div class="conduct-rule"><b>06 · Report & Evidence Integrity</b><p>Submitting falsified evidence, edited clips, misleading screenshots, or dishonest information in reports and appeals can result in severe network action.</p></div>
+          </div>
+        </div>
+      </div>
+
+      <div id="conduct-disclaimers" class="conduct-pane">
+        <div class="rule-content">
+          <h2>Network Disclaimers & Safety Advisories</h2>
+          <div class="conduct-list">
+            <div class="conduct-rule"><b>Account Sharing</b><p>We strongly discourage players from sharing accounts. Some punishments can include IP-based restrictions, so sharing may link your account to another player's enforcement history. It also creates account-security risks. Your account remains your responsibility.</p></div>
+            <div class="conduct-rule"><b>Non-PC Gameplay</b><p>Playing from phones, tablets, or similar non-PC environments can create unusual movement or input patterns that may resemble prohibited gameplay. We strongly recommend using a standard PC Minecraft setup for Ranked.</p></div>
+            <div class="conduct-rule"><b>VPN Usage</b><p>VPN usage is not automatically disallowed, but it is strongly discouraged. Shared or previously punished VPN exit IPs may cause your account to become associated with restricted addresses.</p></div>
+          </div>
+        </div>
+      </div>
+
+      <div id="conduct-penalties" class="conduct-pane">
+        <div class="season-switch penalty-tabs">
+          <button class="active" onclick="penaltyTab('gameplay',this)">Gameplay Ladder</button>
+          <button onclick="penaltyTab('screenshare',this)">Screenshare Ladder</button>
         </div>
 
-        <h1>Player Statistics</h1>
-
-        <p>
-            Search a registered Vexoria Ranked Bedwars player
-            and explore their competitive statistics.
-        </p>
-
-    </div>
-
-
-    <div class="search-wrap">
-
-        <input
-            id="player-search"
-            class="search-input"
-            placeholder="Enter Minecraft username..."
-            maxlength="16"
-            onkeydown="if(event.key === 'Enter') searchPlayer()"
-        >
-
-        <button
-            class="primary-button"
-            onclick="searchPlayer()"
-        >
-            Search
-        </button>
-
-    </div>
-
-
-    <div id="player-empty" class="empty-state">
-
-        <div class="empty-icon">⌕</div>
-
-        <h3>SEARCH FOR A PLAYER</h3>
-
-        <p>
-            Player information will appear here.
-        </p>
-
-    </div>
-
-
-    <div id="player-profile" class="player-profile">
-
-        <div class="profile-header">
-
-            <img
-                id="profile-head"
-                class="minecraft-head"
-                src="https://mc-heads.net/avatar/Steve/64"
-                alt="Minecraft player"
-            >
-
-            <div>
-                <div
-                    id="profile-name"
-                    class="profile-name"
-                >
-                    Player
-                </div>
-
-                <div class="profile-rank">
-                    RBW PLAYER
-                </div>
-            </div>
-
-            <div class="profile-elo">
-
-                <strong>—</strong>
-
-                <span>ELO</span>
-
-            </div>
-
+        <div id="penalty-gameplay" class="penalty-pane active">
+          <div class="penalty-table-wrap">
+            <table class="penalty-table">
+              <thead><tr><th>RULE</th><th>1ST</th><th>2ND</th><th>3RD</th><th>4TH</th><th>5TH</th><th>6TH</th></tr></thead>
+              <tbody>
+                <tr><td><b>Unfair Gameplay</b><small>Stat manipulation, win trading, intentional throwing, or behavior designed to misrepresent true performance.</small></td><td>Warning</td><td>1-Day Restriction</td><td>3-Day Restriction</td><td>7-Day Restriction</td><td>14-Day Restriction</td><td><b>Permanent Restriction</b></td></tr>
+                <tr><td><b>Unauthorized Modifications</b><small>Running mods or clients outside the allowed modifications policy.</small></td><td>Warning</td><td>1-Day Restriction</td><td>3-Day Restriction</td><td>7-Day Restriction</td><td>14-Day Restriction</td><td><b>Permanent Restriction</b></td></tr>
+                <tr><td><b>Unfair Gameplay Methods</b><small>Teaming with opponents or exploiting edge-case methods that undermine fair competition.</small></td><td>Warning</td><td>1-Day Restriction</td><td>3-Day Restriction</td><td>7-Day Restriction</td><td>14-Day Restriction</td><td><b>Permanent Restriction</b></td></tr>
+                <tr><td><b>Exploiting Bugs / Systems</b><small>Knowingly using a bug, glitch, or unintended system interaction for advantage.</small></td><td>Warning</td><td>1-Day Restriction</td><td>3-Day Restriction</td><td>7-Day Restriction</td><td>14-Day Restriction</td><td><b>Permanent Restriction</b></td></tr>
+                <tr><td><b>Unfair Progression Assistance</b><small>Boosting, carrying alternate accounts, smurfing, or playing matches on behalf of another account.</small></td><td>Warning</td><td>1-Day Restriction</td><td>3-Day Restriction</td><td>7-Day Restriction</td><td>14-Day Restriction</td><td><b>Permanent Restriction</b></td></tr>
+                <tr><td><b>Performance Disruption</b><small>Intentionally degrading the match experience through lag-causing or disruptive behavior.</small></td><td>Warning</td><td>1-Day Restriction</td><td>3-Day Restriction</td><td>7-Day Restriction</td><td>14-Day Restriction</td><td><b>Permanent Restriction</b></td></tr>
+                <tr><td><b>Command Abuse</b><small>Spam, harassment via commands, or misuse of party and queue systems.</small></td><td>Warning</td><td>1-Day Restriction</td><td>3-Day Restriction</td><td>7-Day Restriction</td><td>14-Day Restriction</td><td><b>Permanent Restriction</b></td></tr>
+                <tr><td><b>Use of Cheats</b><small>Cheat clients, scripts, macros, autoclickers, or hardware aids that automate gameplay.</small></td><td>3-Day Restriction</td><td>7-Day Restriction</td><td>14-Day Restriction</td><td>30-Day Restriction</td><td><b>Permanent Restriction</b></td><td>—</td></tr>
+                <tr><td><b>Duplication Abuse</b><small>Replicating items, currencies, or rewards through an exploit.</small></td><td>3-Day Restriction</td><td>7-Day Restriction</td><td>14-Day Restriction</td><td>30-Day Restriction</td><td><b>Permanent Restriction</b></td><td>—</td></tr>
+                <tr><td><b>Attempting to Circumvent Systems</b><small>Using technical means to dodge queue penalties, enforcement, or account restrictions.</small></td><td>3-Day Restriction</td><td>7-Day Restriction</td><td>14-Day Restriction</td><td>30-Day Restriction</td><td><b>Permanent Restriction</b></td><td>—</td></tr>
+              </tbody>
+            </table>
+          </div>
         </div>
 
+        <div id="penalty-screenshare" class="penalty-pane">
+          <div class="penalty-table-wrap">
+            <table class="penalty-table">
+              <thead><tr><th>RULE</th><th>1ST</th><th>2ND</th><th>3RD</th><th>4TH</th><th>5TH</th><th>6TH</th></tr></thead>
+              <tbody>
+                <tr><td><b>Unable to Verify Screen</b><small>Your system or share setup prevents staff from completing verification.</small></td><td>Warning</td><td>1-Day Suspension</td><td>3-Day Suspension</td><td>—</td><td>—</td><td>—</td></tr>
+                <tr><td><b>Disconnecting During Review</b><small>Leaving the call, session, or voice channel before the Screensharer ends the review.</small></td><td>Warning</td><td>1-Day Suspension</td><td>3-Day Suspension</td><td>—</td><td>—</td><td>—</td></tr>
+                <tr><td><b>Delaying Staff Review</b><small>Stalling the start of a session past the requested join time without a valid reason.</small></td><td>Warning</td><td>1-Day Suspension</td><td>3-Day Suspension</td><td>—</td><td>—</td><td>—</td></tr>
+                <tr><td><b>Confession of Rule Violation</b><small>Admitting to a violation during review. Repeat confessions still escalate.</small></td><td>Warning</td><td>3-Day Suspension</td><td>7-Day Suspension</td><td>—</td><td>—</td><td>—</td></tr>
+                <tr><td><b>Refusal to Cooperate</b><small>Declining to answer questions or follow reasonable Screensharer instructions.</small></td><td>1-Day Suspension</td><td>3-Day Suspension</td><td>7-Day Suspension</td><td>—</td><td>—</td><td>—</td></tr>
+                <tr><td><b>Closing Verification Tools</b><small>Closing a program, browser, or window the Screensharer asked you to keep open.</small></td><td>1-Day Suspension</td><td>3-Day Suspension</td><td>7-Day Suspension</td><td>—</td><td>—</td><td>—</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
 
+    <section id="r-season" class="subpage">
+      <div class="section-head"><div><div class="kicker">BEDWARS ITEM RULESET</div><h2>Season 1 · Stage Unlock Rules</h2><p>Items unlock as the game reaches later competitive stages. Hover an item slot to see its name.</p></div></div>
+      <div class="season-switch">
+        <button class="active">Season 1</button><button>Beta Season · Previous</button>
+      </div>
+      <div class="notice">Diamond Armor team limit: maximum <b>2 per team in 4v4</b> and <b>1 per team in 3v3</b>.</div>
+      <div id="season-rules"></div>
+      <div class="section-head" style="margin-top:48px"><div><div class="kicker">ACTIVE ROTATION</div><h2>Map Pool</h2></div></div>
+      <div class="table-wrap"><table><thead><tr><th>MAP</th><th>STATUS</th></tr></thead><tbody>
+        <tr><td>Lectus</td><td class="winner">Active</td></tr><tr><td>Invasion</td><td class="winner">Active</td></tr><tr><td>Archway</td><td class="winner">Active</td></tr><tr><td>Stonekeep</td><td class="winner">Active</td></tr><tr><td>Extinction</td><td class="winner">Active</td></tr>
+      </tbody></table></div>
+    </section>
+
+    <section id="r-leaderboards" class="subpage">
+      <div class="section-head"><div><div class="kicker">SEASON STANDINGS</div><h2>Every recorded game shapes the ladder.</h2></div></div>
+      <div class="searchbar"><select id="lb-stat"><option value="elo">ELO</option><option value="wins">Wins</option><option value="kills">Kills</option><option value="beds">Beds</option><option value="mvps">MVPs</option><option value="kd">K/D</option></select><select><option>Season 1</option><option>Beta Season</option></select><input id="lb-user" placeholder="Find your position by IGN..."><button class="btn primary" onclick="locatePlayer()">Locate</button></div>
+      <div id="leaderboard-table" class="empty"><strong>LEADERBOARD API READY</strong>The final table will populate from MySQL after the updated season database is deployed.</div>
+    </section>
+
+    <section id="r-matches" class="subpage">
+      <div class="section-head"><div><div class="kicker">MATCH ARCHIVE</div><h2>Recent Games</h2><p>Latest scored Ranked Bedwars matches. Ten matches per page with full-game lookup.</p></div></div>
+      <div class="searchbar"><input id="match-search" placeholder="Search Game ID, map or player..."><select><option>All statuses</option><option>Completed</option><option>Voided</option></select><button class="btn primary" onclick="loadMatches()">Search</button></div>
+      <div id="match-list" class="matches"><div class="empty"><strong>NO RECORDED GAMES YET</strong>Fresh database. New scored games will appear here automatically.</div></div>
+      <div class="pagination"><button>←</button><button>1</button><button>2</button><button>3</button><button>→</button></div>
+    </section>
+
+    <section id="r-stats" class="subpage">
+      <div class="section-head"><div><div class="kicker">COMPETITIVE PROFILE</div><h2>Player Statistics</h2><p>Search a registered player to inspect their current season performance.</p></div></div>
+      <div class="searchbar"><input id="player-search" maxlength="16" placeholder="Enter Minecraft username..." onkeydown="if(event.key==='Enter') searchPlayer()"><button class="btn primary" onclick="searchPlayer()">Search Player</button></div>
+      <div id="player-empty" class="empty"><strong>SEARCH FOR A PLAYER</strong>Season statistics and analytics will appear here.</div>
+      <div id="player-profile" class="profile">
+        <div class="profile-top"><div class="profile-id"><img id="profile-head" src="https://mc-heads.net/avatar/Steve/70"><div><h2 id="profile-name">Player</h2><span id="profile-rank">Current Season</span></div></div><div class="elo"><strong id="profile-elo">0</strong><small>ELO · <span id="profile-position">Position —</span></small></div></div>
         <div class="stats-grid">
-
-            <div class="stat-card">
-                <div class="stat-card-label">WINS</div>
-                <div class="stat-card-value">—</div>
-            </div>
-
-            <div class="stat-card">
-                <div class="stat-card-label">LOSSES</div>
-                <div class="stat-card-value">—</div>
-            </div>
-
-            <div class="stat-card">
-                <div class="stat-card-label">K/D</div>
-                <div class="stat-card-value">—</div>
-            </div>
-
-            <div class="stat-card">
-                <div class="stat-card-label">W/L</div>
-                <div class="stat-card-value">—</div>
-            </div>
-
-            <div class="stat-card">
-                <div class="stat-card-label">KILLS</div>
-                <div class="stat-card-value">—</div>
-            </div>
-
-            <div class="stat-card">
-                <div class="stat-card-label">DEATHS</div>
-                <div class="stat-card-value">—</div>
-            </div>
-
-            <div class="stat-card">
-                <div class="stat-card-label">BEDS</div>
-                <div class="stat-card-value">—</div>
-            </div>
-
-            <div class="stat-card">
-                <div class="stat-card-label">MVPS</div>
-                <div class="stat-card-value">—</div>
-            </div>
-
+          <div class="stat"><label>GAMES</label><strong id="s-games">0</strong></div><div class="stat"><label>WINS</label><strong id="s-wins">0</strong></div><div class="stat"><label>LOSSES</label><strong id="s-losses">0</strong></div><div class="stat"><label>WIN RATE</label><strong id="s-wr">0%</strong></div>
+          <div class="stat"><label>KILLS</label><strong id="s-kills">0</strong></div><div class="stat"><label>DEATHS</label><strong id="s-deaths">0</strong></div><div class="stat"><label>K/D</label><strong id="s-kd">0</strong></div><div class="stat"><label>BEDS</label><strong id="s-beds">0</strong></div>
+          <div class="stat"><label>MVPS</label><strong id="s-mvps">0</strong></div><div class="stat"><label>PEAK ELO</label><strong id="s-peak">0</strong></div><div class="stat"><label>WIN STREAK</label><strong id="s-ws">0</strong></div><div class="stat"><label>BEST STREAK</label><strong id="s-bestws">0</strong></div>
         </div>
+        <div class="analytics-grid">
+          <div class="analytics"><h3>Strongest Synergy</h3><div id="teammates"><div class="minirow"><b>Requires game history</b><span>Games</span><span>W</span><span>WR</span></div></div></div>
+          <div class="analytics"><h3>Toughest Matchups</h3><div id="opponents"><div class="minirow"><b>Requires game history</b><span>Meet</span><span>W</span><span>WR</span></div></div></div>
+          <div class="analytics" style="grid-column:1/-1"><h3>Queue Performance</h3><div id="queues"><div class="minirow"><b>Requires queue-per-game tracking</b><span>Games</span><span>W</span><span>WR</span></div></div></div>
+        </div>
+      </div>
+    </section>
 
-    </div>
+    <section id="r-compare" class="subpage">
+      <div class="section-head"><div><div class="kicker">COMPARISON LAB</div><h2>Player & Team Analysis</h2></div></div>
+      <div class="season-switch"><button class="active" onclick="comparisonMode('solo',this)">Player vs Player</button><button onclick="comparisonMode('team',this)">Team vs Team</button></div>
+      <div id="solo-compare">
+        <div class="compare-inputs"><div><label>PLAYER ONE</label><input id="compare-a" placeholder="Minecraft IGN"></div><div class="vs">VS</div><div><label>PLAYER TWO</label><input id="compare-b" placeholder="Minecraft IGN"></div></div>
+        <div class="actions"><button class="btn primary" onclick="comparePlayers()">Compare Profiles</button></div>
+        <div id="compare-output" class="empty"><strong>HEAD-TO-HEAD</strong>Enter two registered players.</div>
+      </div>
+      <div id="team-compare" class="hidden">
+        <div class="team-builder"><div class="team-box"><b>TEAM A</b><input id="team-a" placeholder="Player1, Player2, Player3, Player4"></div><div class="vs">VS</div><div class="team-box"><b>TEAM B</b><input id="team-b" placeholder="Player5, Player6, Player7, Player8"></div></div>
+        <div class="actions"><button class="btn primary" onclick="compareTeams()">Analyze Teams</button></div>
+        <div class="notice">Exact lineup meetings will be available once the updated bot stores normalized team membership per game.</div>
+      </div>
+    </section>
 
-</div>
-
+    <section id="r-store" class="subpage">
+      <div class="section-head"><div><div class="kicker">VEXORIA STORE</div><h2>Support the network. Stand out in game.</h2><p>A clean storefront area ready for your payment/store backend.</p></div></div>
+      <div class="store-grid">
+        <div class="product"><div class="tag">NETWORK</div><h3>Ranks</h3><p>Permanent network ranks with cosmetic and quality-of-life benefits.</p><div class="price">Coming Soon</div><button class="btn">View Ranks</button></div>
+        <div class="product"><div class="tag">COSMETIC</div><h3>Cosmetics</h3><p>Visual customization without competitive gameplay advantages.</p><div class="price">Coming Soon</div><button class="btn">Browse</button></div>
+        <div class="product"><div class="tag">SUPPORT</div><h3>Supporter</h3><p>Optional supporter perks for players who want to help Vexoria grow.</p><div class="price">Coming Soon</div><button class="btn">Details</button></div>
+      </div>
+    </section>
+  </div>
 </main>
 
-<!-- LEADERBOARDS -->
-
-<main id="leaderboards" class="page">
-
-<div class="container">
-
-    <div class="page-header">
-
-        <div class="eyebrow">
-            SEASON STANDINGS
-        </div>
-
-        <h1>RBW Leaderboards</h1>
-
-        <p>
-            The highest-ranked players currently competing
-            in Vexoria Ranked Bedwars.
-        </p>
-
-    </div>
-
-
-    <div class="leaderboard">
-
-        <div class="leaderboard-row leaderboard-header">
-
-            <div>#</div>
-            <div>PLAYER</div>
-            <div>ELO</div>
-            <div>WINS</div>
-            <div>W/L</div>
-            <div>K/D</div>
-            <div>BEDS</div>
-
-        </div>
-
-
-        <div class="leaderboard-row">
-
-            <div class="rank-number top">#1</div>
-
-            <div class="lb-player">
-
-                <img
-                    class="lb-head"
-                    src="https://mc-heads.net/avatar/Steve/32"
-                    alt=""
-                >
-
-                <span>Waiting for database</span>
-
-            </div>
-
-            <div class="lb-value lb-elo">—</div>
-            <div class="lb-value">—</div>
-            <div class="lb-value">—</div>
-            <div class="lb-value">—</div>
-            <div class="lb-value">—</div>
-
-        </div>
-
-    </div>
-
-</div>
-
-</main>
-
-<!-- COMPARE -->
-
-<main id="compare" class="page">
-
-<div class="container">
-
-    <div class="page-header">
-
-        <div class="eyebrow">
-            PLAYER ANALYSIS
-        </div>
-
-        <h1>Compare Players</h1>
-
-        <p>
-            Compare two Vexoria Ranked Bedwars careers
-            and their competitive history.
-        </p>
-
-    </div>
-
-
-    <div class="compare-box">
-
-        <div class="compare-inputs">
-
-            <div>
-
-                <div class="field-label">
-                    PLAYER ONE
-                </div>
-
-                <input
-                    id="compare-player-1"
-                    class="search-input"
-                    placeholder="Minecraft username"
-                    maxlength="16"
-                >
-
-            </div>
-
-
-            <div class="versus">
-                VS
-            </div>
-
-
-            <div>
-
-                <div class="field-label">
-                    PLAYER TWO
-                </div>
-
-                <input
-                    id="compare-player-2"
-                    class="search-input"
-                    placeholder="Minecraft username"
-                    maxlength="16"
-                >
-
-            </div>
-
-        </div>
-
-
-        <div class="compare-button-wrap">
-
-            <button
-                class="primary-button"
-                onclick="comparePlayers()"
-            >
-                Compare Players
-            </button>
-
-        </div>
-
-
-        <div
-            id="compare-result"
-            class="compare-result"
-        >
-
-            <div class="comparison-row">
-
-                <div
-                    id="comparison-name-1"
-                    class="comparison-left"
-                >
-                    Player One
-                </div>
-
-                <div class="comparison-center">
-                    PLAYER
-                </div>
-
-                <div
-                    id="comparison-name-2"
-                    class="comparison-right"
-                >
-                    Player Two
-                </div>
-
-            </div>
-
-
-            <div class="comparison-row">
-
-                <div class="comparison-left">—</div>
-
-                <div class="comparison-center">
-                    ELO
-                </div>
-
-                <div class="comparison-right">—</div>
-
-            </div>
-
-
-            <div class="comparison-row">
-
-                <div class="comparison-left">—</div>
-
-                <div class="comparison-center">
-                    WINS
-                </div>
-
-                <div class="comparison-right">—</div>
-
-            </div>
-
-
-            <div class="comparison-row">
-
-                <div class="comparison-left">—</div>
-
-                <div class="comparison-center">
-                    K/D
-                </div>
-
-                <div class="comparison-right">—</div>
-
-            </div>
-
-
-            <div class="comparison-row">
-
-                <div class="comparison-left">—</div>
-
-                <div class="comparison-center">
-                    BEDS
-                </div>
-
-                <div class="comparison-right">—</div>
-
-            </div>
-
-
-            <div class="comparison-row">
-
-                <div class="comparison-left">—</div>
-
-                <div class="comparison-center">
-                    MVPS
-                </div>
-
-                <div class="comparison-right">—</div>
-
-            </div>
-
-        </div>
-
-    </div>
-
-</div>
-
-</main>
-
-<!-- RECAPS -->
-
-<main id="recaps" class="page">
-
-<div class="container">
-
-    <div class="page-header">
-
-        <div class="eyebrow">
-            MATCH ARCHIVE
-        </div>
-
-        <h1>Ranked Game Recaps</h1>
-
-        <p>
-            Browse recorded Vexoria Ranked Bedwars matches,
-            teams, results and player performances.
-        </p>
-
-    </div>
-
-
-    <div class="search-wrap">
-
-        <input
-            class="search-input"
-            placeholder="Search Game ID, map or player..."
-        >
-
-        <button class="primary-button">
-            Search
-        </button>
-
-    </div>
-
-
-    <div class="match-grid">
-
-        <div class="match-card">
-
-            <div class="match-top">
-
-                <div class="game-id">
-                    GAME #—
-                </div>
-
-                <div class="game-status">
-                    DATABASE REQUIRED
-                </div>
-
-            </div>
-
-            <div class="match-map">
-                Match data will appear here
-            </div>
-
-            <div class="match-score">
-
-                <div class="team">
-                    RED TEAM
-                </div>
-
-                <div class="score">
-                    — : —
-                </div>
-
-                <div class="team">
-                    BLUE TEAM
-                </div>
-
-            </div>
-
-            <div class="match-footer">
-
-                <span>MVP —</span>
-
-                <span>Duration —</span>
-
-            </div>
-
-        </div>
-
-    </div>
-
-</div>
-
-</main>
-
-<!-- RULES -->
-
-<main id="rules" class="page">
-
-<div class="container">
-
-    <div class="page-header">
-
-        <div class="eyebrow">
-            RBW RULEBOOK
-        </div>
-
-        <h1>Compete Fairly.</h1>
-
-        <p>
-            Vexoria Ranked Bedwars is built around competitive
-            integrity, fair matchmaking and legitimate results.
-        </p>
-
-    </div>
-
-
-    <div class="rules">
-
-        <div class="rule">
-
-            <div class="rule-number">
-                01
-            </div>
-
-            <div>
-                <h3>Competitive Integrity</h3>
-
-                <p>
-                    Cheating, prohibited modifications, exploiting,
-                    boosting and intentionally manipulating Ranked
-                    matches are prohibited.
-                </p>
-            </div>
-
-        </div>
-
-
-        <div class="rule">
-
-            <div class="rule-number">
-                02
-            </div>
-
-            <div>
-                <h3>Queue Conduct</h3>
-
-                <p>
-                    Players joining the queue must be available and
-                    ready to participate in their assigned match.
-                </p>
-            </div>
-
-        </div>
-
-
-        <div class="rule">
-
-            <div class="rule-number">
-                03
-            </div>
-
-            <div>
-                <h3>Account Ownership</h3>
-
-                <p>
-                    Account sharing, impersonation and attempts to
-                    evade Ranked restrictions are prohibited.
-                </p>
-            </div>
-
-        </div>
-
-
-        <div class="rule">
-
-            <div class="rule-number">
-                04
-            </div>
-
-            <div>
-                <h3>Match Conduct</h3>
-
-                <p>
-                    Intentional throwing, cross-teaming or deliberate
-                    manipulation of a Ranked match result is prohibited.
-                </p>
-            </div>
-
-        </div>
-
-
-        <div class="rule">
-
-            <div class="rule-number">
-                05
-            </div>
-
-            <div>
-                <h3>Match Disputes</h3>
-
-                <p>
-                    Scoring issues and match disputes should be
-                    reported with the relevant Game ID and evidence.
-                </p>
-            </div>
-
-        </div>
-
-
-        <div class="rule">
-
-            <div class="rule-number">
-                06
-            </div>
-
-            <div>
-                <h3>Enforcement</h3>
-
-                <p>
-                    Ranked staff may apply appropriate penalties
-                    depending on the violation and its severity.
-                </p>
-            </div>
-
-        </div>
-
-    </div>
-
-</div>
-
-</main>
-
-<!-- FOOTER -->
-
-<footer>
-
-<div class="container">
-
-    <div class="footer-top">
-
-        <div class="footer-brand">
-
-            <div class="brand-title">
-                VEXORIA
-            </div>
-
-            <div class="brand-subtitle">
-                RANKED BEDWARS · RBW
-            </div>
-
-            <p>
-                Competitive Ranked Bedwars on Vexoria Network.
-            </p>
-
-        </div>
-
-
-        <div class="footer-links">
-
-            <div class="footer-column">
-
-                <h4>EXPLORE</h4>
-
-                <button onclick="showPage('home')">
-                    Home
-                </button>
-
-                <button onclick="showPage('stats')">
-                    Stats
-                </button>
-
-                <button onclick="showPage('leaderboards')">
-                    Leaderboards
-                </button>
-
-                <button onclick="showPage('compare')">
-                    Compare
-                </button>
-
-            </div>
-
-
-            <div class="footer-column">
-
-                <h4>COMPETITION</h4>
-
-                <button onclick="showPage('recaps')">
-                    Match Recaps
-                </button>
-
-                <button onclick="showPage('rules')">
-                    Rules
-                </button>
-
-                <a
-                    href="https://discord.gg/vexorianetwork"
-                    target="_blank"
-                >
-                    Discord ↗
-                </a>
-
-            </div>
-
-
-            <div class="footer-column">
-
-                <h4>NETWORK</h4>
-
-                <a
-                    href="#"
-                    onclick="copyIP(); return false;"
-                >
-                    mc.vexorianetwork.club
-                </a>
-
-                <a>GLOBAL</a>
-
-                <a>JAVA 1.21+</a>
-
-            </div>
-
-        </div>
-
-    </div>
-
-
-    <div class="copyright">
-
-        <span>
-            © 2026 Vexoria Network. All rights reserved.
-        </span>
-
-        <span>
-            Not affiliated with Minecraft, Mojang Studios or Microsoft.
-        </span>
-
-    </div>
-
-</div>
-
-</footer>
+<footer><div class="shell footerline"><span>© 2026 Vexoria Network</span><span>mc.vexorianetwork.club · GLOBAL · JAVA 1.21+</span><span>Not affiliated with Mojang Studios or Microsoft.</span></div></footer>
 
 <script>
-
-    /*
-    ============================================================
-    PAGE NAVIGATION
-    ============================================================
-    */
-
-    function showPage(pageName) {
-
-        document
-            .querySelectorAll(".page")
-            .forEach(page => {
-                page.classList.remove("active");
-            });
-
-
-        const targetPage =
-            document.getElementById(pageName);
-
-
-        if (targetPage) {
-            targetPage.classList.add("active");
-        }
-
-
-        document
-            .querySelectorAll(".nav-link")
-            .forEach(link => {
-                link.classList.remove("active");
-            });
-
-
-        const activeNav =
-            document.querySelector(
-                `.nav-link[data-page="${pageName}"]`
-            );
-
-
-        if (activeNav) {
-            activeNav.classList.add("active");
-        }
-
-
-        window.scrollTo({
-            top: 0,
-            behavior: "smooth"
-        });
-
-    }
-
-
-    /*
-    ============================================================
-    COPY SERVER IP
-    ============================================================
-    */
-
-    async function copyIP() {
-
-        const serverIP =
-            "mc.vexorianetwork.club";
-
-
-        try {
-
-            await navigator.clipboard.writeText(serverIP);
-
-            const button =
-                document.getElementById("copy-button");
-
-
-            if (button) {
-
-                const oldText =
-                    button.textContent;
-
-
-                button.textContent =
-                    "Copied ✓";
-
-
-                setTimeout(() => {
-
-                    button.textContent =
-                        oldText;
-
-                }, 1500);
-
-            }
-
-        }
-
-        catch {
-
-            alert(
-                "Server IP: " + serverIP
-            );
-
-        }
-
-    }
-
-
-    /*
-    ============================================================
-    PLAYER SEARCH
-    ============================================================
-
-    FOR NOW:
-
-    This only demonstrates the profile design.
-
-    LATER:
-
-    We will replace this section with:
-
-    fetch("/api/player?username=" + username)
-
-    That API will retrieve REAL information from the
-    Vexoria Ranked Bedwars database.
-
-    ============================================================
-    */
-
-    async function searchPlayer() {
-
-        const input =
-            document.getElementById("player-search");
-
-        const username =
-            input.value.trim();
-
-        if (!username) {
-            return;
-        }
-
-        const validUsername =
-            /^[a-zA-Z0-9_]{1,16}$/.test(username);
-
-        if (!validUsername) {
-            alert("Please enter a valid Minecraft username.");
-            return;
-        }
-
-        try {
-
-            const response = await fetch(
-                `/api/player?username=${encodeURIComponent(username)}`
-            );
-
-            const data = await response.json();
-
-            if (!response.ok) {
-
-                if (response.status === 404) {
-                    alert("Player not found in the RBW database.");
-                    return;
-                }
-
-                alert(data.error || "Unable to load player.");
-                return;
-            }
-
-            document
-                .getElementById("player-empty")
-                .style.display = "none";
-
-            document
-                .getElementById("player-profile")
-                .classList.add("show");
-
-            document
-                .getElementById("profile-name")
-                .textContent = data.username;
-
-            document
-                .getElementById("profile-head")
-                .src =
-                "https://mc-heads.net/avatar/" +
-                encodeURIComponent(data.username) +
-                "/64";
-
-            document
-                .querySelector(".profile-elo strong")
-                .textContent = data.elo;
-
-            const values =
-                document.querySelectorAll(".stat-card-value");
-
-            values[0].textContent = data.wins;
-            values[1].textContent = data.losses;
-            values[2].textContent = data.kd;
-            values[3].textContent = data.wl;
-            values[4].textContent = data.kills;
-            values[5].textContent = data.deaths;
-            values[6].textContent = data.beds;
-            values[7].textContent = data.mvps;
-
-        } catch (error) {
-
-            console.error("Player search error:", error);
-            alert("Unable to connect to the RBW API.");
-
-        }
-
-    }
-
-
-    /*
-    ============================================================
-    PLAYER COMPARISON
-    ============================================================
-
-    Names work now.
-
-    Statistics will be connected to the RBW database later.
-
-    ============================================================
-    */
-
-    function comparePlayers() {
-
-        const player1 =
-            document
-                .getElementById("compare-player-1")
-                .value
-                .trim();
-
-
-        const player2 =
-            document
-                .getElementById("compare-player-2")
-                .value
-                .trim();
-
-
-        if (!player1 || !player2) {
-
-            alert(
-                "Enter both Minecraft usernames."
-            );
-
-            return;
-
-        }
-
-
-        document
-            .getElementById("comparison-name-1")
-            .textContent = player1;
-
-
-        document
-            .getElementById("comparison-name-2")
-            .textContent = player2;
-
-
-        document
-            .getElementById("compare-result")
-            .classList.add("show");
-
-    }
-
+const API = {
+  player: username => `/api/player?username=${encodeURIComponent(username)}`,
+  leaderboard: stat => `/api/leaderboard?stat=${encodeURIComponent(stat)}`,
+  matches: q => `/api/matches?q=${encodeURIComponent(q||"")}`,
+  network: `/api/network`
+};
+
+function openNetwork(){
+  document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
+  document.getElementById('network').classList.add('active');
+  history.replaceState(null,'','#home'); window.scrollTo(0,0);
+}
+function openRanked(tab='overview'){
+  document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
+  document.getElementById('ranked').classList.add('active');
+  showRanked(tab); window.scrollTo(0,0);
+}
+function showRanked(tab){
+  document.querySelectorAll('.subpage').forEach(x=>x.classList.remove('active'));
+  document.querySelectorAll('#ranked-tabs button').forEach(x=>x.classList.toggle('active',x.dataset.tab===tab));
+  const el=document.getElementById('r-'+tab); if(el) el.classList.add('active');
+  history.replaceState(null,'','#ranked-'+tab);
+  if(tab==='leaderboards') loadLeaderboard();
+  if(tab==='matches') loadMatches();
+}
+
+function conductTab(tab,btn){
+  document.querySelectorAll('.conduct-tabs button').forEach(x=>x.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.conduct-pane').forEach(x=>x.classList.remove('active'));
+  document.getElementById('conduct-'+tab).classList.add('active');
+}
+function penaltyTab(tab,btn){
+  document.querySelectorAll('.penalty-tabs button').forEach(x=>x.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.penalty-pane').forEach(x=>x.classList.remove('active'));
+  document.getElementById('penalty-'+tab).classList.add('active');
+}
+
+async function copyIP(){
+  const ip='mc.vexorianetwork.club';
+  try{await navigator.clipboard.writeText(ip);const b=document.getElementById('copy-button');if(b){const t=b.textContent;b.textContent='Copied ✓';setTimeout(()=>b.textContent=t,1300)}}catch{alert('Server IP: '+ip)}
+}
+const ruleText={
+ integrity:`<h2>Competitive Integrity</h2><p>Ranked games must be played legitimately and with the intention to win.</p><ul><li>No cheating, prohibited modifications, exploiting, boosting or match manipulation.</li><li>Do not intentionally throw games, cross-team or abuse alternate accounts.</li><li>Follow staff rulings when a match requires intervention.</li><li>Report scoring problems with the game number and evidence.</li></ul>`,
+ screenshare:`<h2>Verification & Screenshares</h2><p>Screenshares protect competitive integrity when staff need additional verification.</p><ul><li>Cooperate with an active screenshare request and remain available while frozen.</li><li>Leaving, refusing verification or deliberately destroying relevant evidence may be punished.</li><li>Use the official Vexoria request and staff channels for screenshare cases.</li></ul>`,
+ punishments:`<h2>Competitive Enforcement</h2><p>Enforcement scales with severity and repeated violations.</p><ul><li>Strikes and temporary queue restrictions may be issued.</li><li>Serious cases may include ELO action, game voids or longer restrictions.</li><li>Repeated violations move through the configured punishment ladder.</li><li>Major staff actions should be preserved in the bot audit history.</li></ul>`,
+ queue:`<h2>Entering Competition</h2><ol><li>Register your Minecraft account.</li><li>Join an available Ranked queue.</li><li>Wait for teams to form.</li><li>Join the assigned lobby before the deadline.</li><li>Play the match and allow the result to be recorded.</li></ol>`,
+ responsibility:`<h2>Match Responsibilities</h2><ul><li>Join the assigned team and lobby on time.</li><li>Remain available for your active Ranked game.</li><li>Use the retry/rejoin system correctly after a legitimate disconnect.</li><li>Do not disrupt the assigned game voice channels.</li><li>Raise scoring disputes promptly with evidence.</li></ul>`,
+ penalties:`<h2>Avoiding Penalties</h2><ul><li>Do not queue if you cannot play the match.</li><li>Do not dodge formed teams or intentionally disconnect.</li><li>Respect lobby and rejoin timers.</li><li>Use the correct retry flow after connection problems.</li><li>Contact staff quickly when a technical issue prevents normal play.</li></ul>`
+};
+function rulePane(btn,key){document.querySelectorAll('.rule-menu button').forEach(x=>x.classList.remove('active'));btn.classList.add('active');document.getElementById('rule-content').innerHTML=ruleText[key]}
+rulePane(document.querySelector('.rule-menu button'),'integrity');
+
+const itemSets=[
+ {title:'ALLOWED ALL GAME',note:'ALWAYS AVAILABLE',allowed:['Axe','Bedbug','Blast Proof Glass','Chainmail Armor','Diamond Armor','End Stone','Fireball','Golden Apple','Hardened Clay','Iron Armor','Iron Sword','Ladder','Oak Wood / Planks','Pickaxe','Shears','Stone Sword','Wool'],disabled:[]},
+ {title:'DIAMOND II STAGE RULES',note:'NEW UNLOCK',allowed:['Magic Milk'],disabled:[]},
+ {title:'DIAMOND III STAGE RULES',note:'NEW UNLOCKS',allowed:['Jump V Potion','Speed II Potion','TNT'],disabled:[]},
+ {title:'EMERALD II STAGE RULES',note:'NO ADDITIONAL UNLOCKS',allowed:[],disabled:[]},
+ {title:'EMERALD III STAGE RULES',note:'NEW UNLOCK',allowed:['Invisibility Potion'],disabled:[]},
+ {title:'NEVER ALLOWED',note:'BANNED ALL GAME',allowed:[],disabled:['Cobweb','Compact Pop-up Tower','Dream Defender','Ice Bridge','Obsidian','Portable Quick Buy','Sponges','Water Bucket']}
+];
+const iconMap={'Axe':'diamond_axe','Bedbug':'silverfish_spawn_egg','Blast Proof Glass':'glass','Chainmail Armor':'chainmail_chestplate','Diamond Armor':'diamond_chestplate','End Stone':'end_stone','Fireball':'fire_charge','Golden Apple':'golden_apple','Hardened Clay':'terracotta','Iron Armor':'iron_chestplate','Iron Sword':'iron_sword','Ladder':'ladder','Oak Wood / Planks':'oak_planks','Pickaxe':'diamond_pickaxe','Shears':'shears','Stone Sword':'stone_sword','Wool':'white_wool','Cobweb':'cobweb','Compact Pop-up Tower':'chest','Dream Defender':'iron_golem_spawn_egg','Ice Bridge':'ice','Invisibility Potion':'potion','Jump V Potion':'potion','Magic Milk':'milk_bucket','Obsidian':'obsidian','Portable Quick Buy':'ender_chest','Speed II Potion':'potion','Sponges':'sponge','TNT':'tnt','Water Bucket':'water_bucket'};
+function itemIcon(name){
+  const file=iconMap[name]||'barrier';
+  const src=`https://raw.githubusercontent.com/PrismarineJS/minecraft-assets/master/data/1.21.4/items/${file}.png`;
+  return `<div class="item" data-name="${name}"><img loading="lazy" src="${src}" onerror="this.style.display='none';this.parentElement.textContent='◆'"></div>`;
+}
+document.getElementById('season-rules').innerHTML=itemSets.map(s=>{
+  const isNever=s.title==='NEVER ALLOWED';
+  const items=(isNever?s.disabled:s.allowed);
+  const special=s.title==='EMERALD II STAGE RULES'
+    ? `<div class="notice">No additional item unlocks. Diamond III rules continue to apply.</div>`
+    : '';
+  return `<div class="rule-band">
+    <div class="rule-band-top">
+      <div><div class="tag">${s.note}</div><h3>${s.title}</h3></div>
+      <span class="tag">${items.length} ${isNever?'BANNED':'ITEMS'}</span>
+    </div>
+    ${special}
+    <div class="item-grid">${items.map(itemIcon).join('')}</div>
+  </div>`;
+}).join('');
+
+async function getPlayer(name){
+  const r=await fetch(API.player(name)); const d=await r.json();
+  if(!r.ok) throw new Error(d.error||'Player not found'); return d;
+}
+async function searchPlayer(){
+  const name=document.getElementById('player-search').value.trim();
+  if(!/^[A-Za-z0-9_]{1,16}$/.test(name)) return alert('Enter a valid Minecraft username.');
+  try{
+    const p=await getPlayer(name);
+    document.getElementById('player-empty').classList.add('hidden');
+    document.getElementById('player-profile').classList.add('show');
+    document.getElementById('profile-name').textContent=p.username;
+    document.getElementById('profile-head').src=`https://mc-heads.net/avatar/${encodeURIComponent(p.username)}/70`;
+    document.getElementById('profile-elo').textContent=p.elo??0;
+    const wins=Number(p.wins||0), losses=Number(p.losses||0), games=p.games??wins+losses;
+    const set=(id,v)=>document.getElementById(id).textContent=v;
+    set('s-games',games);set('s-wins',wins);set('s-losses',losses);set('s-wr',games?((wins/games)*100).toFixed(1)+'%':'0%');
+    set('s-kills',p.kills||0);set('s-deaths',p.deaths||0);set('s-kd',p.kd||0);set('s-beds',p.beds||0);set('s-mvps',p.mvps||0);set('s-peak',p.peakElo||0);set('s-ws',p.winStreak||0);set('s-bestws',p.highestWinStreak||0);
+  }catch(e){alert(e.message)}
+}
+async function comparePlayers(){
+  const a=document.getElementById('compare-a').value.trim(),b=document.getElementById('compare-b').value.trim();
+  try{
+    const [x,y]=await Promise.all([getPlayer(a),getPlayer(b)]);
+    const rows=[['ELO',x.elo,y.elo],['Peak ELO',x.peakElo,y.peakElo],['Wins',x.wins,y.wins],['Losses',x.losses,y.losses],['K/D',x.kd,y.kd],['Beds',x.beds,y.beds],['MVPs',x.mvps,y.mvps]];
+    document.getElementById('compare-output').className='compare-result';
+    document.getElementById('compare-output').innerHTML=`<div class="crow"><div><b>${x.username}</b></div><div>VS</div><div><b>${y.username}</b></div></div>`+rows.map(r=>`<div class="crow"><div>${r[1]??0}</div><div>${r[0]}</div><div>${r[2]??0}</div></div>`).join('');
+  }catch(e){alert(e.message)}
+}
+function comparisonMode(mode,btn){document.querySelectorAll('#r-compare .season-switch button').forEach(x=>x.classList.remove('active'));btn.classList.add('active');document.getElementById('solo-compare').classList.toggle('hidden',mode!=='solo');document.getElementById('team-compare').classList.toggle('hidden',mode!=='team')}
+function compareTeams(){alert('Team comparison UI is ready. Connect /api/compare/teams after the updated game_players/game_teams database is deployed.')}
+async function loadLeaderboard(){
+  const holder=document.getElementById('leaderboard-table');
+  try{
+    const r=await fetch(API.leaderboard(document.getElementById('lb-stat').value)); if(!r.ok) return;
+    const d=await r.json(), rows=Array.isArray(d)?d:(d.players||d.results||[]);
+    if(!rows.length)return;
+    holder.className='table-wrap'; holder.innerHTML=`<table><thead><tr><th>#</th><th>PLAYER</th><th>ELO</th><th>GAMES</th><th>WINS</th><th>K/D</th><th>BEDS</th></tr></thead><tbody>${rows.map((p,i)=>`<tr data-player="${(p.username||p.ign||'').toLowerCase()}"><td class="pos">#${p.position||i+1}</td><td class="playercell"><img class="head" src="https://mc-heads.net/avatar/${encodeURIComponent(p.username||p.ign||'Steve')}/30">${p.username||p.ign||'Unknown'}</td><td>${p.elo||0}</td><td>${p.games||0}</td><td>${p.wins||0}</td><td>${p.kd||0}</td><td>${p.beds||0}</td></tr>`).join('')}</tbody></table>`;
+  }catch{}
+}
+function locatePlayer(){const n=document.getElementById('lb-user').value.trim().toLowerCase();const row=document.querySelector(`[data-player="${CSS.escape(n)}"]`);if(row){row.scrollIntoView({behavior:'smooth',block:'center'});row.style.outline='1px solid #4287f5'}else alert('Player is not loaded on this leaderboard page yet.')}
+async function loadMatches(){
+  const q=document.getElementById('match-search')?.value||'', holder=document.getElementById('match-list');
+  try{
+    const r=await fetch(API.matches(q));if(!r.ok)return;
+    const d=await r.json(), games=Array.isArray(d)?d:(d.games||d.results||[]);if(!games.length)return;
+    holder.innerHTML=games.slice(0,10).map(g=>`<div class="match"><div class="matchtop"><span>GAME #${g.id||g.gameId||'—'}</span><span>${g.map||'UNKNOWN MAP'} · ${g.status||'COMPLETED'}</span></div><div class="teams"><div>${g.team1||'Team 1'}</div><div class="score">${g.score||'—'}</div><div class="right">${g.team2||'Team 2'}</div></div></div>`).join('');
+  }catch{}
+}
+async function loadNetwork(){
+  try{
+    const r=await fetch(API.network);if(!r.ok)return;const d=await r.json();
+    document.getElementById('registered-count').textContent=d.registeredPlayers??d.players??'—';
+    document.getElementById('games-count').textContent=d.games??d.totalGames??'—';
+    document.getElementById('online-count').textContent=d.onlinePlayers??d.online??'—';
+    document.getElementById('played-count').textContent=d.playersPlayed??d.uniquePlayersPlayed??d.registeredPlayers??'—';
+  }catch{}
+}
+(function boot(){const h=location.hash.replace('#','');if(h.startsWith('ranked-'))openRanked(h.slice(7));else openNetwork();loadNetwork()})();
 </script>
-
 </body>
 </html>
