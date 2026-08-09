@@ -5,7 +5,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-```
 <title>Vexoria Ranked Bedwars</title>
 
 <meta
@@ -1211,7 +1210,6 @@
         }
     }
 </style>
-```
 
 </head>
 
@@ -1222,7 +1220,6 @@
 <header>
     <nav class="nav">
 
-```
     <button
         class="brand"
         onclick="showPage('home')"
@@ -1271,7 +1268,6 @@
     </a>
 
 </nav>
-```
 
 </header>
 
@@ -1279,7 +1275,6 @@
 
 <main id="home" class="page active">
 
-```
 <section class="hero">
 
     <div class="hero-badge">
@@ -1495,7 +1490,6 @@
     </div>
 
 </section>
-```
 
 </main>
 
@@ -1503,7 +1497,6 @@
 
 <main id="stats" class="page">
 
-```
 <div class="container">
 
     <div class="page-header">
@@ -1637,7 +1630,6 @@
     </div>
 
 </div>
-```
 
 </main>
 
@@ -1645,7 +1637,6 @@
 
 <main id="leaderboards" class="page">
 
-```
 <div class="container">
 
     <div class="page-header">
@@ -1706,7 +1697,6 @@
     </div>
 
 </div>
-```
 
 </main>
 
@@ -1714,7 +1704,6 @@
 
 <main id="compare" class="page">
 
-```
 <div class="container">
 
     <div class="page-header">
@@ -1885,7 +1874,6 @@
     </div>
 
 </div>
-```
 
 </main>
 
@@ -1893,7 +1881,6 @@
 
 <main id="recaps" class="page">
 
-```
 <div class="container">
 
     <div class="page-header">
@@ -1975,7 +1962,6 @@
     </div>
 
 </div>
-```
 
 </main>
 
@@ -1983,7 +1969,6 @@
 
 <main id="rules" class="page">
 
-```
 <div class="container">
 
     <div class="page-header">
@@ -2115,7 +2100,6 @@
     </div>
 
 </div>
-```
 
 </main>
 
@@ -2123,7 +2107,6 @@
 
 <footer>
 
-```
 <div class="container">
 
     <div class="footer-top">
@@ -2227,7 +2210,6 @@
     </div>
 
 </div>
-```
 
 </footer>
 
@@ -2356,57 +2338,86 @@
     ============================================================
     */
 
-    function searchPlayer() {
+    async function searchPlayer() {
 
         const input =
             document.getElementById("player-search");
 
-
         const username =
             input.value.trim();
-
 
         if (!username) {
             return;
         }
 
-
         const validUsername =
             /^[a-zA-Z0-9_]{1,16}$/.test(username);
 
-
         if (!validUsername) {
-
-            alert(
-                "Please enter a valid Minecraft username."
-            );
-
+            alert("Please enter a valid Minecraft username.");
             return;
-
         }
 
+        try {
 
-        document
-            .getElementById("player-empty")
-            .style.display = "none";
+            const response = await fetch(
+                `/api/player?username=${encodeURIComponent(username)}`
+            );
 
+            const data = await response.json();
 
-        document
-            .getElementById("player-profile")
-            .classList.add("show");
+            if (!response.ok) {
 
+                if (response.status === 404) {
+                    alert("Player not found in the RBW database.");
+                    return;
+                }
 
-        document
-            .getElementById("profile-name")
-            .textContent = username;
+                alert(data.error || "Unable to load player.");
+                return;
+            }
 
+            document
+                .getElementById("player-empty")
+                .style.display = "none";
 
-        document
-            .getElementById("profile-head")
-            .src =
-            "https://mc-heads.net/avatar/" +
-            encodeURIComponent(username) +
-            "/64";
+            document
+                .getElementById("player-profile")
+                .classList.add("show");
+
+            document
+                .getElementById("profile-name")
+                .textContent = data.username;
+
+            document
+                .getElementById("profile-head")
+                .src =
+                "https://mc-heads.net/avatar/" +
+                encodeURIComponent(data.username) +
+                "/64";
+
+            document
+                .querySelector(".profile-elo strong")
+                .textContent = data.elo;
+
+            const values =
+                document.querySelectorAll(".stat-card-value");
+
+            values[0].textContent = data.wins;
+            values[1].textContent = data.losses;
+            values[2].textContent = data.kd;
+            values[3].textContent = data.wl;
+            values[4].textContent = data.kills;
+            values[5].textContent = data.deaths;
+            values[6].textContent = data.beds;
+            values[7].textContent = data.mvps;
+
+        } catch (error) {
+
+            console.error("Player search error:", error);
+            alert("Unable to connect to the RBW API.");
+
+        }
 
     }
 
