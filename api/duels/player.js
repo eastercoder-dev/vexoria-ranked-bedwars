@@ -12,6 +12,15 @@ const pool = mysql.createPool({
     queueLimit: 0
 });
 
+const RANKED_MODES = [
+    "BEDFIGHT",
+    "FIREBALL_FIGHT",
+    "FIREBALL_MACE",
+    "SKYFIGHT",
+    "BATTLERUSH",
+    "BRIDGE"
+];
+
 module.exports = async function handler(req, res) {
 
     const username =
@@ -31,143 +40,191 @@ module.exports = async function handler(req, res) {
 
     try {
 
-        /*
-         * MULTIDUELS
-         */
-
-        const [multiRows] = await pool.execute(
-            `
-            SELECT
-                p.uuid,
-                p.username,
-                s.mode,
-                s.games_played,
-                s.wins,
-                s.losses,
-                s.kills,
-                s.current_win_streak,
-                s.best_win_streak,
-                s.beds_broken,
-                s.goals_scored
-            FROM md_players p
-            LEFT JOIN md_stats s
-                ON s.uuid = p.uuid
-            WHERE LOWER(p.username) = LOWER(?)
-            ORDER BY s.mode ASC
-            `,
-            [username]
-        );
-
-        /*
-         * STRIKEPRACTICE GLOBAL STATS
-         */
-
-        const [practiceRows] = await pool.execute(
+        const [players] = await pool.execute(
             `
             SELECT
                 uuid,
-                username,
-                kills,
-                deaths
-            FROM stats
+                username
+            FROM md_players
             WHERE LOWER(username) = LOWER(?)
             LIMIT 1
             `,
             [username]
         );
 
-        if (
-            multiRows.length === 0 &&
-            practiceRows.length === 0
-        ) {
+        if (players.length === 0) {
             return res.status(404).json({
-                error: "Player not found"
+                error: "Duels player not found"
             });
         }
 
-        const modes = multiRows.map(row => {
+        const player = players[0];
 
-            const games =
-                Number(row.games_played || 0);
+        const [globalRows] = await pool.execute(
+            `
+            SELECT
+                global_elo,
+                peak_global_elo
+            FROM md_global_stats
+            WHERE uuid = ?
+            LIMIT 1
+            `,
+            [player.uuid]
+        );
+
+        const global =
+            globalRows[0] || {
+                global_elo: 1000,
+                peak_global_elo: 1000
+            };
+
+        const [modeRows] = await pool.execute(
+            `
+            SELECT
+                mode,
+
+                games_played,
+
+                ranked_wins,
+                ranked_losses,
+
+                kills,
+
+                current_ranked_win_streak,
+                best_ranked_win_streak,
+
+                elo,
+                peak_elo,
+
+                beds_broken,
+                goals_scored
+
+            FROM md_stats
+
+            WHERE uuid = ?
+            AND mode IN (
+                'BEDFIGHT',
+                'FIREBALL_FIGHT',
+                'FIREBALL_MACE',
+                'SKYFIGHT',
+                'BATTLERUSH',
+                'BRIDGE'
+            )
+            `,
+            [player.uuid]
+        );
+
+        const rowMap = new Map(
+            modeRows.map(row => [row.mode, row])
+        );
+
+        const rankedModes = RANKED_MODES.map(mode => {
+
+            const row = rowMap.get(mode) || {};
 
             const wins =
-                Number(row.wins || 0);
+                Number(row.ranked_wins || 0);
 
             const losses =
-                Number(row.losses || 0);
+                Number(row.ranked_losses || 0);
 
-            const winRate =
-                games === 0
-                    ? 0
-                    : Number(
-                        (
-                            wins /
-                            games *
-                            100
-                        ).toFixed(1)
-                    );
+            /*
+             * For ranked display, calculate games from
+             * ranked wins + ranked losses instead of the
+             * casual-inclusive games_played column.
+             */
+            const games = wins + losses;
 
             return {
-                mode: row.mode,
+                mode,
 
                 games,
+
                 wins,
                 losses,
-                winRate,
+
+                winRate:
+                    games === 0
+                        ? 0
+                        : Number(
+                            (
+                                wins /
+                                games *
+                                100
+                            ).toFixed(2)
+                        ),
 
                 kills:
                     Number(row.kills || 0),
 
                 currentWinStreak:
                     Number(
-                        row.current_win_streak || 0
+                        row.current_ranked_win_streak || 0
                     ),
 
                 bestWinStreak:
                     Number(
-                        row.best_win_streak || 0
+                        row.best_ranked_win_streak || 0
                     ),
 
+                elo:
+                    Number(row.elo ?? 1000),
+
+                peakElo:
+                    Number(row.peak_elo ?? 1000),
+
                 bedsBroken:
-                    Number(row.beds_broken || 0),
+                    mode === "BEDFIGHT"
+                        ? Number(row.beds_broken || 0)
+                        : null,
 
                 goalsScored:
-                    Number(row.goals_scored || 0)
+                    mode === "BRIDGE"
+                        ? Number(row.goals_scored || 0)
+                        : null
             };
         });
 
-        const practice =
-            practiceRows.length > 0
-                ? {
-                    username:
-                        practiceRows[0].username,
-
-                    kills:
-                        Number(
-                            practiceRows[0].kills || 0
-                        ),
-
-                    deaths:
-                        Number(
-                            practiceRows[0].deaths || 0
-                        )
+        const rankedTotals =
+            rankedModes.reduce(
+                (total, mode) => {
+                    total.games += mode.games;
+                    total.wins += mode.wins;
+                    total.losses += mode.losses;
+                    return total;
+                },
+                {
+                    games: 0,
+                    wins: 0,
+                    losses: 0
                 }
-                : null;
+            );
+
+        rankedTotals.winRate =
+            rankedTotals.games === 0
+                ? 0
+                : Number(
+                    (
+                        rankedTotals.wins /
+                        rankedTotals.games *
+                        100
+                    ).toFixed(2)
+                );
 
         return res.status(200).json({
-            username:
-                multiRows[0]?.username ||
-                practice?.username ||
-                username,
 
-            minecraftUUID:
-                multiRows[0]?.uuid ||
-                practiceRows[0]?.uuid ||
-                null,
+            uuid: player.uuid,
+            username: player.username,
 
-            multiDuels: modes,
+            globalElo:
+                Number(global.global_elo || 1000),
 
-            strikePractice: practice
+            peakGlobalElo:
+                Number(global.peak_global_elo || 1000),
+
+            rankedTotals,
+
+            rankedModes
         });
 
     } catch (error) {
@@ -178,7 +235,7 @@ module.exports = async function handler(req, res) {
         );
 
         return res.status(500).json({
-            error: "Unable to load duel player"
+            error: "Unable to load Duels player"
         });
     }
 };
