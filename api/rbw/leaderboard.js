@@ -62,21 +62,10 @@ module.exports = async function handler(req, res) {
 
     try {
 
-        /*
-         * Determine season.
-         *
-         * If ?season= is provided:
-         * use that season.
-         *
-         * Otherwise:
-         * try to use the currently active season.
-         *
-         * We use SELECT * logic on rbw_seasons here only
-         * to avoid assuming more than necessary about its schema.
-         */
-
         let seasonId = requestedSeason;
 
+        // If no season was supplied, use the active season.
+        // If no active flag is found, fall back to the newest season.
         if (seasonId === null) {
 
             const [seasonRows] = await pool.query(`
@@ -90,38 +79,25 @@ module.exports = async function handler(req, res) {
                 return res.status(200).json({
                     seasonId: null,
                     statistic: stat,
+                    count: 0,
+                    requestedPlayer: null,
                     players: []
                 });
             }
 
-            /*
-             * Try common active-state fields.
-             * If none exist, newest season becomes current fallback.
-             */
+            const activeSeason = seasonRows.find(row =>
+                row.active === 1 ||
+                row.active === true ||
+                String(row.status || "").toUpperCase() === "ACTIVE" ||
+                String(row.state || "").toUpperCase() === "ACTIVE"
+            );
 
-            const activeSeason =
-                seasonRows.find(row =>
-                    row.active === 1 ||
-                    row.active === true ||
-                    String(row.status || "").toUpperCase() === "ACTIVE" ||
-                    String(row.state || "").toUpperCase() === "ACTIVE"
-                );
-
-            seasonId =
-                Number(
-                    (activeSeason || seasonRows[0]).id
-                );
+            seasonId = Number(
+                (activeSeason || seasonRows[0]).id
+            );
         }
 
         const orderColumn = ALLOWED_STATS[stat];
-
-        /*
-         * RBW's historical season table identifies the player using player_id.
-         *
-         * Your old rbw_players table uses discord/IGN fields.
-         *
-         * We attempt to join player_id against likely permanent player ID columns.
-         */
 
         const [rows] = await pool.execute(
             `
@@ -153,7 +129,11 @@ module.exports = async function handler(req, res) {
             FROM rbw_player_season_stats s
 
             LEFT JOIN rbw_players p
-                ON CAST(p.discordID AS CHAR) = s.player_id
+                ON CAST(p.discordID AS CHAR)
+                   COLLATE utf8mb4_0900_ai_ci
+                   =
+                   s.player_id
+                   COLLATE utf8mb4_0900_ai_ci
 
             WHERE s.season_id = ?
 
@@ -242,62 +222,72 @@ module.exports = async function handler(req, res) {
 
         if (username) {
 
-            const index =
-                players.findIndex(
-                    player =>
-                        String(player.username)
-                            .toLowerCase() ===
-                        username.toLowerCase()
-                );
+            const foundIndex = players.findIndex(
+                player =>
+                    String(player.username)
+                        .toLowerCase() ===
+                    username.toLowerCase()
+            );
 
-            if (index !== -1) {
-                requestedPlayer = players[index];
+            if (foundIndex !== -1) {
+
+                requestedPlayer = players[foundIndex];
+
             } else {
 
-                /*
-                 * Player may be outside top 100.
-                 * Find them independently.
-                 */
+                const [playerRows] = await pool.execute(
+                    `
+                    SELECT
+                        s.player_id,
 
-                const [playerRows] =
-                    await pool.execute(
-                        `
-                        SELECT
-                            s.player_id,
-                            p.ign,
-                            s.elo,
-                            s.peak_elo,
-                            s.wins,
-                            s.losses,
-                            s.games,
-                            s.kills,
-                            s.deaths,
-                            s.final_kills,
-                            s.final_deaths,
-                            s.beds,
-                            s.mvps,
-                            s.win_streak,
-                            s.highest_win_streak
-                        FROM rbw_player_season_stats s
-                        LEFT JOIN rbw_players p
-                            ON CAST(p.discordID AS CHAR) = s.player_id
-                        WHERE s.season_id = ?
-                        AND LOWER(p.ign) = LOWER(?)
-                        LIMIT 1
-                        `,
-                        [seasonId, username]
-                    );
+                        p.ign,
+
+                        s.elo,
+                        s.peak_elo,
+
+                        s.wins,
+                        s.losses,
+                        s.games,
+
+                        s.kills,
+                        s.deaths,
+
+                        s.final_kills,
+                        s.final_deaths,
+
+                        s.beds,
+                        s.mvps,
+
+                        s.win_streak,
+                        s.highest_win_streak
+
+                    FROM rbw_player_season_stats s
+
+                    LEFT JOIN rbw_players p
+                        ON CAST(p.discordID AS CHAR)
+                           COLLATE utf8mb4_0900_ai_ci
+                           =
+                           s.player_id
+                           COLLATE utf8mb4_0900_ai_ci
+
+                    WHERE s.season_id = ?
+                    AND LOWER(p.ign) = LOWER(?)
+
+                    LIMIT 1
+                    `,
+                    [seasonId, username]
+                );
 
                 if (playerRows.length > 0) {
 
-                    const target =
-                        playerRows[0];
+                    const target = playerRows[0];
+
+                    const statColumnName =
+                        orderColumn.replace("s.", "");
 
                     const targetValue =
                         Number(
-                            target[
-                                orderColumn.split(".")[1]
-                            ] || 0
+                            target[statColumnName] || 0
                         );
 
                     const [[rankRow]] =
@@ -305,9 +295,11 @@ module.exports = async function handler(req, res) {
                             `
                             SELECT
                                 COUNT(*) + 1 AS position
+
                             FROM rbw_player_season_stats
+
                             WHERE season_id = ?
-                            AND ${orderColumn.replace("s.", "")} > ?
+                            AND ${statColumnName} > ?
                             `,
                             [
                                 seasonId,
@@ -320,6 +312,9 @@ module.exports = async function handler(req, res) {
 
                     const wins =
                         Number(target.wins || 0);
+
+                    const losses =
+                        Number(target.losses || 0);
 
                     const kills =
                         Number(target.kills || 0);
@@ -350,25 +345,19 @@ module.exports = async function handler(req, res) {
 
                         games,
                         wins,
-
-                        losses:
-                            Number(
-                                target.losses || 0
-                            ),
+                        losses,
 
                         winRate:
                             games === 0
                                 ? 0
                                 : Number(
                                     (
-                                        wins /
-                                        games *
+                                        (wins / games) *
                                         100
                                     ).toFixed(2)
                                 ),
 
                         kills,
-
                         deaths,
 
                         kd:
@@ -427,8 +416,7 @@ module.exports = async function handler(req, res) {
         );
 
         return res.status(500).json({
-            error:
-                "Unable to load RBW leaderboard"
+            error: "Unable to load RBW leaderboard"
         });
     }
 };
