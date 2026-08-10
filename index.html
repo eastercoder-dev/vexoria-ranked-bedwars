@@ -71,6 +71,33 @@ linear-gradient(110deg,#101722,#0b1017);padding:25px 26px;display:flex;align-ite
 @media(max-width:850px){.network-grid-3,.summary-grid-4{grid-template-columns:1fr 1fr}.ranked-entry{align-items:stretch;flex-direction:column}.entry-button{width:100%}}
 @media(max-width:520px){.network-grid-3,.summary-grid-4{grid-template-columns:1fr}.ranked-ip-strip{flex-direction:column;align-items:stretch}}
 
+
+.stage-rule{display:grid;grid-template-columns:260px 1fr;gap:28px;padding:28px 0;border-top:1px solid var(--line)}
+.stage-rule:first-of-type{border-top:0}.stage-copy h3{font-size:20px;margin:7px 0}.stage-copy p{color:var(--muted);line-height:1.6;margin:0}
+.stage-items{display:flex;gap:10px;flex-wrap:wrap}.season-item{width:92px;min-height:94px;border:1px solid #273347;background:#0a0f16;padding:10px 7px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;text-align:center}
+.season-item:hover{border-color:var(--blue);background:#0e1622;transform:translateY(-2px)}.season-item img{width:42px;height:42px;image-rendering:pixelated;object-fit:contain}.season-item span{font-size:9px;color:#aab5c5;line-height:1.25}
+.season-item.banned{border-color:#40252b;background:#120c0e}.season-item.banned span{color:#d2939c}.green-tag{color:var(--green)!important}.red-tag{color:var(--red)!important}
+.no-unlock{background:linear-gradient(90deg,rgba(66,135,245,.04),transparent);padding-left:18px}.banned-stage{background:linear-gradient(90deg,rgba(239,112,112,.035),transparent);padding-left:18px}
+.store-hero{display:flex;align-items:end;justify-content:space-between;gap:30px;padding:15px 0 26px}.store-hero h2{font-size:38px;margin:7px 0}.store-hero p{color:var(--muted)}
+.store-user{width:280px}.store-user span{display:block;font-size:9px;color:#77869a;font-weight:900;letter-spacing:.14em;margin-bottom:7px}.store-user input{width:100%;padding:12px;border:1px solid var(--line);background:#090e15;color:white}
+.store-layout{display:grid;grid-template-columns:190px 1fr 230px;gap:14px}.store-sidebar,.store-cart,.store-welcome,.store-product{border:1px solid var(--line);background:#0c1118}
+.store-sidebar{padding:8px;height:max-content}.store-sidebar button{display:block;width:100%;text-align:left;border:0;background:none;color:#8a96a7;padding:13px;cursor:pointer;font-weight:800}.store-sidebar button:hover,.store-sidebar button.active{background:#131c29;color:white}
+.store-main{display:grid;gap:12px}.store-welcome{padding:24px}.store-welcome h3{font-size:24px;margin:8px 0}.store-welcome p{color:var(--muted);line-height:1.65}
+.store-products{display:grid;gap:10px}.store-product{padding:18px;display:grid;grid-template-columns:60px 1fr auto;align-items:center;gap:16px}.store-product h3{margin:4px 0}.store-product p{margin:0;color:var(--muted);font-size:12px}.product-icon{width:55px;height:55px;border:1px solid #31527d;background:#101a29;display:grid;place-items:center;font-weight:950;font-size:24px}
+.store-cart{padding:18px;height:max-content}.store-cart h3{font-size:22px;margin:7px 0}.store-cart p{color:var(--muted);font-size:12px;min-height:80px}.cart-total{display:flex;justify-content:space-between;padding:14px 0;border-top:1px solid var(--line);margin-top:10px}
+@media(max-width:900px){.stage-rule{grid-template-columns:1fr}.store-layout{grid-template-columns:1fr}.store-sidebar{display:flex;overflow:auto}.store-sidebar button{white-space:nowrap}.store-cart{order:3}.store-hero{align-items:stretch;flex-direction:column}.store-user{width:100%}}
+
+
+.mode-feature-grid{display:grid;gap:10px;margin-top:26px}.mode-entry{margin-top:0!important}.mode-entry.featured{box-shadow:0 0 36px rgba(66,135,245,.12)}
+.mode-shell{padding-top:58px;padding-bottom:70px}.mode-tabs{display:flex;gap:6px;overflow:auto;padding:0 0 18px;border-bottom:1px solid var(--line);margin:28px 0 34px}.mode-tabs button{border:0;background:none;color:#8390a1;padding:11px 12px;white-space:nowrap;font-size:12px;font-weight:900;letter-spacing:.06em;cursor:pointer}.mode-tabs button.active,.mode-tabs button:hover{color:#fff;background:#101722}
+.mode-subpage{display:none}.mode-subpage.active{display:block}.mode-title{max-width:780px;margin:0 auto;text-align:center}.mode-title h1{font-size:clamp(42px,7vw,84px);line-height:.9;margin:12px 0 18px}.mode-title p{color:var(--muted);line-height:1.7;max-width:680px;margin:0 auto}
+.mode-search{display:flex;gap:8px;flex-wrap:wrap;margin:22px 0}.mode-search input,.mode-search select{flex:1;min-width:180px;background:#090e15;border:1px solid var(--line);color:#fff;padding:12px 13px}
+.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.stat-box{border:1px solid var(--line);background:#0b1017;padding:18px}.stat-box label{display:block;font-size:9px;letter-spacing:.13em;color:#718095;font-weight:900;margin-bottom:7px}.stat-box strong{font-size:24px}
+.duel-mode-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.duel-mode-card{border:1px solid var(--line);background:#0b1017;padding:22px;cursor:pointer}.duel-mode-card:hover{border-color:#31527d;transform:translateY(-2px)}.duel-mode-card h3{margin:5px 0}.duel-mode-card p{color:var(--muted);font-size:12px}
+.empty-state{border:1px dashed #263246;padding:26px;color:#7d8a9c;text-align:center}.result-card{border:1px solid var(--line);background:#0b1017;padding:22px;margin-top:12px}.result-head{display:flex;align-items:center;gap:14px;margin-bottom:18px}.result-head img{width:58px;height:58px;image-rendering:pixelated}
+.match-card{border:1px solid var(--line);background:#0b1017;padding:17px;margin-bottom:9px}.match-card-top{display:flex;justify-content:space-between;gap:12px;color:#8d9aad;font-size:11px;margin-bottom:12px}.match-team{display:flex;justify-content:space-between;gap:10px;padding:6px 0}.match-team.winner{color:#9ee6aa}
+@media(max-width:900px){.stat-grid{grid-template-columns:repeat(2,1fr)}.duel-mode-grid{grid-template-columns:1fr}}
+
 </style>
 </head>
 <body>
@@ -78,13 +105,11 @@ linear-gradient(110deg,#101722,#0b1017);padding:25px 26px;display:flex;align-ite
   <div class="shell topbar-inner">
     <button class="brand" onclick="openNetwork()"><div class="logo">V</div><div><strong>VEXORIA</strong><small>NETWORK</small></div></button>
     <div class="nav" id="global-nav">
-      <button class="active" onclick="openNetwork()">Network</button>
-      <button onclick="openRanked('overview')">Ranked Bedwars</button>
-      <button onclick="openRanked('leaderboards')">Leaderboards</button>
-      <button onclick="openRanked('matches')">Games</button>
-      <button onclick="openRanked('stats')">Stats</button>
-      <button onclick="openRanked('compare')">Compare</button>
-      <button onclick="openRanked('store')">Store</button>
+      <button class="active" data-page="network" onclick="openNetwork()">Network</button>
+      <button data-page="ranked" onclick="openRanked('overview')">Ranked Bedwars</button>
+      <button data-page="duels" onclick="openDuels('overview')">Duels</button>
+      <button data-page="kitpvp" onclick="openKitPvP('overview')">KitPvP</button>
+      <button data-page="ranked" onclick="openRanked('store')">Store</button>
     </div>
     <a class="discord" href="https://discord.gg/vexorianetwork" target="_blank" rel="noopener">Discord ↗</a>
   </div>
@@ -98,15 +123,21 @@ linear-gradient(110deg,#101722,#0b1017);padding:25px 26px;display:flex;align-ite
     <div class="actions">
       <button class="btn primary" id="copy-button" onclick="copyIP()">Copy Server IP</button>
       <a class="btn" href="https://discord.gg/vexorianetwork" target="_blank">Join Discord ↗</a>
-      <a class="btn" href="https://www.vexorianetwork.xyz/" target="_blank">Follow Socials ↗</a>
+      <a class="btn" href="https://www.vexoriannetwork.club/" target="_blank">Follow Socials ↗</a>
     </div>
-    <div class="ranked-entry">
-      <div>
-        <div class="tag">FEATURED COMPETITIVE MODE</div>
-        <h3>MODERN RANKED BEDWARS</h3>
-        <p>Seasonal competition · Recorded games · Complete player analytics</p>
+    <div class="mode-feature-grid">
+      <div class="ranked-entry mode-entry featured">
+        <div><div class="tag">FEATURED COMPETITIVE MODE</div><h3>MODERN RANKED BEDWARS</h3><p>Seasonal competition · Recorded games · Deep player and matchup analytics</p></div>
+        <button class="btn primary entry-button" onclick="openRanked('overview')">ENTER RANKED →</button>
       </div>
-      <button class="btn primary entry-button" onclick="openRanked('overview')">ENTER RANKED →</button>
+      <div class="ranked-entry mode-entry">
+        <div><div class="tag">COMPETITIVE PRACTICE</div><h3>VEXORIA DUELS</h3><p>Mode leaderboards · Personal records · Recent matches across MultiDuels and Practice</p></div>
+        <button class="btn entry-button" onclick="openDuels('overview')">OPEN DUELS →</button>
+      </div>
+      <div class="ranked-entry mode-entry">
+        <div><div class="tag">PERSISTENT PVP</div><h3>VEXORIA KITPVP</h3><p>Kills · Coins · Experience · Killstreaks · Monthly competition</p></div>
+        <button class="btn entry-button" onclick="openKitPvP('overview')">OPEN KITPVP →</button>
+      </div>
     </div>
   </section>
   <div class="shell network-grid network-grid-3">
@@ -129,7 +160,7 @@ linear-gradient(110deg,#101722,#0b1017);padding:25px 26px;display:flex;align-ite
         <div class="metric"><label>LOCATION</label><strong>Singapore</strong></div>
       </div>
       <div class="ranked-ip-strip">
-        <span>mc.vexorianetwork.club</span>
+        <span>mc.vexoriannetwork.club</span>
         <button class="btn primary" onclick="copyIP()">Copy IP</button>
       </div>
     </div>
@@ -239,15 +270,149 @@ linear-gradient(110deg,#101722,#0b1017);padding:25px 26px;display:flex;align-ite
     </section>
 
     <section id="r-season" class="subpage">
-      <div class="section-head"><div><div class="kicker">BEDWARS ITEM RULESET</div><h2>Season 1 · Stage Unlock Rules</h2><p>Items unlock as the game reaches later competitive stages. Hover an item slot to see its name.</p></div></div>
-      <div class="season-switch">
-        <button class="active">Season 1</button><button>Beta Season · Previous</button>
+      <div class="section-head">
+        <div>
+          <div class="kicker">BEDWARS ITEM RULESET</div>
+          <h2>Season 1 · Stage Unlock Rules</h2>
+          <p>Items unlock as the match reaches later stages. The rules below are cumulative: once an item unlocks, it stays available for the remainder of that game.</p>
+        </div>
       </div>
-      <div class="notice">Diamond Armor team limit: maximum <b>2 per team in 4v4</b> and <b>1 per team in 3v3</b>.</div>
-      <div id="season-rules"></div>
-      <div class="section-head" style="margin-top:48px"><div><div class="kicker">ACTIVE ROTATION</div><h2>Map Pool</h2></div></div>
+
+      <div class="season-switch">
+        <button class="active">Season 1</button>
+        <button>Beta Season · Previous</button>
+      </div>
+
+      <div class="notice"><b>Diamond Armor Limit:</b> maximum <b>2 per team in 4v4 Ranked</b> and <b>1 per team in 3v3 Ranked</b>.</div>
+
+      <div class="stage-rule">
+        <div class="stage-copy"><div class="tag green-tag">ALLOWED ALL GAME</div><h3>Core Bedwars Items</h3><p>These items are available from the beginning of every Ranked game.</p></div>
+        <div class="stage-items"><div class="season-item" title="Axe">
+      <img src="https://raw.githubusercontent.com/Faithful-Pack/Default-Java/1.21.4/assets/minecraft/textures/item/diamond_axe.png" alt="Axe" onerror="this.style.display='none'">
+      <span>Axe</span>
+    </div><div class="season-item" title="Bedbug">
+      <img src="https://raw.githubusercontent.com/Faithful-Pack/Default-Java/1.21.4/assets/minecraft/textures/item/silverfish_spawn_egg.png" alt="Bedbug" onerror="this.style.display='none'">
+      <span>Bedbug</span>
+    </div><div class="season-item" title="Blast Proof Glass">
+      <img src="https://raw.githubusercontent.com/Faithful-Pack/Default-Java/1.21.4/assets/minecraft/textures/block/glass.png" alt="Blast Proof Glass" onerror="this.style.display='none'">
+      <span>Blast Proof Glass</span>
+    </div><div class="season-item" title="Chainmail Armor">
+      <img src="https://raw.githubusercontent.com/Faithful-Pack/Default-Java/1.21.4/assets/minecraft/textures/item/chainmail_chestplate.png" alt="Chainmail Armor" onerror="this.style.display='none'">
+      <span>Chainmail Armor</span>
+    </div><div class="season-item" title="Diamond Armor">
+      <img src="https://raw.githubusercontent.com/Faithful-Pack/Default-Java/1.21.4/assets/minecraft/textures/item/diamond_chestplate.png" alt="Diamond Armor" onerror="this.style.display='none'">
+      <span>Diamond Armor</span>
+    </div><div class="season-item" title="End Stone">
+      <img src="https://raw.githubusercontent.com/Faithful-Pack/Default-Java/1.21.4/assets/minecraft/textures/block/end_stone.png" alt="End Stone" onerror="this.style.display='none'">
+      <span>End Stone</span>
+    </div><div class="season-item" title="Fireball">
+      <img src="https://raw.githubusercontent.com/Faithful-Pack/Default-Java/1.21.4/assets/minecraft/textures/item/fire_charge.png" alt="Fireball" onerror="this.style.display='none'">
+      <span>Fireball</span>
+    </div><div class="season-item" title="Golden Apple">
+      <img src="https://raw.githubusercontent.com/Faithful-Pack/Default-Java/1.21.4/assets/minecraft/textures/item/golden_apple.png" alt="Golden Apple" onerror="this.style.display='none'">
+      <span>Golden Apple</span>
+    </div><div class="season-item" title="Hardened Clay">
+      <img src="https://raw.githubusercontent.com/Faithful-Pack/Default-Java/1.21.4/assets/minecraft/textures/block/terracotta.png" alt="Hardened Clay" onerror="this.style.display='none'">
+      <span>Hardened Clay</span>
+    </div><div class="season-item" title="Iron Armor">
+      <img src="https://raw.githubusercontent.com/Faithful-Pack/Default-Java/1.21.4/assets/minecraft/textures/item/iron_chestplate.png" alt="Iron Armor" onerror="this.style.display='none'">
+      <span>Iron Armor</span>
+    </div><div class="season-item" title="Iron Sword">
+      <img src="https://raw.githubusercontent.com/Faithful-Pack/Default-Java/1.21.4/assets/minecraft/textures/item/iron_sword.png" alt="Iron Sword" onerror="this.style.display='none'">
+      <span>Iron Sword</span>
+    </div><div class="season-item" title="Ladder">
+      <img src="https://raw.githubusercontent.com/Faithful-Pack/Default-Java/1.21.4/assets/minecraft/textures/block/ladder.png" alt="Ladder" onerror="this.style.display='none'">
+      <span>Ladder</span>
+    </div><div class="season-item" title="Oak Wood / Planks">
+      <img src="https://raw.githubusercontent.com/Faithful-Pack/Default-Java/1.21.4/assets/minecraft/textures/block/oak_planks.png" alt="Oak Wood / Planks" onerror="this.style.display='none'">
+      <span>Oak Wood / Planks</span>
+    </div><div class="season-item" title="Pickaxe">
+      <img src="https://raw.githubusercontent.com/Faithful-Pack/Default-Java/1.21.4/assets/minecraft/textures/item/diamond_pickaxe.png" alt="Pickaxe" onerror="this.style.display='none'">
+      <span>Pickaxe</span>
+    </div><div class="season-item" title="Shears">
+      <img src="https://raw.githubusercontent.com/Faithful-Pack/Default-Java/1.21.4/assets/minecraft/textures/item/shears.png" alt="Shears" onerror="this.style.display='none'">
+      <span>Shears</span>
+    </div><div class="season-item" title="Stone Sword">
+      <img src="https://raw.githubusercontent.com/Faithful-Pack/Default-Java/1.21.4/assets/minecraft/textures/item/stone_sword.png" alt="Stone Sword" onerror="this.style.display='none'">
+      <span>Stone Sword</span>
+    </div><div class="season-item" title="Wool">
+      <img src="https://raw.githubusercontent.com/Faithful-Pack/Default-Java/1.21.4/assets/minecraft/textures/block/white_wool.png" alt="Wool" onerror="this.style.display='none'">
+      <span>Wool</span>
+    </div></div>
+      </div>
+
+      <div class="stage-rule">
+        <div class="stage-copy"><div class="tag">DIAMOND II STAGE</div><h3>Magic Milk Unlocks</h3><p>Diamond II adds one new utility item.</p></div>
+        <div class="stage-items"><div class="season-item" title="Magic Milk">
+      <img src="https://raw.githubusercontent.com/Faithful-Pack/Default-Java/1.21.4/assets/minecraft/textures/item/milk_bucket.png" alt="Magic Milk" onerror="this.style.display='none'">
+      <span>Magic Milk</span>
+    </div></div>
+      </div>
+
+      <div class="stage-rule">
+        <div class="stage-copy"><div class="tag">DIAMOND III STAGE</div><h3>Advanced Utility Unlocks</h3><p>Diamond III adds movement utility and TNT.</p></div>
+        <div class="stage-items"><div class="season-item" title="Jump V Potion">
+      <img src="https://raw.githubusercontent.com/Faithful-Pack/Default-Java/1.21.4/assets/minecraft/textures/item/potion.png" alt="Jump V Potion" onerror="this.style.display='none'">
+      <span>Jump V Potion</span>
+    </div><div class="season-item" title="Speed II Potion">
+      <img src="https://raw.githubusercontent.com/Faithful-Pack/Default-Java/1.21.4/assets/minecraft/textures/item/potion.png" alt="Speed II Potion" onerror="this.style.display='none'">
+      <span>Speed II Potion</span>
+    </div><div class="season-item" title="TNT">
+      <img src="https://raw.githubusercontent.com/Faithful-Pack/Default-Java/1.21.4/assets/minecraft/textures/block/tnt_side.png" alt="TNT" onerror="this.style.display='none'">
+      <span>TNT</span>
+    </div></div>
+      </div>
+
+      <div class="stage-rule no-unlock">
+        <div class="stage-copy"><div class="tag">EMERALD II STAGE</div><h3>No Additional Unlocks</h3><p>Diamond III rules remain active. No new items become available at Emerald II.</p></div>
+      </div>
+
+      <div class="stage-rule">
+        <div class="stage-copy"><div class="tag green-tag">EMERALD III STAGE</div><h3>Invisibility Unlocks</h3><p>Emerald III adds Invisibility Potion access.</p></div>
+        <div class="stage-items"><div class="season-item" title="Invisibility Potion">
+      <img src="https://raw.githubusercontent.com/Faithful-Pack/Default-Java/1.21.4/assets/minecraft/textures/item/potion.png" alt="Invisibility Potion" onerror="this.style.display='none'">
+      <span>Invisibility Potion</span>
+    </div></div>
+      </div>
+
+      <div class="stage-rule banned-stage">
+        <div class="stage-copy"><div class="tag red-tag">NEVER ALLOWED</div><h3>Permanent Restrictions</h3><p>These items remain disabled throughout the entire Ranked game.</p></div>
+        <div class="stage-items"><div class="season-item banned" title="Cobweb">
+      <img src="https://raw.githubusercontent.com/Faithful-Pack/Default-Java/1.21.4/assets/minecraft/textures/block/cobweb.png" alt="Cobweb" onerror="this.style.display='none'">
+      <span>Cobweb</span>
+    </div><div class="season-item banned" title="Compact Pop-up Tower">
+      <img src="https://raw.githubusercontent.com/Faithful-Pack/Default-Java/1.21.4/assets/minecraft/textures/item/chest.png" alt="Compact Pop-up Tower" onerror="this.style.display='none'">
+      <span>Compact Pop-up Tower</span>
+    </div><div class="season-item banned" title="Dream Defender">
+      <img src="https://raw.githubusercontent.com/Faithful-Pack/Default-Java/1.21.4/assets/minecraft/textures/item/iron_golem_spawn_egg.png" alt="Dream Defender" onerror="this.style.display='none'">
+      <span>Dream Defender</span>
+    </div><div class="season-item banned" title="Ice Bridge">
+      <img src="https://raw.githubusercontent.com/Faithful-Pack/Default-Java/1.21.4/assets/minecraft/textures/block/ice.png" alt="Ice Bridge" onerror="this.style.display='none'">
+      <span>Ice Bridge</span>
+    </div><div class="season-item banned" title="Obsidian">
+      <img src="https://raw.githubusercontent.com/Faithful-Pack/Default-Java/1.21.4/assets/minecraft/textures/block/obsidian.png" alt="Obsidian" onerror="this.style.display='none'">
+      <span>Obsidian</span>
+    </div><div class="season-item banned" title="Portable Quick Buy">
+      <img src="https://raw.githubusercontent.com/Faithful-Pack/Default-Java/1.21.4/assets/minecraft/textures/item/ender_chest.png" alt="Portable Quick Buy" onerror="this.style.display='none'">
+      <span>Portable Quick Buy</span>
+    </div><div class="season-item banned" title="Sponges">
+      <img src="https://raw.githubusercontent.com/Faithful-Pack/Default-Java/1.21.4/assets/minecraft/textures/block/sponge.png" alt="Sponges" onerror="this.style.display='none'">
+      <span>Sponges</span>
+    </div><div class="season-item banned" title="Water Bucket">
+      <img src="https://raw.githubusercontent.com/Faithful-Pack/Default-Java/1.21.4/assets/minecraft/textures/item/water_bucket.png" alt="Water Bucket" onerror="this.style.display='none'">
+      <span>Water Bucket</span>
+    </div></div>
+      </div>
+
+      <div class="section-head" style="margin-top:50px">
+        <div><div class="kicker">ACTIVE ROTATION</div><h2>Map Pool</h2></div>
+      </div>
       <div class="table-wrap"><table><thead><tr><th>MAP</th><th>STATUS</th></tr></thead><tbody>
-        <tr><td>Lectus</td><td class="winner">Active</td></tr><tr><td>Invasion</td><td class="winner">Active</td></tr><tr><td>Archway</td><td class="winner">Active</td></tr><tr><td>Stonekeep</td><td class="winner">Active</td></tr><tr><td>Extinction</td><td class="winner">Active</td></tr>
+        <tr><td>Lectus</td><td class="winner">Active</td></tr>
+        <tr><td>Invasion</td><td class="winner">Active</td></tr>
+        <tr><td>Archway</td><td class="winner">Active</td></tr>
+        <tr><td>Stonekeep</td><td class="winner">Active</td></tr>
+        <tr><td>Extinction</td><td class="winner">Active</td></tr>
       </tbody></table></div>
     </section>
 
@@ -299,36 +464,117 @@ linear-gradient(110deg,#101722,#0b1017);padding:25px 26px;display:flex;align-ite
     </section>
 
     <section id="r-store" class="subpage">
-      <div class="section-head"><div><div class="kicker">VEXORIA STORE</div><h2>Support the network. Stand out in game.</h2><p>A clean storefront area ready for your payment/store backend.</p></div></div>
-      <div class="store-grid">
-        <div class="product"><div class="tag">NETWORK</div><h3>Ranks</h3><p>Permanent network ranks with cosmetic and quality-of-life benefits.</p><div class="price">Coming Soon</div><button class="btn">View Ranks</button></div>
-        <div class="product"><div class="tag">COSMETIC</div><h3>Cosmetics</h3><p>Visual customization without competitive gameplay advantages.</p><div class="price">Coming Soon</div><button class="btn">Browse</button></div>
-        <div class="product"><div class="tag">SUPPORT</div><h3>Supporter</h3><p>Optional supporter perks for players who want to help Vexoria grow.</p><div class="price">Coming Soon</div><button class="btn">Details</button></div>
+      <div class="store-hero">
+        <div>
+          <div class="kicker">OFFICIAL VEXORIA STORE</div>
+          <h2>Choose a category.</h2>
+          <p>Purchases support Vexoria Network development and server infrastructure.</p>
+        </div>
+        <div class="store-user">
+          <span>MINECRAFT USERNAME</span>
+          <input placeholder="Enter your IGN">
+        </div>
+      </div>
+
+      <div class="store-layout">
+        <aside class="store-sidebar">
+          <button class="active">Home</button>
+          <button>Ranks</button>
+          <button>Rank Upgrades</button>
+          <button>Cosmetics</button>
+          <button>Supporter</button>
+        </aside>
+
+        <div class="store-main">
+          <div class="store-welcome">
+            <div class="tag">VEXORIA NETWORK</div>
+            <h3>Welcome to the Vexoria Store</h3>
+            <p>Select a category to browse available packages. Your purchase helps fund hosting, development and future network updates.</p>
+          </div>
+
+          <div class="store-products">
+            <div class="store-product">
+              <div class="product-icon">V</div>
+              <div><div class="tag">RANKS</div><h3>Network Ranks</h3><p>Permanent rank packages and upgrade paths.</p></div>
+              <button class="btn primary">Browse Ranks</button>
+            </div>
+            <div class="store-product">
+              <div class="product-icon">✦</div>
+              <div><div class="tag">COSMETICS</div><h3>Cosmetic Packages</h3><p>Visual customization with no competitive advantage.</p></div>
+              <button class="btn">Browse</button>
+            </div>
+            <div class="store-product">
+              <div class="product-icon">◆</div>
+              <div><div class="tag">SUPPORT</div><h3>Support Vexoria</h3><p>Optional supporter packages for players who want to help the network grow.</p></div>
+              <button class="btn">View Packages</button>
+            </div>
+          </div>
+        </div>
+
+        <aside class="store-cart">
+          <div class="tag">YOUR BASKET</div>
+          <h3>Basket</h3>
+          <p>No packages in your basket.</p>
+          <div class="cart-total"><span>Total</span><b>—</b></div>
+          <button class="btn primary" style="width:100%" disabled>Checkout</button>
+        </aside>
       </div>
     </section>
   </div>
 </main>
 
-<footer><div class="shell footerline"><span>© 2026 Vexoria Network</span><span>mc.vexorianetwork.club · GLOBAL · JAVA 1.21+</span><span>Not affiliated with Mojang Studios or Microsoft.</span></div></footer>
+
+<main id="duels" class="page"><div class="shell mode-shell">
+<div class="mode-title"><div class="kicker">VEXORIA COMPETITIVE PRACTICE</div><h1>VEXORIA<br><span style="color:var(--blue)">DUELS</span></h1><p>One unified competitive profile across MultiDuels and StrikePractice, with live leaderboards and match history.</p></div>
+<div class="mode-tabs" id="duels-tabs"><button class="active" data-tab="overview" onclick="showDuels('overview')">Overview</button><button data-tab="leaderboard" onclick="showDuels('leaderboard')">Leaderboards</button><button data-tab="stats" onclick="showDuels('stats')">Player Stats</button><button data-tab="matches" onclick="showDuels('matches')">Recent Matches</button></div>
+<section id="d-overview" class="mode-subpage active"><div class="section-head"><div><div class="kicker">DUEL ECOSYSTEM</div><h2>Every mode. One competitive identity.</h2><p>Track your MultiDuels performance alongside StrikePractice activity.</p></div></div><div class="duel-mode-grid">
+<div class="duel-mode-card" onclick="openDuelsLeaderboard('BEDFIGHT')"><div class="tag">MULTIDUELS</div><h3>Bed Fight</h3><p>Wins, kills, streaks and beds broken.</p></div>
+<div class="duel-mode-card" onclick="openDuelsLeaderboard('FIREBALL_FIGHT')"><div class="tag">MULTIDUELS</div><h3>Fireball Fight</h3><p>Fast-paced fireball combat and match records.</p></div>
+<div class="duel-mode-card" onclick="openDuelsLeaderboard('BRIDGE')"><div class="tag">MULTIDUELS</div><h3>The Bridge</h3><p>Wins, kills, streaks and goals.</p></div>
+<div class="duel-mode-card" onclick="openDuelsLeaderboard('SKYFIGHT')"><div class="tag">MULTIDUELS</div><h3>Sky Fight</h3><p>Competitive sky combat performance.</p></div>
+<div class="duel-mode-card" onclick="openDuelsLeaderboard('BATTLERUSH')"><div class="tag">MULTIDUELS</div><h3>Battle Rush</h3><p>Fast rounds with persistent records.</p></div>
+<div class="duel-mode-card" onclick="showDuels('stats')"><div class="tag">STRIKEPRACTICE</div><h3>Practice Profile</h3><p>Global kills, deaths and recorded fight history.</p></div>
+</div></section>
+<section id="d-leaderboard" class="mode-subpage"><div class="section-head"><div><div class="kicker">MODE STANDINGS</div><h2>Duels Leaderboards</h2></div></div><div class="mode-search"><select id="duels-lb-mode"><option value="BEDFIGHT">Bed Fight</option><option value="FIREBALL_FIGHT">Fireball Fight</option><option value="BRIDGE">The Bridge</option><option value="SKYFIGHT">Sky Fight</option><option value="BATTLERUSH">Battle Rush</option></select><select id="duels-lb-stat"><option value="wins">Wins</option><option value="games">Games Played</option><option value="kills">Kills</option><option value="losses">Losses</option><option value="streak">Best Win Streak</option></select><button class="btn primary" onclick="loadDuelsLeaderboard()">Load Leaderboard</button></div><div id="duels-leaderboard-table" class="empty-state">Choose a mode and load its leaderboard.</div></section>
+<section id="d-stats" class="mode-subpage"><div class="section-head"><div><div class="kicker">PLAYER PROFILE</div><h2>Duels Performance</h2></div></div><div class="mode-search"><input id="duels-player-search" placeholder="Minecraft username"><button class="btn primary" onclick="searchDuelsPlayer()">Search Player</button></div><div id="duels-player-output" class="empty-state">Search a player to load their Duels profile.</div></section>
+<section id="d-matches" class="mode-subpage"><div class="section-head"><div><div class="kicker">MATCH ARCHIVE</div><h2>Recent MultiDuels Matches</h2></div></div><div class="mode-search"><select id="duels-match-mode"><option value="">All Modes</option><option value="BEDFIGHT">Bed Fight</option><option value="FIREBALL_FIGHT">Fireball Fight</option><option value="BRIDGE">The Bridge</option><option value="SKYFIGHT">Sky Fight</option><option value="BATTLERUSH">Battle Rush</option></select><input id="duels-match-player" placeholder="Optional player"><button class="btn primary" onclick="loadDuelsMatches()">Load Matches</button></div><div id="duels-match-list" class="empty-state">No matches loaded yet.</div></section>
+</div></main>
+
+<main id="kitpvp" class="page"><div class="shell mode-shell">
+<div class="mode-title"><div class="kicker">VEXORIA PERSISTENT PVP</div><h1>VEXORIA<br><span style="color:var(--blue)">KITPVP</span></h1><p>Persistent progression, kills, coins, experience, streaks and monthly competition.</p></div>
+<div class="mode-tabs" id="kitpvp-tabs"><button class="active" data-tab="overview" onclick="showKitPvP('overview')">Overview</button><button data-tab="leaderboard" onclick="showKitPvP('leaderboard')">Leaderboards</button><button data-tab="stats" onclick="showKitPvP('stats')">Player Stats</button><button data-tab="monthly" onclick="showKitPvP('monthly')">Monthly</button><button data-tab="kills" onclick="showKitPvP('kills')">Recent Kills</button></div>
+<section id="k-overview" class="mode-subpage active"><div class="section-head"><div><div class="kicker">PERSISTENT PROGRESSION</div><h2>Fight. Progress. Climb.</h2><p>KitPvP statistics persist across sessions and feed live website profiles and leaderboards.</p></div></div><div class="stat-grid"><div class="stat-box"><label>PRIMARY LADDER</label><strong>Kills</strong></div><div class="stat-box"><label>ECONOMY</label><strong>Coins</strong></div><div class="stat-box"><label>PROGRESSION</label><strong>Experience</strong></div><div class="stat-box"><label>STREAK LADDER</label><strong>Best Streak</strong></div></div></section>
+<section id="k-leaderboard" class="mode-subpage"><div class="section-head"><div><div class="kicker">KITPVP STANDINGS</div><h2>Global Leaderboards</h2></div></div><div class="mode-search"><select id="kp-lb-stat"><option value="kills">Kills</option><option value="coins">Coins</option><option value="experience">Experience</option><option value="streak">Best Killstreak</option><option value="deaths">Deaths</option></select><button class="btn primary" onclick="loadKitPvPLeaderboard()">Load Leaderboard</button></div><div id="kp-leaderboard-table" class="empty-state">Load a KitPvP leaderboard.</div></section>
+<section id="k-stats" class="mode-subpage"><div class="section-head"><div><div class="kicker">PLAYER PROFILE</div><h2>KitPvP Career</h2></div></div><div class="mode-search"><input id="kp-player-search" placeholder="Minecraft username"><button class="btn primary" onclick="searchKitPvPPlayer()">Search Player</button></div><div id="kp-player-output" class="empty-state">Search a player to view their KitPvP profile.</div></section>
+<section id="k-monthly" class="mode-subpage"><div class="section-head"><div><div class="kicker">MONTHLY RACE</div><h2>Monthly Leaderboard</h2></div></div><div class="mode-search"><select id="kp-month-stat"><option value="kills">Kills</option><option value="coins">Coins</option><option value="experience">Experience</option></select><input id="kp-month" placeholder="YYYY-MM (optional)"><button class="btn primary" onclick="loadKitPvPMonthly()">Load Monthly</button></div><div id="kp-monthly-table" class="empty-state">Load the latest month or choose a month.</div></section>
+<section id="k-kills" class="mode-subpage"><div class="section-head"><div><div class="kicker">COMBAT HISTORY</div><h2>Recent Kills</h2></div></div><div class="mode-search"><input id="kp-kill-player" placeholder="Optional player"><button class="btn primary" onclick="loadKitPvPKills()">Load History</button></div><div id="kp-kill-list" class="empty-state">No kill history loaded.</div></section>
+</div></main>
+
+<footer><div class="shell footerline"><span>© 2026 Vexoria Network</span><span>mc.vexoriannetwork.club · GLOBAL · JAVA 1.21+</span><span>Not affiliated with Mojang Studios or Microsoft.</span></div></footer>
 
 <script>
 const API = {
-  player: username => `/api/player?username=${encodeURIComponent(username)}`,
-  leaderboard: stat => `/api/leaderboard?stat=${encodeURIComponent(stat)}`,
-  matches: q => `/api/matches?q=${encodeURIComponent(q||"")}`,
-  network: `/api/network`
+  rbwPlayer: username => `/api/player?username=${encodeURIComponent(username)}`,
+  rbwLeaderboard: (stat,season='',username='') => `/api/rbw/leaderboard?stat=${encodeURIComponent(stat)}${season?`&season=${encodeURIComponent(season)}`:''}${username?`&username=${encodeURIComponent(username)}`:''}`,
+  rbwMatches: (username='',season='',page=1) => `/api/rbw/matches?page=${page}${username?`&username=${encodeURIComponent(username)}`:''}${season?`&season=${encodeURIComponent(season)}`:''}`,
+  rbwSeasons: `/api/rbw/seasons`,
+  rbwAnalytics: (action,player='',player2='') => `/api/rbw/analytics?action=${encodeURIComponent(action)}${player?`&player=${encodeURIComponent(player)}`:''}${player2?`&player2=${encodeURIComponent(player2)}`:''}`,
+  duelsPlayer: username => `/api/duels/player?username=${encodeURIComponent(username)}`,
+  duelsLeaderboard: (mode,stat) => `/api/duels/leaderboard?mode=${encodeURIComponent(mode)}&stat=${encodeURIComponent(stat)}`,
+  duelsMatches: (mode='',username='',page=1) => `/api/duels/matches?page=${page}${mode?`&mode=${encodeURIComponent(mode)}`:''}${username?`&username=${encodeURIComponent(username)}`:''}`,
+  kpPlayer: username => `/api/kitpvp/player?username=${encodeURIComponent(username)}`,
+  kpLeaderboard: stat => `/api/kitpvp/leaderboard?stat=${encodeURIComponent(stat)}`,
+  kpMonthly: (stat,month='') => `/api/kitpvp/monthly?stat=${encodeURIComponent(stat)}${month?`&month=${encodeURIComponent(month)}`:''}`,
+  kpKills: username => `/api/kitpvp/kills${username?`?username=${encodeURIComponent(username)}`:''}`
 };
 
-function openNetwork(){
-  document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
-  document.getElementById('network').classList.add('active');
-  history.replaceState(null,'','#home'); window.scrollTo(0,0);
-}
-function openRanked(tab='overview'){
-  document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
-  document.getElementById('ranked').classList.add('active');
-  showRanked(tab); window.scrollTo(0,0);
-}
+function setGlobalNav(page){document.querySelectorAll('#global-nav button').forEach(x=>x.classList.toggle('active',x.dataset.page===page))}
+function openNetwork(){document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));document.getElementById('network').classList.add('active');setGlobalNav('network');history.replaceState(null,'','#home');window.scrollTo(0,0)}
+function openRanked(tab='overview'){document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));document.getElementById('ranked').classList.add('active');setGlobalNav('ranked');showRanked(tab);window.scrollTo(0,0)}
+function openDuels(tab='overview'){document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));document.getElementById('duels').classList.add('active');setGlobalNav('duels');showDuels(tab);window.scrollTo(0,0)}
+function openKitPvP(tab='overview'){document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));document.getElementById('kitpvp').classList.add('active');setGlobalNav('kitpvp');showKitPvP(tab);window.scrollTo(0,0)}
+function showDuels(tab){document.querySelectorAll('#duels .mode-subpage').forEach(x=>x.classList.remove('active'));document.querySelectorAll('#duels-tabs button').forEach(x=>x.classList.toggle('active',x.dataset.tab===tab));document.getElementById('d-'+tab)?.classList.add('active');history.replaceState(null,'','#duels-'+tab);if(tab==='leaderboard')loadDuelsLeaderboard();if(tab==='matches')loadDuelsMatches()}
+function showKitPvP(tab){document.querySelectorAll('#kitpvp .mode-subpage').forEach(x=>x.classList.remove('active'));document.querySelectorAll('#kitpvp-tabs button').forEach(x=>x.classList.toggle('active',x.dataset.tab===tab));document.getElementById('k-'+tab)?.classList.add('active');history.replaceState(null,'','#kitpvp-'+tab);if(tab==='leaderboard')loadKitPvPLeaderboard();if(tab==='monthly')loadKitPvPMonthly();if(tab==='kills')loadKitPvPKills()}
 function showRanked(tab){
   document.querySelectorAll('.subpage').forEach(x=>x.classList.remove('active'));
   document.querySelectorAll('#ranked-tabs button').forEach(x=>x.classList.toggle('active',x.dataset.tab===tab));
@@ -352,7 +598,7 @@ function penaltyTab(tab,btn){
 }
 
 async function copyIP(){
-  const ip='mc.vexorianetwork.club';
+  const ip='mc.vexoriannetwork.club';
   try{await navigator.clipboard.writeText(ip);const b=document.getElementById('copy-button');if(b){const t=b.textContent;b.textContent='Copied ✓';setTimeout(()=>b.textContent=t,1300)}}catch{alert('Server IP: '+ip)}
 }
 const ruleText={
@@ -366,38 +612,10 @@ const ruleText={
 function rulePane(btn,key){document.querySelectorAll('.rule-menu button').forEach(x=>x.classList.remove('active'));btn.classList.add('active');document.getElementById('rule-content').innerHTML=ruleText[key]}
 rulePane(document.querySelector('.rule-menu button'),'integrity');
 
-const itemSets=[
- {title:'ALLOWED ALL GAME',note:'ALWAYS AVAILABLE',allowed:['Axe','Bedbug','Blast Proof Glass','Chainmail Armor','Diamond Armor','End Stone','Fireball','Golden Apple','Hardened Clay','Iron Armor','Iron Sword','Ladder','Oak Wood / Planks','Pickaxe','Shears','Stone Sword','Wool'],disabled:[]},
- {title:'DIAMOND II STAGE RULES',note:'NEW UNLOCK',allowed:['Magic Milk'],disabled:[]},
- {title:'DIAMOND III STAGE RULES',note:'NEW UNLOCKS',allowed:['Jump V Potion','Speed II Potion','TNT'],disabled:[]},
- {title:'EMERALD II STAGE RULES',note:'NO ADDITIONAL UNLOCKS',allowed:[],disabled:[]},
- {title:'EMERALD III STAGE RULES',note:'NEW UNLOCK',allowed:['Invisibility Potion'],disabled:[]},
- {title:'NEVER ALLOWED',note:'BANNED ALL GAME',allowed:[],disabled:['Cobweb','Compact Pop-up Tower','Dream Defender','Ice Bridge','Obsidian','Portable Quick Buy','Sponges','Water Bucket']}
-];
-const iconMap={'Axe':'diamond_axe','Bedbug':'silverfish_spawn_egg','Blast Proof Glass':'glass','Chainmail Armor':'chainmail_chestplate','Diamond Armor':'diamond_chestplate','End Stone':'end_stone','Fireball':'fire_charge','Golden Apple':'golden_apple','Hardened Clay':'terracotta','Iron Armor':'iron_chestplate','Iron Sword':'iron_sword','Ladder':'ladder','Oak Wood / Planks':'oak_planks','Pickaxe':'diamond_pickaxe','Shears':'shears','Stone Sword':'stone_sword','Wool':'white_wool','Cobweb':'cobweb','Compact Pop-up Tower':'chest','Dream Defender':'iron_golem_spawn_egg','Ice Bridge':'ice','Invisibility Potion':'potion','Jump V Potion':'potion','Magic Milk':'milk_bucket','Obsidian':'obsidian','Portable Quick Buy':'ender_chest','Speed II Potion':'potion','Sponges':'sponge','TNT':'tnt','Water Bucket':'water_bucket'};
-function itemIcon(name){
-  const file=iconMap[name]||'barrier';
-  const src=`https://raw.githubusercontent.com/PrismarineJS/minecraft-assets/master/data/1.21.4/items/${file}.png`;
-  return `<div class="item" data-name="${name}"><img loading="lazy" src="${src}" onerror="this.style.display='none';this.parentElement.textContent='◆'"></div>`;
-}
-document.getElementById('season-rules').innerHTML=itemSets.map(s=>{
-  const isNever=s.title==='NEVER ALLOWED';
-  const items=(isNever?s.disabled:s.allowed);
-  const special=s.title==='EMERALD II STAGE RULES'
-    ? `<div class="notice">No additional item unlocks. Diamond III rules continue to apply.</div>`
-    : '';
-  return `<div class="rule-band">
-    <div class="rule-band-top">
-      <div><div class="tag">${s.note}</div><h3>${s.title}</h3></div>
-      <span class="tag">${items.length} ${isNever?'BANNED':'ITEMS'}</span>
-    </div>
-    ${special}
-    <div class="item-grid">${items.map(itemIcon).join('')}</div>
-  </div>`;
-}).join('');
+
 
 async function getPlayer(name){
-  const r=await fetch(API.player(name)); const d=await r.json();
+  const r=await fetch(API.rbwPlayer(name)); const d=await r.json();
   if(!r.ok) throw new Error(d.error||'Player not found'); return d;
 }
 async function searchPlayer(){
@@ -417,20 +635,18 @@ async function searchPlayer(){
   }catch(e){alert(e.message)}
 }
 async function comparePlayers(){
-  const a=document.getElementById('compare-a').value.trim(),b=document.getElementById('compare-b').value.trim();
-  try{
-    const [x,y]=await Promise.all([getPlayer(a),getPlayer(b)]);
-    const rows=[['ELO',x.elo,y.elo],['Peak ELO',x.peakElo,y.peakElo],['Wins',x.wins,y.wins],['Losses',x.losses,y.losses],['K/D',x.kd,y.kd],['Beds',x.beds,y.beds],['MVPs',x.mvps,y.mvps]];
-    document.getElementById('compare-output').className='compare-result';
-    document.getElementById('compare-output').innerHTML=`<div class="crow"><div><b>${x.username}</b></div><div>VS</div><div><b>${y.username}</b></div></div>`+rows.map(r=>`<div class="crow"><div>${r[1]??0}</div><div>${r[0]}</div><div>${r[2]??0}</div></div>`).join('');
-  }catch(e){alert(e.message)}
+ const a=document.getElementById('compare-a').value.trim(),b=document.getElementById('compare-b').value.trim();
+ try{const [x,y,ar]=await Promise.all([getPlayer(a),getPlayer(b),fetch(API.rbwAnalytics('compare',a,b)).then(r=>r.json())]);
+ const rows=[['ELO',x.elo,y.elo],['Peak ELO',x.peakElo,y.peakElo],['Wins',x.wins,y.wins],['Losses',x.losses,y.losses],['Kills',x.kills,y.kills],['Beds',x.beds,y.beds],['MVPs',x.mvps,y.mvps]];
+ document.getElementById('compare-output').className='compare-result';document.getElementById('compare-output').innerHTML=`<div class="crow"><div><b>${x.username}</b></div><div>VS</div><div><b>${y.username}</b></div></div>`+rows.map(r=>`<div class="crow"><div>${r[1]??0}</div><div>${r[0]}</div><div>${r[2]??0}</div></div>`).join('')+`<div class="crow"><div>${ar.totalMeetings??0}</div><div>Recorded Meetings</div><div>${ar.opponentRecord?.games??0}</div></div>`;
+ }catch(e){alert(e.message)}
 }
 function comparisonMode(mode,btn){document.querySelectorAll('#r-compare .season-switch button').forEach(x=>x.classList.remove('active'));btn.classList.add('active');document.getElementById('solo-compare').classList.toggle('hidden',mode!=='solo');document.getElementById('team-compare').classList.toggle('hidden',mode!=='team')}
 function compareTeams(){alert('Team comparison UI is ready. Connect /api/compare/teams after the updated game_players/game_teams database is deployed.')}
 async function loadLeaderboard(){
   const holder=document.getElementById('leaderboard-table');
   try{
-    const r=await fetch(API.leaderboard(document.getElementById('lb-stat').value)); if(!r.ok) return;
+    const r=await fetch(API.rbwLeaderboard(document.getElementById('lb-stat').value)); if(!r.ok) return;
     const d=await r.json(), rows=Array.isArray(d)?d:(d.players||d.results||[]);
     if(!rows.length)return;
     holder.className='table-wrap'; holder.innerHTML=`<table><thead><tr><th>#</th><th>PLAYER</th><th>ELO</th><th>GAMES</th><th>WINS</th><th>K/D</th><th>BEDS</th></tr></thead><tbody>${rows.map((p,i)=>`<tr data-player="${(p.username||p.ign||'').toLowerCase()}"><td class="pos">#${p.position||i+1}</td><td class="playercell"><img class="head" src="https://mc-heads.net/avatar/${encodeURIComponent(p.username||p.ign||'Steve')}/30">${p.username||p.ign||'Unknown'}</td><td>${p.elo||0}</td><td>${p.games||0}</td><td>${p.wins||0}</td><td>${p.kd||0}</td><td>${p.beds||0}</td></tr>`).join('')}</tbody></table>`;
@@ -438,13 +654,22 @@ async function loadLeaderboard(){
 }
 function locatePlayer(){const n=document.getElementById('lb-user').value.trim().toLowerCase();const row=document.querySelector(`[data-player="${CSS.escape(n)}"]`);if(row){row.scrollIntoView({behavior:'smooth',block:'center'});row.style.outline='1px solid #4287f5'}else alert('Player is not loaded on this leaderboard page yet.')}
 async function loadMatches(){
-  const q=document.getElementById('match-search')?.value||'', holder=document.getElementById('match-list');
-  try{
-    const r=await fetch(API.matches(q));if(!r.ok)return;
-    const d=await r.json(), games=Array.isArray(d)?d:(d.games||d.results||[]);if(!games.length)return;
-    holder.innerHTML=games.slice(0,10).map(g=>`<div class="match"><div class="matchtop"><span>GAME #${g.id||g.gameId||'—'}</span><span>${g.map||'UNKNOWN MAP'} · ${g.status||'COMPLETED'}</span></div><div class="teams"><div>${g.team1||'Team 1'}</div><div class="score">${g.score||'—'}</div><div class="right">${g.team2||'Team 2'}</div></div></div>`).join('');
-  }catch{}
+  const q=document.getElementById('match-search')?.value||'',holder=document.getElementById('match-list');
+  try{const r=await fetch(API.rbwMatches(q));if(!r.ok)return;const d=await r.json(),games=d.matches||[];
+  if(!games.length){holder.innerHTML='<div class="empty-state">No scored Ranked games found yet.</div>';return}
+  holder.innerHTML=games.slice(0,10).map(g=>`<div class="match-card"><div class="match-card-top"><span>GAME #${g.gameNumber??'—'} · ${g.queue?.name||'Ranked'}</span><span>${g.map?.name||'Unknown Map'}</span></div>${(g.teams||[]).map(t=>`<div class="match-team ${t.winner?'winner':''}"><b>Team ${t.team}${t.winner?' · WINNER':''}</b><span>${(t.players||[]).map(p=>`${p.username} (${p.kills}K${p.beds?` · ${p.beds}B`:''}${p.mvp?' · MVP':''})`).join(' · ')}</span></div>`).join('')}</div>`).join('');
+  }catch{holder.innerHTML='<div class="empty-state">Unable to load Ranked matches.</div>'}
 }
+
+function openDuelsLeaderboard(mode){openDuels('leaderboard');document.getElementById('duels-lb-mode').value=mode;loadDuelsLeaderboard()}
+async function loadDuelsLeaderboard(){const h=document.getElementById('duels-leaderboard-table'),m=document.getElementById('duels-lb-mode').value,s=document.getElementById('duels-lb-stat').value;try{const r=await fetch(API.duelsLeaderboard(m,s)),d=await r.json();if(!r.ok)throw 0;const a=d.players||[];if(!a.length){h.className='empty-state';h.textContent='No recorded players for this mode yet.';return}h.className='table-wrap';h.innerHTML=`<table><thead><tr><th>#</th><th>PLAYER</th><th>GAMES</th><th>WINS</th><th>LOSSES</th><th>WIN RATE</th><th>KILLS</th><th>BEST WS</th></tr></thead><tbody>${a.map(p=>`<tr><td class="pos">#${p.position}</td><td class="playercell"><img class="head" src="https://mc-heads.net/avatar/${encodeURIComponent(p.username)}/30">${p.username}</td><td>${p.gamesPlayed}</td><td>${p.wins}</td><td>${p.losses}</td><td>${p.winRate}%</td><td>${p.kills}</td><td>${p.bestWinStreak}</td></tr>`).join('')}</tbody></table>`}catch{h.className='empty-state';h.textContent='Unable to load Duels leaderboard.'}}
+async function searchDuelsPlayer(){const h=document.getElementById('duels-player-output'),n=document.getElementById('duels-player-search').value.trim();if(!n)return;try{const r=await fetch(API.duelsPlayer(n)),d=await r.json();if(!r.ok)throw new Error(d.error);const a=d.multiDuels||[];h.className='result-card';h.innerHTML=`<div class="result-head"><img src="https://mc-heads.net/avatar/${encodeURIComponent(d.username)}/58"><div><div class="tag">DUELS PROFILE</div><h2>${d.username}</h2></div></div>${d.strikePractice?`<div class="stat-grid"><div class="stat-box"><label>PRACTICE KILLS</label><strong>${d.strikePractice.kills}</strong></div><div class="stat-box"><label>PRACTICE DEATHS</label><strong>${d.strikePractice.deaths}</strong></div></div>`:''}<div class="table-wrap" style="margin-top:14px"><table><thead><tr><th>MODE</th><th>GAMES</th><th>WINS</th><th>LOSSES</th><th>WIN RATE</th><th>KILLS</th><th>BEST WS</th></tr></thead><tbody>${a.map(m=>`<tr><td>${m.mode}</td><td>${m.games}</td><td>${m.wins}</td><td>${m.losses}</td><td>${m.winRate}%</td><td>${m.kills}</td><td>${m.bestWinStreak}</td></tr>`).join('')||'<tr><td colspan="7">No MultiDuels matches recorded yet.</td></tr>'}</tbody></table></div>`}catch(e){h.className='empty-state';h.textContent=e.message||'Player not found.'}}
+async function loadDuelsMatches(){const h=document.getElementById('duels-match-list'),m=document.getElementById('duels-match-mode').value,u=document.getElementById('duels-match-player').value.trim();try{const r=await fetch(API.duelsMatches(m,u)),d=await r.json();if(!r.ok)throw 0;if(!(d.matches||[]).length){h.className='empty-state';h.textContent='No recorded matches found.';return}h.className='';h.innerHTML=d.matches.map(x=>`<div class="match-card"><div class="match-card-top"><span>${x.mode} · ${x.arena||'Arena'}</span><span>Match #${x.id}</span></div>${(x.players||[]).map(p=>`<div class="match-team ${p.winner?'winner':''}"><b>${p.winner?'WIN':'LOSS'} · ${p.username}</b><span>${p.kills} kills</span></div>`).join('')}</div>`).join('')}catch{h.className='empty-state';h.textContent='Unable to load Duels matches.'}}
+async function searchKitPvPPlayer(){const h=document.getElementById('kp-player-output'),n=document.getElementById('kp-player-search').value.trim();if(!n)return;try{const r=await fetch(API.kpPlayer(n)),p=await r.json();if(!r.ok)throw new Error(p.error);h.className='result-card';h.innerHTML=`<div class="result-head"><img src="https://mc-heads.net/avatar/${encodeURIComponent(p.username)}/58"><div><div class="tag">KITPVP PROFILE</div><h2>${p.username}</h2><p>${p.selectedKit?`Selected Kit · ${p.selectedKit}`:'No selected kit recorded'}</p></div></div><div class="stat-grid"><div class="stat-box"><label>KILLS</label><strong>${p.kills}</strong></div><div class="stat-box"><label>DEATHS</label><strong>${p.deaths}</strong></div><div class="stat-box"><label>COINS</label><strong>${p.coins}</strong></div><div class="stat-box"><label>EXPERIENCE</label><strong>${p.experience}</strong></div><div class="stat-box"><label>CURRENT STREAK</label><strong>${p.currentKillstreak}</strong></div><div class="stat-box"><label>BEST STREAK</label><strong>${p.bestKillstreak}</strong></div><div class="stat-box"><label>RANK INDEX</label><strong>${p.rankIndex}</strong></div><div class="stat-box"><label>PROJECTILE HITS</label><strong>${p.projectileHits}</strong></div></div>`}catch(e){h.className='empty-state';h.textContent=e.message||'Player not found.'}}
+async function loadKitPvPLeaderboard(){const h=document.getElementById('kp-leaderboard-table'),s=document.getElementById('kp-lb-stat').value;try{const r=await fetch(API.kpLeaderboard(s)),d=await r.json();if(!r.ok)throw 0;const a=d.players||[];if(!a.length){h.className='empty-state';h.textContent='No KitPvP leaderboard data yet.';return}h.className='table-wrap';h.innerHTML=`<table><thead><tr><th>#</th><th>PLAYER</th><th>KILLS</th><th>DEATHS</th><th>COINS</th><th>XP</th><th>BEST STREAK</th></tr></thead><tbody>${a.map(p=>`<tr><td class="pos">#${p.position}</td><td class="playercell"><img class="head" src="https://mc-heads.net/avatar/${encodeURIComponent(p.username)}/30">${p.username}</td><td>${p.kills}</td><td>${p.deaths}</td><td>${p.coins}</td><td>${p.experience}</td><td>${p.bestKillstreak}</td></tr>`).join('')}</tbody></table>`}catch{h.className='empty-state';h.textContent='Unable to load KitPvP leaderboard.'}}
+async function loadKitPvPMonthly(){const h=document.getElementById('kp-monthly-table'),s=document.getElementById('kp-month-stat').value,m=document.getElementById('kp-month').value.trim();try{const r=await fetch(API.kpMonthly(s,m)),d=await r.json();if(!r.ok)throw 0;const a=d.players||[];if(!a.length){h.className='empty-state';h.textContent='No monthly data found.';return}h.className='table-wrap';h.innerHTML=`<table><thead><tr><th>#</th><th>PLAYER</th><th>KILLS</th><th>COINS</th><th>EXPERIENCE</th></tr></thead><tbody>${a.map(p=>`<tr><td class="pos">#${p.position}</td><td>${p.username}</td><td>${p.kills}</td><td>${p.coins}</td><td>${p.experience}</td></tr>`).join('')}</tbody></table>`}catch{h.className='empty-state';h.textContent='Unable to load monthly stats.'}}
+async function loadKitPvPKills(){const h=document.getElementById('kp-kill-list'),u=document.getElementById('kp-kill-player').value.trim();try{const r=await fetch(API.kpKills(u)),d=await r.json();if(!r.ok)throw 0;if(!(d.kills||[]).length){h.className='empty-state';h.textContent='No kill history found.';return}h.className='';h.innerHTML=d.kills.map(k=>`<div class="match-card"><div class="match-card-top"><span>${k.kit||'KitPvP'}</span><span>${k.timestamp||''}</span></div><div class="match-team winner"><b>${k.killer.username}</b><span>eliminated ${k.victim.username}</span></div></div>`).join('')}catch{h.className='empty-state';h.textContent='Unable to load kill history.'}}
+
 async function loadNetwork(){
   try{
     const r=await fetch(API.network);if(!r.ok)return;const d=await r.json();
@@ -454,7 +679,7 @@ async function loadNetwork(){
     document.getElementById('played-count').textContent=d.playersPlayed??d.uniquePlayersPlayed??d.registeredPlayers??'—';
   }catch{}
 }
-(function boot(){const h=location.hash.replace('#','');if(h.startsWith('ranked-'))openRanked(h.slice(7));else openNetwork();loadNetwork()})();
+(function boot(){const h=location.hash.replace('#','');if(h.startsWith('ranked-'))openRanked(h.slice(7));else if(h.startsWith('duels-'))openDuels(h.slice(6));else if(h.startsWith('kitpvp-'))openKitPvP(h.slice(7));else openNetwork();loadNetwork()})();
 </script>
 </body>
 </html>
