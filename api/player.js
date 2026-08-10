@@ -48,7 +48,7 @@ module.exports = async function handler(req, res) {
                 level,
                 xp,
                 minecraftUUID
-            FROM players
+            FROM rbw_players
             WHERE LOWER(ign) = LOWER(?)
             LIMIT 1
             `,
@@ -65,21 +65,21 @@ module.exports = async function handler(req, res) {
 
         const kd =
             Number(p.deaths) === 0
-                ? Number(p.kills)
+                ? Number(p.kills || 0)
                 : Number(
                     (
-                        Number(p.kills) /
-                        Number(p.deaths)
+                        Number(p.kills || 0) /
+                        Number(p.deaths || 0)
                     ).toFixed(2)
                 );
 
         const wl =
             Number(p.losses) === 0
-                ? Number(p.wins)
+                ? Number(p.wins || 0)
                 : Number(
                     (
-                        Number(p.wins) /
-                        Number(p.losses)
+                        Number(p.wins || 0) /
+                        Number(p.losses || 0)
                     ).toFixed(2)
                 );
 
@@ -112,11 +112,10 @@ module.exports = async function handler(req, res) {
 
     } catch (error) {
 
-        console.error("Player API error:", error);
+        console.error("RBW Player API error:", error);
 
         return res.status(500).json({
             error: "Unable to load player"
         });
-
     }
 };
