@@ -117,7 +117,7 @@ tbody tr:hover{background:#0f141d}
 .archive-metrics{display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:var(--line);border:1px solid var(--line);margin-bottom:24px}.archive-metrics>div{background:#0b0f15;padding:15px}.archive-metrics label{font-size:9px;color:#6e798b;letter-spacing:.11em}.archive-metrics strong{display:block;margin-top:6px}
 .match{border:1px solid var(--line);background:#0a0e13;padding:18px;margin-bottom:10px}.match-top{display:flex;justify-content:space-between;color:#7b8798;font-size:11px;margin-bottom:11px}.teamrow{display:grid;grid-template-columns:1fr auto;gap:12px;border-top:1px solid #171d26;padding:10px 0}.teamrow.win{color:#a0e2ae}
 .rule-tabs{display:flex;justify-content:center;gap:6px;flex-wrap:wrap;margin:20px 0 28px}.rule-tabs button{height:40px;border:1px solid #2b3545;background:#0b1017;color:#8490a2;padding:0 13px;font-size:10px;font-weight:900}.rule-tabs button.active{background:var(--blue);border-color:var(--blue);color:#fff}
-.rule-page{display:none}.rule-page.active{display:block}.season-card{text-align:center;border:1px solid var(--line);background:#0a0e13;padding:30px}.season-card h2{font-size:46px;margin:8px 0}.item-group{margin:28px 0}.item-group h3{text-align:center;font-size:11px;letter-spacing:.18em;text-transform:uppercase}.item-group .desc{text-align:center;color:var(--muted);margin-bottom:12px}.items{display:grid;grid-template-columns:repeat(auto-fill,minmax(84px,1fr));gap:8px}.item{height:86px;border:1px solid #2c3545;background:#0b1016;display:grid;place-items:center;text-align:center;font-size:9px}.item b{display:block;font-size:24px}
+.rule-page{display:none}.rule-page.active{display:block}.season-card{text-align:center;border:1px solid var(--line);background:#0a0e13;padding:30px}.season-card h2{font-size:46px;margin:8px 0}.item-group{margin:28px 0}.item-group h3{text-align:center;font-size:11px;letter-spacing:.18em;text-transform:uppercase}.item-group .desc{text-align:center;color:var(--muted);margin-bottom:12px}.items{display:grid;grid-template-columns:repeat(auto-fill,minmax(84px,1fr));gap:8px}.item{height:86px;border:1px solid #2c3545;background:#0b1016;display:grid;place-items:center;text-align:center;font-size:9px}.item b{display:block;font-size:24px}.item img{width:32px;height:32px;image-rendering:pixelated;display:block;margin:0 auto 6px}
 .minemen{padding:54px 0}.minihead{display:flex;justify-content:space-between;align-items:center;gap:28px;margin-bottom:26px}.minihead h1{font-size:44px;letter-spacing:-.05em;margin:0}.mini-search{display:flex;gap:8px;max-width:360px;width:100%}
 .category-tabs{display:flex;gap:22px;border-bottom:1px solid var(--line);margin-bottom:18px}.category-tabs button{height:42px;border:0;background:transparent;color:#7f8999;font-size:11px;font-weight:900;border-bottom:2px solid transparent}.category-tabs button.active{color:#fff;border-bottom-color:var(--blue)}
 .mode-pills{display:flex;gap:7px;overflow:auto;padding-bottom:12px}.mode-pills button{height:37px;border:1px solid #293243;background:#0c1117;color:#8994a5;padding:0 12px;font-size:10px;font-weight:900;white-space:nowrap}.mode-pills button.active{background:#172235;border-color:#36557e;color:#fff}
@@ -294,10 +294,27 @@ async function loadPlayer(name){
  <div class="panel" style="margin-top:12px"><div class="kicker">QUEUE PERFORMANCE</div><h3>By queue</h3>${(qp.queues||[]).slice(0,8).map(z=>row(z.queue,`${z.games} games · ${pct(z.winRate)} · ${z.eloChange>=0?'+':''}${z.eloChange} ELO`)).join('')||'<div class="muted">No queue data yet.</div>'}</div><div style="margin-top:12px">${matchesHTML(m.matches||[],6)}</div>`}catch(e){out.className='empty';out.textContent=e.message}
 }
 
-function renderRankings(){
- active('rbw');app().innerHTML=rbwNav('rankings')+`<section class="section"><div class="wrap"><div class="pagehead"><div class="kicker">GLOBAL LEADERBOARDS</div><h1>Global Leaderboards</h1><p>Top Ranked BedWars players on Vexoria competing for seasonal placement.</p></div><div class="controls"><div class="field"><label>RANK BY</label><select id="lbst" class="select" onchange="loadRankings()"><option value="elo">ELO</option><option value="peakelo">Peak ELO</option><option value="wins">Wins</option><option value="kills">Kills</option><option value="finalkills">Final Kills</option><option value="beds">Beds</option><option value="mvps">MVPs</option><option value="beststreak">Best Streak</option></select></div><div class="field"><label>SEARCH PLAYER</label><input id="lbu" class="input" placeholder="Search IGN…"></div><button class="btn primary" onclick="openLB()">Update</button></div><div id="lbout" class="empty">Loading leaderboard…</div></div></section>`;setTimeout(loadRankings,0)
+const RBW_LB_STATS={
+ elo:{label:'ELO',field:'elo'},
+ peakelo:{label:'PEAK ELO',field:'peakElo'},
+ wins:{label:'WINS',field:'wins'},
+ kills:{label:'KILLS',field:'kills'},
+ finalkills:{label:'FINAL KILLS',field:'finalKills'},
+ beds:{label:'BEDS',field:'beds'},
+ mvps:{label:'MVPS',field:'mvps'},
+ beststreak:{label:'BEST WIN STREAK',field:'highestWinStreak'}
 }
-async function loadRankings(){const out=$('#lbout');try{const d=await get(API.rbwLeaderboard($('#lbst')?.value||'elo')),rows=d.players||[];out.className='board';out.innerHTML=`<table><thead><tr><th>#</th><th></th><th>PLAYER</th><th>ELO</th><th>WINS</th><th>WIN RATE</th></tr></thead><tbody>${rows.map(x=>`<tr><td class="rank">#${x.position}</td><td><img class="head" src="${head(x.username)}"></td><td><div class="pcell" onclick="openRBW('${esc(x.username)}')">${esc(x.username)}</div></td><td>${n(x.elo)}</td><td>${n(x.wins)}</td><td>${pct(x.winRate)}</td></tr>`).join('')}</tbody></table>`}catch(e){out.className='empty';out.textContent=e.message}}
+function renderRankings(){
+ active('rbw');app().innerHTML=rbwNav('rankings')+`<section class="section"><div class="wrap"><div class="pagehead"><div class="kicker">GLOBAL LEADERBOARDS</div><h1>Global Leaderboards</h1><p>Top Ranked BedWars players on Vexoria competing for seasonal placement.</p></div><div class="controls"><div class="field"><label>RANK BY</label><select id="lbst" class="select" onchange="loadRankings()"><option value="elo">ELO</option><option value="peakelo">Peak ELO</option><option value="wins">Wins</option><option value="kills">Kills</option><option value="finalkills">Final Kills</option><option value="beds">Beds</option><option value="mvps">MVPs</option><option value="beststreak">Best Win Streak</option></select></div><div class="field"><label>SEARCH PLAYER</label><input id="lbu" class="input" placeholder="Search IGN…"></div><button class="btn primary" onclick="openLB()">Update</button></div><div id="lbout" class="empty">Loading leaderboard…</div></div></section>`;setTimeout(loadRankings,0)
+}
+async function loadRankings(){
+ const out=$('#lbout'),key=$('#lbst')?.value||'elo',meta=RBW_LB_STATS[key]||RBW_LB_STATS.elo;
+ try{
+   const d=await get(API.rbwLeaderboard(key)),rows=d.players||[];
+   out.className='board';
+   out.innerHTML=`<table><thead><tr><th>#</th><th></th><th>PLAYER</th><th>${meta.label}</th></tr></thead><tbody>${rows.map(x=>`<tr><td class="rank">#${x.position}</td><td><img class="head" src="${head(x.username)}"></td><td><div class="pcell" onclick="openRBW('${esc(x.username)}')">${esc(x.username)}</div></td><td><strong>${n(x[meta.field]||0)}</strong></td></tr>`).join('')}</tbody></table>`
+ }catch(e){out.className='empty';out.textContent=e.message}
+}
 function openLB(){const u=$('#lbu').value.trim();if(u)openRBW(u)}
 function openRBW(u){go('#rbw-stats');setTimeout(()=>{if($('#rq')){$('#rq').value=u;loadPlayer(u)}},70)}
 
@@ -317,24 +334,118 @@ function matchesHTML(ms,limit){if(!ms.length)return '<div class="empty">No score
 
 function renderRules(){active('rbw');app().innerHTML=rbwNav('rules')+`<section class="section"><div class="wrap"><div class="pagehead"><div class="kicker">RANKED RULEBOOK</div><h1>Ranked Rules</h1><p>Vexoria's own season, gameplay and screenshare rules.</p></div><div class="rule-tabs"><button class="active" onclick="rule('season',this)">SEASON RULES</button><button onclick="rule('gameplay',this)">GAMEPLAY</button><button onclick="rule('screenshare',this)">SCREENSHARE</button></div><div id="rule-season" class="rule-page active">${seasonRules()}</div><div id="rule-gameplay" class="rule-page">${gameplayRules()}</div><div id="rule-screenshare" class="rule-page">${screenshareRules()}</div></div></section>`}
 function rule(id,b){document.querySelectorAll('.rule-page').forEach(x=>x.classList.remove('active'));$('#rule-'+id).classList.add('active');b.parentElement.querySelectorAll('button').forEach(x=>x.classList.toggle('active',x===b))}
-function items(title,arr,desc){return `<div class="item-group"><h3>${title}</h3><div class="desc">${desc}</div>${arr.length?`<div class="items">${arr.map(([i,n])=>`<div class="item"><div><b>${i}</b>${n}</div></div>`).join('')}</div>`:''}</div>`}
-function seasonRules(){return `<div class="season-card"><div class="kicker">RULE SEASON</div><h2>Season 1</h2><div class="muted">Modern Ranked BedWars Ruleset</div></div>${items('ALWAYS',[['⬜','Wool'],['🟨','End Stone'],['🪵','Wood'],['🪜','Ladder'],['🗡️','Iron Sword'],['⚔️','Stone Sword'],['🔥','Fireball'],['🍎','Golden Apple'],['🪓','Axe'],['⛏️','Pickaxe'],['✂️','Shears'],['🥚','Bedbug'],['⬜','Glass'],['🥾','Diamond Armor'],['👢','Chain Armor'],['🟫','Clay']],'Always available during the game.')}${items('DIAMOND II',[['🥛','Magic Milk']],'Unlocked at Diamond II.')}${items('DIAMOND III',[['🧪','Jump V'],['🧪','Speed II'],['🧨','TNT']],'Unlocked at Diamond III.')}${items('EMERALD II',[],'No additional item unlocks. Diamond III rules continue.')}${items('EMERALD III',[['🧪','Invisibility']],'Unlocked at Emerald III.')}${items('NEVER ALLOWED',[['🕸️','Cobweb'],['🗼','Popup Tower'],['🐺','Dream Defender'],['🧊','Ice Bridge'],['⬛','Obsidian'],['🛒','Portable Buy'],['🧽','Sponge'],['🪣','Water']],'Disabled for the entire match.')}`}
+function mcTex(type,name){return `https://mcasset.cloud/1.21.1/assets/minecraft/textures/${type}/${name}.png`}
+function items(title,arr,desc){return `<div class="item-group"><h3>${title}</h3><div class="desc">${desc}</div>${arr.length?`<div class="items">${arr.map(([type,id,n])=>`<div class="item"><div><img src="${mcTex(type,id)}" alt="${esc(n)}"><span>${esc(n)}</span></div></div>`).join('')}</div>`:''}</div>`}
+function seasonRules(){return `<div class="season-card"><div class="kicker">RULE SEASON</div><h2>Season 1</h2><div class="muted">Modern Ranked BedWars Ruleset</div></div>
+${items('ALWAYS',[
+['block','white_wool','Wool'],
+['block','end_stone','End Stone'],
+['block','terracotta','Hardened Clay'],
+['block','ladder','Ladder'],
+['block','oak_planks','Oak Wood'],
+['block','glass','Blast Proof Glass'],
+['item','iron_sword','Iron Sword'],
+['item','stone_sword','Stone Sword'],
+['item','chainmail_boots','Chainmail Armor'],
+['item','diamond_boots','Diamond Armor'],
+['item','iron_axe','Axe'],
+['item','iron_pickaxe','Pickaxe'],
+['item','shears','Shears'],
+['item','fire_charge','Fireball'],
+['item','golden_apple','Golden Apple'],
+['item','snowball','Bedbug']
+],'Always available during the game.')}
+${items('DIAMOND II',[
+['item','milk_bucket','Magic Milk']
+],'Unlocked at Diamond II.')}
+${items('DIAMOND III',[
+['item','potion','Jump V'],
+['item','potion','Speed II'],
+['block','tnt_side','TNT']
+],'Unlocked at Diamond III.')}
+${items('EMERALD II',[],'No additional item unlocks. Diamond III rules continue.')}
+${items('EMERALD III',[
+['item','potion','Invisibility']
+],'Unlocked at Emerald III.')}
+${items('NEVER ALLOWED',[
+['item','string','Cobweb'],
+['item','brick','Compact Pop-up Tower'],
+['item','spawn_egg','Dream Defender'],
+['item','packed_ice','Ice Bridge'],
+['block','obsidian','Obsidian'],
+['item','chest_minecart','Portable Quick Buy'],
+['block','sponge','Sponge'],
+['item','water_bucket','Water Bucket']
+],'Disabled for the entire match.')}`}
 function rulesTable(rows){return `<div class="board"><table><thead><tr><th>RULE</th><th>1ST</th><th>2ND</th><th>3RD</th><th>4TH</th><th>5TH</th><th>6TH</th></tr></thead><tbody>${rows.map(x=>`<tr><td style="min-width:300px"><strong>${x[0]}</strong><div class="muted" style="margin-top:4px">${x[1]}</div></td>${x.slice(2).map(v=>`<td>${v}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`}
 function gameplayRules(){return rulesTable([['Unfair Gameplay','Stat manipulation, win trading, intentional throwing, or behavior designed to misrepresent true performance.','Warning','1-Day','3-Day','7-Day','14-Day','Permanent'],['Unauthorized Modifications','Running mods or clients outside the allowed modifications policy.','Warning','1-Day','3-Day','7-Day','14-Day','Permanent'],['Unfair Gameplay Methods','Teaming with opponents or exploiting edge-case methods that undermine fair competition.','Warning','1-Day','3-Day','7-Day','14-Day','Permanent'],['Exploiting Bugs / Systems','Knowingly using a bug, glitch, or unintended interaction for advantage.','Warning','1-Day','3-Day','7-Day','14-Day','Permanent'],['Unfair Progression Assistance','Boosting, carrying alts, smurfing, or playing matches for another account.','Warning','1-Day','3-Day','7-Day','14-Day','Permanent'],['Performance Disruption','Intentionally degrading the match experience through lag-causing behavior.','Warning','1-Day','3-Day','7-Day','14-Day','Permanent'],['Command Abuse','Spam, harassment via commands, or misuse of party and queue systems.','Warning','1-Day','3-Day','7-Day','14-Day','Permanent'],['Use of Cheats','Cheat clients, scripts, macros, autoclickers, or hardware automation.','3-Day','7-Day','14-Day','30-Day','Permanent','—'],['Duplication Abuse','Replicating items, currencies, or rewards through an exploit.','3-Day','7-Day','14-Day','30-Day','Permanent','—'],['Attempting to Circumvent Systems','Using technical means to dodge queue penalties or enforcement.','3-Day','7-Day','14-Day','30-Day','Permanent','—']])}
 function screenshareRules(){return rulesTable([['Unable to Verify Screen','System or share setup prevents verification.','Warning','1-Day','3-Day','—','—','—'],['Disconnecting During Review','Leaving before the Screensharer ends the review.','Warning','1-Day','3-Day','—','—','—'],['Delaying Staff Review','Stalling the start without valid reason.','Warning','1-Day','3-Day','—','—','—'],['Confession of Rule Violation','Admitting to a violation during review.','Warning','3-Day','7-Day','—','—','—'],['Refusal to Cooperate','Declining reasonable Screensharer instructions.','1-Day','3-Day','7-Day','—','—','—'],['Closing Verification Tools','Closing programs/windows staff asked you to keep open.','1-Day','3-Day','7-Day','—','—','—']])}
 
 /* Minemen-like duels + kitpvp */
+const DUEL_MODES=[
+ {id:'SWORD',label:'Sword',icon:'🗡️',source:'casual'},
+ {id:'NETHERITEPOT',label:'NetheritePot',icon:'🧪',source:'casual'},
+ {id:'BUILDUHC',label:'BuildUHC',icon:'🛡️',source:'casual'},
+ {id:'CRYSTAL',label:'Crystal',icon:'💎',source:'casual'},
+ {id:'MACE',label:'Mace',icon:'🔨',source:'casual'},
+ {id:'LIFESTEAL',label:'Lifesteal',icon:'❤',source:'casual'},
+ {id:'BEDFIGHT',label:'Bed Fight',icon:'🛏️',source:'ranked'},
+ {id:'FIREBALL_FIGHT',label:'Fireball Fight',icon:'🔥',source:'ranked'},
+ {id:'FIREBALL_MACE',label:'Fireball Mace',icon:'💥',source:'ranked'},
+ {id:'SKYFIGHT',label:'Sky Fight',icon:'☁️',source:'ranked'},
+ {id:'BATTLERUSH',label:'Battle Rush',icon:'⚡',source:'ranked'},
+ {id:'BRIDGE',label:'Bridge',icon:'🌉',source:'ranked'}
+]
 let dmode='BEDFIGHT';
-function renderDuels(){active('duels');app().innerHTML=`<section class="minemen"><div class="wrap"><div class="minihead"><div><div class="kicker">VANILLA × COMPETITIVE</div><h1>Leaderboards</h1></div><div class="mini-search"><input id="dq" class="input" placeholder="Search player..."><button class="btn" onclick="openDuelSearch()">Open</button></div></div><div class="category-tabs"><button class="active">Modern (1.21)</button></div><div class="mode-pills">${['BEDFIGHT','FIREBALL_FIGHT','FIREBALL_MACE','SKYFIGHT','BATTLERUSH','BRIDGE'].map((m,i)=>`<button class="${i===0?'active':''}" onclick="setDMode('${m}',this)">${pretty(m)}</button>`).join('')}</div><div id="dboard" class="empty">Loading leaderboard…</div></div></section>`;setTimeout(loadDuelLB,0)}
-function pretty(m){return ({BEDFIGHT:'Bed Fight',FIREBALL_FIGHT:'Fireball Fight',FIREBALL_MACE:'Fireball Mace',SKYFIGHT:'Sky Fight',BATTLERUSH:'Battle Rush',BRIDGE:'Bridge'})[m]||m}
+function renderDuels(){
+ active('duels');
+ app().innerHTML=`<section class="minemen"><div class="wrap"><div class="minihead"><div><div class="kicker">VANILLA × COMPETITIVE</div><h1>Leaderboards</h1></div><div class="mini-search"><input id="dq" class="input" placeholder="Search player..."><button class="btn" onclick="openDuelSearch()">Open</button></div></div><div class="category-tabs"><button class="active">Modern (1.21)</button></div><div class="mode-pills">${DUEL_MODES.map(m=>`<button class="${m.id===dmode?'active':''}" onclick="setDMode('${m.id}',this)">${m.icon} ${m.label}</button>`).join('')}</div><div id="dboard" class="empty">Loading leaderboard…</div></div></section>`;
+ setTimeout(loadDuelLB,0)
+}
+function pretty(m){return DUEL_MODES.find(x=>x.id===m)?.label||m}
 function setDMode(m,b){dmode=m;b.parentElement.querySelectorAll('button').forEach(x=>x.classList.toggle('active',x===b));loadDuelLB()}
-async function loadDuelLB(){const out=$('#dboard');try{const d=await get(API.duelsLeaderboard(dmode,'elo')),rows=d.players||[];out.className='board';out.innerHTML=`<table><thead><tr><th>#</th><th></th><th>PLAYER</th><th>WIN RATE</th></tr></thead><tbody>${rows.map(x=>`<tr><td class="rank">${x.position}</td><td><img class="head" src="${head(x.username)}"></td><td><div class="pcell" onclick="go('#duels-player/${encodeURIComponent(x.username)}')">${esc(x.username)}</div></td><td>${pct(x.winRate||0)}</td></tr>`).join('')}</tbody></table>`}catch(e){out.className='empty';out.textContent=e.message}}
+async function loadDuelLB(){
+ const out=$('#dboard'),mode=DUEL_MODES.find(x=>x.id===dmode);
+ if(mode?.source==='casual'){
+   out.className='empty';
+   out.innerHTML=`${mode.icon} <strong>${mode.label}</strong><br><br>Per-kit StrikePractice leaderboard data is not currently available from your website API.<br><span class="muted">Do not fake Win Rate here. Once StrikePractice exposes per-kit wins/losses, connect that endpoint to this tab.</span>`;
+   return;
+ }
+ try{
+   // Your current /api/duels/leaderboard rejected "elo". The working statistic is "wins".
+   const d=await get(API.duelsLeaderboard(dmode,'wins')),rows=d.players||[];
+   const normalized=rows.map(x=>{
+     const wins=Number(x.wins??x.rankedWins??0),losses=Number(x.losses??x.rankedLosses??0);
+     const wr=x.winRate!=null?Number(x.winRate):(wins+losses?wins/(wins+losses)*100:0);
+     return {...x,wins,losses,winRate:wr}
+   }).sort((a,b)=>b.winRate-a.winRate||b.wins-a.wins||String(a.username).localeCompare(String(b.username)));
+   out.className='board';
+   out.innerHTML=`<table><thead><tr><th>#</th><th></th><th>PLAYER</th><th>WIN RATE</th></tr></thead><tbody>${normalized.map((x,i)=>`<tr><td class="rank">${i+1}</td><td><img class="head" src="${head(x.username)}"></td><td><div class="pcell" onclick="go('#duels-player/${encodeURIComponent(x.username)}')">${esc(x.username)}</div></td><td><strong>${pct(x.winRate)}</strong></td></tr>`).join('')}</tbody></table>`
+ }catch(e){out.className='empty';out.textContent=e.message}
+}
 function openDuelSearch(){const q=$('#dq').value.trim();if(q)go('#duels-player/'+encodeURIComponent(q))}
 async function renderDuelPlayer(u){active('duels');app().innerHTML=`<section class="minemen"><div class="wrap"><div id="dp" class="empty">Loading player…</div></div></section>`;const out=$('#dp');try{const [x,c]=await Promise.all([get(API.duelsPlayer(u)),get(API.duelsCasual(u)).catch(()=>null)]);out.className='';out.innerHTML=`<div class="profile-card"><div class="profile-main"><img src="${head(x.username,78)}"><div><div class="kicker">VEXORIA DUELS</div><h2>${esc(x.username)}</h2><div class="muted">Modern 1.21 Practice</div></div><div class="profile-score"><div class="kicker">GLOBAL ELO</div><strong>${n(x.globalElo)}</strong></div></div><div class="profile-summary"><div><div class="kicker">RANKED GAMES</div><strong>${n(x.rankedTotals?.games||0)}</strong></div><div><div class="kicker">RANKED WIN RATE</div><strong>${pct(x.rankedTotals?.winRate||0)}</strong></div><div><div class="kicker">CASUAL KILLS</div><strong>${n(c?.kills||0)}</strong></div></div><div class="more"><button class="btn primary" onclick="go('#duels-detail/${encodeURIComponent(x.username)}')">View More →</button></div></div>`}catch(e){out.className='empty';out.textContent=e.message}}
 async function renderDuelDetail(u){active('duels');app().innerHTML=`<section class="minemen"><div class="wrap"><div id="dd" class="empty">Loading complete profile…</div></div></section>`;const out=$('#dd');try{const [x,c]=await Promise.all([get(API.duelsPlayer(u)),get(API.duelsCasual(u)).catch(()=>null)]);out.className='';out.innerHTML=`<div class="profile-card"><div class="profile-main"><img src="${head(x.username,78)}"><div><div class="kicker">MODERN PRACTICE PROFILE</div><h2>${esc(x.username)}</h2><div class="muted">Detailed competitive record</div></div><div class="profile-score"><div class="kicker">GLOBAL ELO</div><strong>${n(x.globalElo)}</strong><div class="muted">Peak ${n(x.peakGlobalElo)}</div></div></div></div><div class="pagehead" style="margin-top:50px"><div class="kicker">CASUAL</div><h1>Practice Record</h1></div><div class="stat-grid">${stat('CASUAL KILLS',n(c?.kills||0))}</div><div class="pagehead" style="margin-top:50px"><div class="kicker">COMPETITIVE</div><h1>Ranked Modes</h1></div><div class="board"><table><thead><tr><th>MODE</th><th>ELO</th><th>PEAK</th><th>WINS</th><th>LOSSES</th><th>WIN RATE</th><th>KILLS</th><th>STREAK</th></tr></thead><tbody>${(x.rankedModes||[]).map(m=>`<tr><td><strong>${pretty(m.mode)}</strong></td><td>${n(m.elo)}</td><td>${n(m.peakElo)}</td><td>${n(m.wins)}</td><td>${n(m.losses)}</td><td>${pct(m.winRate)}</td><td>${n(m.kills)}</td><td>${n(m.currentWinStreak)} / ${n(m.bestWinStreak)}</td></tr>`).join('')}</tbody></table></div>`}catch(e){out.className='empty';out.textContent=e.message}}
 
-function renderKP(){active('kitpvp');app().innerHTML=`<section class="minemen"><div class="wrap"><div class="minihead"><div><div class="kicker">KITPVP 1.21X</div><h1>Leaderboards</h1></div><div class="mini-search"><input id="kq" class="input" placeholder="Search player..."><button class="btn" onclick="openKPSearch()">Open</button></div></div><div class="category-tabs"><button class="active">KitPvP</button></div><div class="controls" style="grid-template-columns:320px"><div class="field"><label>RANK BY</label><select id="kst" class="select" onchange="loadKPLB()"><option value="coins">Coins</option><option value="kills">Kills</option><option value="experience">Experience</option><option value="streak">Best Killstreak</option></select></div></div><div id="kb" class="empty">Loading leaderboard…</div></div></section>`;setTimeout(loadKPLB,0)}
-async function loadKPLB(){const out=$('#kb');try{const d=await get(API.kpLeaderboard($('#kst')?.value||'coins')),rows=d.players||[];out.className='board';out.innerHTML=`<table><thead><tr><th>#</th><th></th><th>PLAYER</th><th>COINS</th></tr></thead><tbody>${rows.map(x=>`<tr><td class="rank">${x.position}</td><td><img class="head" src="${head(x.username)}"></td><td><div class="pcell" onclick="go('#kitpvp-player/${encodeURIComponent(x.username)}')">${esc(x.username)}</div></td><td>${n(x.coins)}</td></tr>`).join('')}</tbody></table>`}catch(e){out.className='empty';out.textContent=e.message}}
+const KP_LB_STATS={
+ coins:{label:'COINS',field:'coins'},
+ kills:{label:'KILLS',field:'kills'},
+ experience:{label:'EXPERIENCE',field:'experience'},
+ bestkillstreak:{label:'BEST KILLSTREAK',field:'bestKillstreak'}
+}
+function renderKP(){
+ active('kitpvp');
+ app().innerHTML=`<section class="minemen"><div class="wrap"><div class="minihead"><div><div class="kicker">KITPVP 1.21X</div><h1>Leaderboards</h1></div><div class="mini-search"><input id="kq" class="input" placeholder="Search player..."><button class="btn" onclick="openKPSearch()">Open</button></div></div><div class="category-tabs"><button class="active">KitPvP</button></div><div class="controls" style="grid-template-columns:320px"><div class="field"><label>RANK BY</label><select id="kst" class="select" onchange="loadKPLB()"><option value="coins">Coins</option><option value="kills">Kills</option><option value="experience">Experience</option><option value="bestkillstreak">Best Killstreak</option></select></div></div><div id="kb" class="empty">Loading leaderboard…</div></div></section>`;
+ setTimeout(loadKPLB,0)
+}
+async function loadKPLB(){
+ const out=$('#kb'),key=$('#kst')?.value||'coins',meta=KP_LB_STATS[key]||KP_LB_STATS.coins;
+ try{
+   const d=await get(API.kpLeaderboard(key)),rows=d.players||[];
+   out.className='board';
+   out.innerHTML=`<table><thead><tr><th>#</th><th></th><th>PLAYER</th><th>${meta.label}</th></tr></thead><tbody>${rows.map(x=>`<tr><td class="rank">${x.position}</td><td><img class="head" src="${head(x.username)}"></td><td><div class="pcell" onclick="go('#kitpvp-player/${encodeURIComponent(x.username)}')">${esc(x.username)}</div></td><td><strong>${n(x[meta.field]||0)}</strong></td></tr>`).join('')}</tbody></table>`
+ }catch(e){out.className='empty';out.textContent=e.message}
+}
 function openKPSearch(){const q=$('#kq').value.trim();if(q)go('#kitpvp-player/'+encodeURIComponent(q))}
 async function renderKPPlayer(u){active('kitpvp');app().innerHTML=`<section class="minemen"><div class="wrap"><div id="kp" class="empty">Loading player…</div></div></section>`;const out=$('#kp');try{const [x,k,h]=await Promise.all([get(API.kpPlayer(u)),get(API.kpKits(u)).catch(()=>({ownedKits:[]})),get(API.kpKills(u)).catch(()=>({kills:[]}))]);const kd=x.deaths?x.kills/x.deaths:x.kills;out.className='';out.innerHTML=`<div class="profile-card"><div class="profile-main"><img src="${head(x.username,78)}"><div><div class="kicker">VEXORIA KITPVP</div><h2>${esc(x.username)}</h2><div class="muted">${esc(x.selectedKit||'No selected kit')}</div></div><div class="profile-score"><div class="kicker">COINS</div><strong>${n(x.coins)}</strong></div></div><div class="profile-summary"><div><div class="kicker">KILLS</div><strong>${n(x.kills)}</strong></div><div><div class="kicker">K/D</div><strong>${Number(kd).toFixed(2)}</strong></div><div><div class="kicker">BEST STREAK</div><strong>${n(x.bestKillstreak)}</strong></div></div></div><div class="pagehead" style="margin-top:50px"><div class="kicker">COMPLETE PROFILE</div><h1>KitPvP Record</h1></div><div class="stat-grid">${stat('COINS',n(x.coins))}${stat('KILLS',n(x.kills))}${stat('DEATHS',n(x.deaths))}${stat('K/D',Number(kd).toFixed(2))}${stat('EXPERIENCE',n(x.experience))}${stat('CURRENT STREAK',n(x.currentKillstreak))}${stat('BEST STREAK',n(x.bestKillstreak))}${stat('OWNED KITS',n(k.ownedKitCount||k.ownedKits?.length||0))}</div><div class="two"><div class="panel"><div class="kicker">OWNED KITS</div><h3>${n(k.ownedKitCount||k.ownedKits?.length||0)} unlocked</h3>${(k.ownedKits||[]).slice(0,30).map(z=>`<span class="live" style="margin:3px">${esc(z)}</span>`).join('')||'<div class="muted">No kit data.</div>'}</div><div class="panel"><div class="kicker">RECENT KILLS</div><h3>Combat activity</h3>${(h.kills||[]).slice(0,8).map(z=>row(`${z.killer?.username||x.username} → ${z.victim?.username||'Unknown'}`,z.kit||'KitPvP')).join('')||'<div class="muted">No recent kill history.</div>'}</div></div>`}catch(e){out.className='empty';out.textContent=e.message}}
 
