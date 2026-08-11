@@ -294,27 +294,11 @@ async function loadPlayer(name){
  <div class="panel" style="margin-top:12px"><div class="kicker">QUEUE PERFORMANCE</div><h3>By queue</h3>${(qp.queues||[]).slice(0,8).map(z=>row(z.queue,`${z.games} games · ${pct(z.winRate)} · ${z.eloChange>=0?'+':''}${z.eloChange} ELO`)).join('')||'<div class="muted">No queue data yet.</div>'}</div><div style="margin-top:12px">${matchesHTML(m.matches||[],6)}</div>`}catch(e){out.className='empty';out.textContent=e.message}
 }
 
-const RBW_LB_STATS={
- elo:{label:'ELO',field:'elo'},
- peakelo:{label:'PEAK ELO',field:'peakElo'},
- wins:{label:'WINS',field:'wins'},
- kills:{label:'KILLS',field:'kills'},
- finalkills:{label:'FINAL KILLS',field:'finalKills'},
- beds:{label:'BEDS',field:'beds'},
- mvps:{label:'MVPS',field:'mvps'},
- beststreak:{label:'BEST WIN STREAK',field:'highestWinStreak'}
-}
+const RBW_LB_STATS={elo:{label:'ELO',field:'elo'},peakelo:{label:'PEAK ELO',field:'peakElo'},wins:{label:'WINS',field:'wins'},kills:{label:'KILLS',field:'kills'},finalkills:{label:'FINAL KILLS',field:'finalKills'},beds:{label:'BEDS',field:'beds'},mvps:{label:'MVPS',field:'mvps'},beststreak:{label:'BEST WIN STREAK',field:'highestWinStreak'}}
 function renderRankings(){
  active('rbw');app().innerHTML=rbwNav('rankings')+`<section class="section"><div class="wrap"><div class="pagehead"><div class="kicker">GLOBAL LEADERBOARDS</div><h1>Global Leaderboards</h1><p>Top Ranked BedWars players on Vexoria competing for seasonal placement.</p></div><div class="controls"><div class="field"><label>RANK BY</label><select id="lbst" class="select" onchange="loadRankings()"><option value="elo">ELO</option><option value="peakelo">Peak ELO</option><option value="wins">Wins</option><option value="kills">Kills</option><option value="finalkills">Final Kills</option><option value="beds">Beds</option><option value="mvps">MVPs</option><option value="beststreak">Best Win Streak</option></select></div><div class="field"><label>SEARCH PLAYER</label><input id="lbu" class="input" placeholder="Search IGN…"></div><button class="btn primary" onclick="openLB()">Update</button></div><div id="lbout" class="empty">Loading leaderboard…</div></div></section>`;setTimeout(loadRankings,0)
 }
-async function loadRankings(){
- const out=$('#lbout'),key=$('#lbst')?.value||'elo',meta=RBW_LB_STATS[key]||RBW_LB_STATS.elo;
- try{
-   const d=await get(API.rbwLeaderboard(key)),rows=d.players||[];
-   out.className='board';
-   out.innerHTML=`<table><thead><tr><th>#</th><th></th><th>PLAYER</th><th>${meta.label}</th></tr></thead><tbody>${rows.map(x=>`<tr><td class="rank">#${x.position}</td><td><img class="head" src="${head(x.username)}"></td><td><div class="pcell" onclick="openRBW('${esc(x.username)}')">${esc(x.username)}</div></td><td><strong>${n(x[meta.field]||0)}</strong></td></tr>`).join('')}</tbody></table>`
- }catch(e){out.className='empty';out.textContent=e.message}
-}
+async function loadRankings(){const out=$('#lbout'),key=$('#lbst')?.value||'elo',meta=RBW_LB_STATS[key]||RBW_LB_STATS.elo;try{const d=await get(API.rbwLeaderboard(key)),rows=d.players||[];out.className='board';out.innerHTML=`<table><thead><tr><th>#</th><th></th><th>PLAYER</th><th>${meta.label}</th></tr></thead><tbody>${rows.map(x=>`<tr><td class="rank">#${x.position}</td><td><img class="head" src="${head(x.username)}"></td><td><div class="pcell" onclick="openRBW('${esc(x.username)}')">${esc(x.username)}</div></td><td><strong>${n(x[meta.field]||0)}</strong></td></tr>`).join('')}</tbody></table>`}catch(e){out.className='empty';out.textContent=e.message}}
 function openLB(){const u=$('#lbu').value.trim();if(u)openRBW(u)}
 function openRBW(u){go('#rbw-stats');setTimeout(()=>{if($('#rq')){$('#rq').value=u;loadPlayer(u)}},70)}
 
@@ -338,44 +322,14 @@ function mcTex(type,name){return `https://mcasset.cloud/1.21.1/assets/minecraft/
 function items(title,arr,desc){return `<div class="item-group"><h3>${title}</h3><div class="desc">${desc}</div>${arr.length?`<div class="items">${arr.map(([type,id,n])=>`<div class="item"><div><img src="${mcTex(type,id)}" alt="${esc(n)}"><span>${esc(n)}</span></div></div>`).join('')}</div>`:''}</div>`}
 function seasonRules(){return `<div class="season-card"><div class="kicker">RULE SEASON</div><h2>Season 1</h2><div class="muted">Modern Ranked BedWars Ruleset</div></div>
 ${items('ALWAYS',[
-['block','white_wool','Wool'],
-['block','end_stone','End Stone'],
-['block','terracotta','Hardened Clay'],
-['block','ladder','Ladder'],
-['block','oak_planks','Oak Wood'],
-['block','glass','Blast Proof Glass'],
-['item','iron_sword','Iron Sword'],
-['item','stone_sword','Stone Sword'],
-['item','chainmail_boots','Chainmail Armor'],
-['item','diamond_boots','Diamond Armor'],
-['item','iron_axe','Axe'],
-['item','iron_pickaxe','Pickaxe'],
-['item','shears','Shears'],
-['item','fire_charge','Fireball'],
-['item','golden_apple','Golden Apple'],
-['item','snowball','Bedbug']
+['block','white_wool','Wool'],['block','end_stone','End Stone'],['block','terracotta','Hardened Clay'],['block','ladder','Ladder'],['block','oak_planks','Oak Wood'],['block','glass','Blast Proof Glass'],['item','iron_sword','Iron Sword'],['item','stone_sword','Stone Sword'],['item','chainmail_boots','Chainmail Armor'],['item','diamond_boots','Diamond Armor'],['item','iron_axe','Axe'],['item','iron_pickaxe','Pickaxe'],['item','shears','Shears'],['item','fire_charge','Fireball'],['item','golden_apple','Golden Apple'],['item','snowball','Bedbug']
 ],'Always available during the game.')}
-${items('DIAMOND II',[
-['item','milk_bucket','Magic Milk']
-],'Unlocked at Diamond II.')}
-${items('DIAMOND III',[
-['item','potion','Jump V'],
-['item','potion','Speed II'],
-['block','tnt_side','TNT']
-],'Unlocked at Diamond III.')}
+${items('DIAMOND II',[['item','milk_bucket','Magic Milk']],'Unlocked at Diamond II.')}
+${items('DIAMOND III',[['item','potion','Jump V'],['item','potion','Speed II'],['block','tnt_side','TNT']],'Unlocked at Diamond III.')}
 ${items('EMERALD II',[],'No additional item unlocks. Diamond III rules continue.')}
-${items('EMERALD III',[
-['item','potion','Invisibility']
-],'Unlocked at Emerald III.')}
+${items('EMERALD III',[['item','potion','Invisibility']],'Unlocked at Emerald III.')}
 ${items('NEVER ALLOWED',[
-['item','string','Cobweb'],
-['item','brick','Compact Pop-up Tower'],
-['item','spawn_egg','Dream Defender'],
-['item','packed_ice','Ice Bridge'],
-['block','obsidian','Obsidian'],
-['item','chest_minecart','Portable Quick Buy'],
-['block','sponge','Sponge'],
-['item','water_bucket','Water Bucket']
+['item','string','Cobweb'],['item','brick','Compact Pop-up Tower'],['item','spawn_egg','Dream Defender'],['item','packed_ice','Ice Bridge'],['block','obsidian','Obsidian'],['item','chest_minecart','Portable Quick Buy'],['block','sponge','Sponge'],['item','water_bucket','Water Bucket']
 ],'Disabled for the entire match.')}`}
 function rulesTable(rows){return `<div class="board"><table><thead><tr><th>RULE</th><th>1ST</th><th>2ND</th><th>3RD</th><th>4TH</th><th>5TH</th><th>6TH</th></tr></thead><tbody>${rows.map(x=>`<tr><td style="min-width:300px"><strong>${x[0]}</strong><div class="muted" style="margin-top:4px">${x[1]}</div></td>${x.slice(2).map(v=>`<td>${v}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`}
 function gameplayRules(){return rulesTable([['Unfair Gameplay','Stat manipulation, win trading, intentional throwing, or behavior designed to misrepresent true performance.','Warning','1-Day','3-Day','7-Day','14-Day','Permanent'],['Unauthorized Modifications','Running mods or clients outside the allowed modifications policy.','Warning','1-Day','3-Day','7-Day','14-Day','Permanent'],['Unfair Gameplay Methods','Teaming with opponents or exploiting edge-case methods that undermine fair competition.','Warning','1-Day','3-Day','7-Day','14-Day','Permanent'],['Exploiting Bugs / Systems','Knowingly using a bug, glitch, or unintended interaction for advantage.','Warning','1-Day','3-Day','7-Day','14-Day','Permanent'],['Unfair Progression Assistance','Boosting, carrying alts, smurfing, or playing matches for another account.','Warning','1-Day','3-Day','7-Day','14-Day','Permanent'],['Performance Disruption','Intentionally degrading the match experience through lag-causing behavior.','Warning','1-Day','3-Day','7-Day','14-Day','Permanent'],['Command Abuse','Spam, harassment via commands, or misuse of party and queue systems.','Warning','1-Day','3-Day','7-Day','14-Day','Permanent'],['Use of Cheats','Cheat clients, scripts, macros, autoclickers, or hardware automation.','3-Day','7-Day','14-Day','30-Day','Permanent','—'],['Duplication Abuse','Replicating items, currencies, or rewards through an exploit.','3-Day','7-Day','14-Day','30-Day','Permanent','—'],['Attempting to Circumvent Systems','Using technical means to dodge queue penalties or enforcement.','3-Day','7-Day','14-Day','30-Day','Permanent','—']])}
@@ -383,69 +337,19 @@ function screenshareRules(){return rulesTable([['Unable to Verify Screen','Syste
 
 /* Minemen-like duels + kitpvp */
 const DUEL_MODES=[
- {id:'SWORD',label:'Sword',icon:'🗡️',source:'casual'},
- {id:'NETHERITEPOT',label:'NetheritePot',icon:'🧪',source:'casual'},
- {id:'BUILDUHC',label:'BuildUHC',icon:'🛡️',source:'casual'},
- {id:'CRYSTAL',label:'Crystal',icon:'💎',source:'casual'},
- {id:'MACE',label:'Mace',icon:'🔨',source:'casual'},
- {id:'LIFESTEAL',label:'Lifesteal',icon:'❤',source:'casual'},
- {id:'BEDFIGHT',label:'Bed Fight',icon:'🛏️',source:'ranked'},
- {id:'FIREBALL_FIGHT',label:'Fireball Fight',icon:'🔥',source:'ranked'},
- {id:'FIREBALL_MACE',label:'Fireball Mace',icon:'💥',source:'ranked'},
- {id:'SKYFIGHT',label:'Sky Fight',icon:'☁️',source:'ranked'},
- {id:'BATTLERUSH',label:'Battle Rush',icon:'⚡',source:'ranked'},
- {id:'BRIDGE',label:'Bridge',icon:'🌉',source:'ranked'}
-]
+{id:'SWORD',label:'Sword',icon:'🗡️'},{id:'NETHERITEPOT',label:'NetheritePot',icon:'🧪'},{id:'BUILDUHC',label:'BuildUHC',icon:'🛡️'},{id:'CRYSTAL',label:'Crystal',icon:'💎'},{id:'MACE',label:'Mace',icon:'🔨'},{id:'LIFESTEAL',label:'Lifesteal',icon:'❤'},{id:'BEDFIGHT',label:'Bed Fight',icon:'🛏️'},{id:'FIREBALL_FIGHT',label:'Fireball Fight',icon:'🔥'},{id:'FIREBALL_MACE',label:'Fireball Mace',icon:'💥'},{id:'SKYFIGHT',label:'Sky Fight',icon:'☁️'},{id:'BATTLERUSH',label:'Battle Rush',icon:'⚡'},{id:'BRIDGE',label:'Bridge',icon:'🌉'}]
 let dmode='BEDFIGHT';
-function renderDuels(){
- active('duels');
- app().innerHTML=`<section class="minemen"><div class="wrap"><div class="minihead"><div><div class="kicker">VANILLA × COMPETITIVE</div><h1>Leaderboards</h1></div><div class="mini-search"><input id="dq" class="input" placeholder="Search player..."><button class="btn" onclick="openDuelSearch()">Open</button></div></div><div class="category-tabs"><button class="active">Modern (1.21)</button></div><div class="mode-pills">${DUEL_MODES.map(m=>`<button class="${m.id===dmode?'active':''}" onclick="setDMode('${m.id}',this)">${m.icon} ${m.label}</button>`).join('')}</div><div id="dboard" class="empty">Loading leaderboard…</div></div></section>`;
- setTimeout(loadDuelLB,0)
-}
+function renderDuels(){active('duels');app().innerHTML=`<section class="minemen"><div class="wrap"><div class="minihead"><div><div class="kicker">VANILLA × COMPETITIVE</div><h1>Leaderboards</h1></div><div class="mini-search"><input id="dq" class="input" placeholder="Search player..."><button class="btn" onclick="openDuelSearch()">Open</button></div></div><div class="category-tabs"><button class="active">Modern (1.21)</button></div><div class="mode-pills">${DUEL_MODES.map(m=>`<button class="${m.id===dmode?'active':''}" onclick="setDMode('${m.id}',this)">${m.icon} ${m.label}</button>`).join('')}</div><div id="dboard" class="empty">Loading leaderboard…</div></div></section>`;setTimeout(loadDuelLB,0)}
 function pretty(m){return DUEL_MODES.find(x=>x.id===m)?.label||m}
 function setDMode(m,b){dmode=m;b.parentElement.querySelectorAll('button').forEach(x=>x.classList.toggle('active',x===b));loadDuelLB()}
-async function loadDuelLB(){
- const out=$('#dboard'),mode=DUEL_MODES.find(x=>x.id===dmode);
- if(mode?.source==='casual'){
-   out.className='empty';
-   out.innerHTML=`${mode.icon} <strong>${mode.label}</strong><br><br>Per-kit StrikePractice leaderboard data is not currently available from your website API.<br><span class="muted">Do not fake Win Rate here. Once StrikePractice exposes per-kit wins/losses, connect that endpoint to this tab.</span>`;
-   return;
- }
- try{
-   // Your current /api/duels/leaderboard rejected "elo". The working statistic is "wins".
-   const d=await get(API.duelsLeaderboard(dmode,'wins')),rows=d.players||[];
-   const normalized=rows.map(x=>{
-     const wins=Number(x.wins??x.rankedWins??0),losses=Number(x.losses??x.rankedLosses??0);
-     const wr=x.winRate!=null?Number(x.winRate):(wins+losses?wins/(wins+losses)*100:0);
-     return {...x,wins,losses,winRate:wr}
-   }).sort((a,b)=>b.winRate-a.winRate||b.wins-a.wins||String(a.username).localeCompare(String(b.username)));
-   out.className='board';
-   out.innerHTML=`<table><thead><tr><th>#</th><th></th><th>PLAYER</th><th>WIN RATE</th></tr></thead><tbody>${normalized.map((x,i)=>`<tr><td class="rank">${i+1}</td><td><img class="head" src="${head(x.username)}"></td><td><div class="pcell" onclick="go('#duels-player/${encodeURIComponent(x.username)}')">${esc(x.username)}</div></td><td><strong>${pct(x.winRate)}</strong></td></tr>`).join('')}</tbody></table>`
- }catch(e){out.className='empty';out.textContent=e.message}
-}
+async function loadDuelLB(){const out=$('#dboard');try{const d=await get(API.duelsLeaderboard(dmode,'winrate')),rows=d.players||[];out.className='board';out.innerHTML=`<table><thead><tr><th>#</th><th></th><th>PLAYER</th><th>WIN RATE</th></tr></thead><tbody>${rows.map((x,i)=>`<tr><td class="rank">${i+1}</td><td><img class="head" src="${head(x.username)}"></td><td><div class="pcell" onclick="go('#duels-player/${encodeURIComponent(x.username)}')">${esc(x.username)}</div></td><td><strong>${pct(x.winRate||0)}</strong></td></tr>`).join('')}</tbody></table>`}catch(e){out.className='empty';out.textContent=e.message}}
 function openDuelSearch(){const q=$('#dq').value.trim();if(q)go('#duels-player/'+encodeURIComponent(q))}
 async function renderDuelPlayer(u){active('duels');app().innerHTML=`<section class="minemen"><div class="wrap"><div id="dp" class="empty">Loading player…</div></div></section>`;const out=$('#dp');try{const [x,c]=await Promise.all([get(API.duelsPlayer(u)),get(API.duelsCasual(u)).catch(()=>null)]);out.className='';out.innerHTML=`<div class="profile-card"><div class="profile-main"><img src="${head(x.username,78)}"><div><div class="kicker">VEXORIA DUELS</div><h2>${esc(x.username)}</h2><div class="muted">Modern 1.21 Practice</div></div><div class="profile-score"><div class="kicker">GLOBAL ELO</div><strong>${n(x.globalElo)}</strong></div></div><div class="profile-summary"><div><div class="kicker">RANKED GAMES</div><strong>${n(x.rankedTotals?.games||0)}</strong></div><div><div class="kicker">RANKED WIN RATE</div><strong>${pct(x.rankedTotals?.winRate||0)}</strong></div><div><div class="kicker">CASUAL KILLS</div><strong>${n(c?.kills||0)}</strong></div></div><div class="more"><button class="btn primary" onclick="go('#duels-detail/${encodeURIComponent(x.username)}')">View More →</button></div></div>`}catch(e){out.className='empty';out.textContent=e.message}}
 async function renderDuelDetail(u){active('duels');app().innerHTML=`<section class="minemen"><div class="wrap"><div id="dd" class="empty">Loading complete profile…</div></div></section>`;const out=$('#dd');try{const [x,c]=await Promise.all([get(API.duelsPlayer(u)),get(API.duelsCasual(u)).catch(()=>null)]);out.className='';out.innerHTML=`<div class="profile-card"><div class="profile-main"><img src="${head(x.username,78)}"><div><div class="kicker">MODERN PRACTICE PROFILE</div><h2>${esc(x.username)}</h2><div class="muted">Detailed competitive record</div></div><div class="profile-score"><div class="kicker">GLOBAL ELO</div><strong>${n(x.globalElo)}</strong><div class="muted">Peak ${n(x.peakGlobalElo)}</div></div></div></div><div class="pagehead" style="margin-top:50px"><div class="kicker">CASUAL</div><h1>Practice Record</h1></div><div class="stat-grid">${stat('CASUAL KILLS',n(c?.kills||0))}</div><div class="pagehead" style="margin-top:50px"><div class="kicker">COMPETITIVE</div><h1>Ranked Modes</h1></div><div class="board"><table><thead><tr><th>MODE</th><th>ELO</th><th>PEAK</th><th>WINS</th><th>LOSSES</th><th>WIN RATE</th><th>KILLS</th><th>STREAK</th></tr></thead><tbody>${(x.rankedModes||[]).map(m=>`<tr><td><strong>${pretty(m.mode)}</strong></td><td>${n(m.elo)}</td><td>${n(m.peakElo)}</td><td>${n(m.wins)}</td><td>${n(m.losses)}</td><td>${pct(m.winRate)}</td><td>${n(m.kills)}</td><td>${n(m.currentWinStreak)} / ${n(m.bestWinStreak)}</td></tr>`).join('')}</tbody></table></div>`}catch(e){out.className='empty';out.textContent=e.message}}
 
-const KP_LB_STATS={
- coins:{label:'COINS',field:'coins'},
- kills:{label:'KILLS',field:'kills'},
- experience:{label:'EXPERIENCE',field:'experience'},
- bestkillstreak:{label:'BEST KILLSTREAK',field:'bestKillstreak'}
-}
-function renderKP(){
- active('kitpvp');
- app().innerHTML=`<section class="minemen"><div class="wrap"><div class="minihead"><div><div class="kicker">KITPVP 1.21X</div><h1>Leaderboards</h1></div><div class="mini-search"><input id="kq" class="input" placeholder="Search player..."><button class="btn" onclick="openKPSearch()">Open</button></div></div><div class="category-tabs"><button class="active">KitPvP</button></div><div class="controls" style="grid-template-columns:320px"><div class="field"><label>RANK BY</label><select id="kst" class="select" onchange="loadKPLB()"><option value="coins">Coins</option><option value="kills">Kills</option><option value="experience">Experience</option><option value="bestkillstreak">Best Killstreak</option></select></div></div><div id="kb" class="empty">Loading leaderboard…</div></div></section>`;
- setTimeout(loadKPLB,0)
-}
-async function loadKPLB(){
- const out=$('#kb'),key=$('#kst')?.value||'coins',meta=KP_LB_STATS[key]||KP_LB_STATS.coins;
- try{
-   const d=await get(API.kpLeaderboard(key)),rows=d.players||[];
-   out.className='board';
-   out.innerHTML=`<table><thead><tr><th>#</th><th></th><th>PLAYER</th><th>${meta.label}</th></tr></thead><tbody>${rows.map(x=>`<tr><td class="rank">${x.position}</td><td><img class="head" src="${head(x.username)}"></td><td><div class="pcell" onclick="go('#kitpvp-player/${encodeURIComponent(x.username)}')">${esc(x.username)}</div></td><td><strong>${n(x[meta.field]||0)}</strong></td></tr>`).join('')}</tbody></table>`
- }catch(e){out.className='empty';out.textContent=e.message}
-}
+const KP_LB_STATS={coins:{label:'COINS',field:'coins'},kills:{label:'KILLS',field:'kills'},experience:{label:'EXPERIENCE',field:'experience'},bestkillstreak:{label:'BEST KILLSTREAK',field:'bestKillstreak'}}
+function renderKP(){active('kitpvp');app().innerHTML=`<section class="minemen"><div class="wrap"><div class="minihead"><div><div class="kicker">KITPVP 1.21X</div><h1>Leaderboards</h1></div><div class="mini-search"><input id="kq" class="input" placeholder="Search player..."><button class="btn" onclick="openKPSearch()">Open</button></div></div><div class="category-tabs"><button class="active">KitPvP</button></div><div class="controls" style="grid-template-columns:320px"><div class="field"><label>RANK BY</label><select id="kst" class="select" onchange="loadKPLB()"><option value="coins">Coins</option><option value="kills">Kills</option><option value="experience">Experience</option><option value="bestkillstreak">Best Killstreak</option></select></div></div><div id="kb" class="empty">Loading leaderboard…</div></div></section>`;setTimeout(loadKPLB,0)}
+async function loadKPLB(){const out=$('#kb'),key=$('#kst')?.value||'coins',meta=KP_LB_STATS[key]||KP_LB_STATS.coins;try{const d=await get(API.kpLeaderboard(key)),rows=d.players||[];out.className='board';out.innerHTML=`<table><thead><tr><th>#</th><th></th><th>PLAYER</th><th>${meta.label}</th></tr></thead><tbody>${rows.map(x=>`<tr><td class="rank">${x.position}</td><td><img class="head" src="${head(x.username)}"></td><td><div class="pcell" onclick="go('#kitpvp-player/${encodeURIComponent(x.username)}')">${esc(x.username)}</div></td><td><strong>${n(x[meta.field]||0)}</strong></td></tr>`).join('')}</tbody></table>`}catch(e){out.className='empty';out.textContent=e.message}}
 function openKPSearch(){const q=$('#kq').value.trim();if(q)go('#kitpvp-player/'+encodeURIComponent(q))}
 async function renderKPPlayer(u){active('kitpvp');app().innerHTML=`<section class="minemen"><div class="wrap"><div id="kp" class="empty">Loading player…</div></div></section>`;const out=$('#kp');try{const [x,k,h]=await Promise.all([get(API.kpPlayer(u)),get(API.kpKits(u)).catch(()=>({ownedKits:[]})),get(API.kpKills(u)).catch(()=>({kills:[]}))]);const kd=x.deaths?x.kills/x.deaths:x.kills;out.className='';out.innerHTML=`<div class="profile-card"><div class="profile-main"><img src="${head(x.username,78)}"><div><div class="kicker">VEXORIA KITPVP</div><h2>${esc(x.username)}</h2><div class="muted">${esc(x.selectedKit||'No selected kit')}</div></div><div class="profile-score"><div class="kicker">COINS</div><strong>${n(x.coins)}</strong></div></div><div class="profile-summary"><div><div class="kicker">KILLS</div><strong>${n(x.kills)}</strong></div><div><div class="kicker">K/D</div><strong>${Number(kd).toFixed(2)}</strong></div><div><div class="kicker">BEST STREAK</div><strong>${n(x.bestKillstreak)}</strong></div></div></div><div class="pagehead" style="margin-top:50px"><div class="kicker">COMPLETE PROFILE</div><h1>KitPvP Record</h1></div><div class="stat-grid">${stat('COINS',n(x.coins))}${stat('KILLS',n(x.kills))}${stat('DEATHS',n(x.deaths))}${stat('K/D',Number(kd).toFixed(2))}${stat('EXPERIENCE',n(x.experience))}${stat('CURRENT STREAK',n(x.currentKillstreak))}${stat('BEST STREAK',n(x.bestKillstreak))}${stat('OWNED KITS',n(k.ownedKitCount||k.ownedKits?.length||0))}</div><div class="two"><div class="panel"><div class="kicker">OWNED KITS</div><h3>${n(k.ownedKitCount||k.ownedKits?.length||0)} unlocked</h3>${(k.ownedKits||[]).slice(0,30).map(z=>`<span class="live" style="margin:3px">${esc(z)}</span>`).join('')||'<div class="muted">No kit data.</div>'}</div><div class="panel"><div class="kicker">RECENT KILLS</div><h3>Combat activity</h3>${(h.kills||[]).slice(0,8).map(z=>row(`${z.killer?.username||x.username} → ${z.victim?.username||'Unknown'}`,z.kit||'KitPvP')).join('')||'<div class="muted">No recent kill history.</div>'}</div></div>`}catch(e){out.className='empty';out.textContent=e.message}}
 
