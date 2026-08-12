@@ -1,4 +1,7 @@
 {
+  "engines": {
+    "node": ">=20 <23"
+  },
   "dependencies": {
     "mysql2": "^3.14.0"
   }
