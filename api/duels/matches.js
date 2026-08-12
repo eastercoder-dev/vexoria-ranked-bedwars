@@ -6,7 +6,6 @@ const pool = mysql.createPool({
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
-
     waitForConnections: true,
     connectionLimit: 5,
     queueLimit: 0
@@ -22,7 +21,6 @@ const MODES = [
 ];
 
 module.exports = async function handler(req, res) {
-
     const mode =
         String(req.query.mode || "")
             .trim()
@@ -48,8 +46,16 @@ module.exports = async function handler(req, res) {
         });
     }
 
-    try {
+    if (
+        username &&
+        !/^[A-Za-z0-9_]{1,16}$/.test(username)
+    ) {
+        return res.status(400).json({
+            error: "Invalid Minecraft username"
+        });
+    }
 
+    try {
         const conditions = [];
         const params = [];
 
@@ -101,7 +107,6 @@ module.exports = async function handler(req, res) {
         const result = [];
 
         for (const match of matches) {
-
             const [players] =
                 await pool.execute(
                     `
@@ -110,15 +115,11 @@ module.exports = async function handler(req, res) {
                         username_snapshot,
                         is_winner,
                         kills,
-
                         elo_before,
                         elo_after,
                         elo_change
-
                     FROM md_match_players
-
                     WHERE match_id = ?
-
                     ORDER BY
                         is_winner DESC,
                         id ASC
@@ -127,7 +128,6 @@ module.exports = async function handler(req, res) {
                 );
 
             result.push({
-
                 id: Number(match.id),
 
                 matchKey:
@@ -149,32 +149,32 @@ module.exports = async function handler(req, res) {
                     match.loser_uuid || null,
 
                 players:
-                    players.map(p => ({
-
-                        uuid: p.uuid,
+                    players.map(player => ({
+                        uuid: player.uuid,
 
                         username:
-                            p.username_snapshot,
+                            player.username_snapshot,
 
                         winner:
-                            Boolean(p.is_winner),
+                            Boolean(player.is_winner),
 
                         kills:
-                            Number(p.kills || 0),
+                            Number(player.kills || 0),
 
                         eloBefore:
-                            Number(p.elo_before || 0),
+                            Number(player.elo_before || 0),
 
                         eloAfter:
-                            Number(p.elo_after || 0),
+                            Number(player.elo_after || 0),
 
                         eloChange:
-                            Number(p.elo_change || 0)
+                            Number(player.elo_change || 0)
                     }))
             });
         }
 
         return res.status(200).json({
+            type: "COMPETITIVE",
             page,
             perPage: limit,
             mode: mode || null,
@@ -183,7 +183,6 @@ module.exports = async function handler(req, res) {
         });
 
     } catch (error) {
-
         console.error(
             "Duels matches API error:",
             error
