@@ -6,13 +6,12 @@ const pool = mysql.createPool({
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
-
     waitForConnections: true,
     connectionLimit: 5,
     queueLimit: 0
 });
 
-const RANKED_MODES = [
+const COMPETITIVE_MODES = [
     "BEDFIGHT",
     "FIREBALL_FIGHT",
     "FIREBALL_MACE",
@@ -22,7 +21,6 @@ const RANKED_MODES = [
 ];
 
 module.exports = async function handler(req, res) {
-
     const username =
         String(req.query.username || "").trim();
 
@@ -39,7 +37,6 @@ module.exports = async function handler(req, res) {
     }
 
     try {
-
         const [players] = await pool.execute(
             `
             SELECT
@@ -54,47 +51,22 @@ module.exports = async function handler(req, res) {
 
         if (players.length === 0) {
             return res.status(404).json({
-                error: "Duels player not found"
+                error: "Competitive Duels player not found"
             });
         }
 
         const player = players[0];
-
-        const [globalRows] = await pool.execute(
-            `
-            SELECT
-                global_elo,
-                peak_global_elo
-            FROM md_global_stats
-            WHERE uuid = ?
-            LIMIT 1
-            `,
-            [player.uuid]
-        );
-
-        const global =
-            globalRows[0] || {
-                global_elo: 1000,
-                peak_global_elo: 1000
-            };
 
         const [modeRows] = await pool.execute(
             `
             SELECT
                 mode,
 
-                games_played,
-
                 ranked_wins,
                 ranked_losses,
 
-                kills,
-
                 current_ranked_win_streak,
                 best_ranked_win_streak,
-
-                elo,
-                peak_elo,
 
                 beds_broken,
                 goals_scored
@@ -102,6 +74,7 @@ module.exports = async function handler(req, res) {
             FROM md_stats
 
             WHERE uuid = ?
+
             AND mode IN (
                 'BEDFIGHT',
                 'FIREBALL_FIGHT',
@@ -118,124 +91,138 @@ module.exports = async function handler(req, res) {
             modeRows.map(row => [row.mode, row])
         );
 
-        const rankedModes = RANKED_MODES.map(mode => {
+        const modes =
+            COMPETITIVE_MODES.map(mode => {
+                const row =
+                    rowMap.get(mode) || {};
 
-            const row = rowMap.get(mode) || {};
+                const wins =
+                    Number(row.ranked_wins || 0);
 
-            const wins =
-                Number(row.ranked_wins || 0);
+                const losses =
+                    Number(row.ranked_losses || 0);
 
-            const losses =
-                Number(row.ranked_losses || 0);
+                const games =
+                    wins + losses;
 
-            /*
-             * For ranked display, calculate games from
-             * ranked wins + ranked losses instead of the
-             * casual-inclusive games_played column.
-             */
-            const games = wins + losses;
+                return {
+                    mode,
 
-            return {
-                mode,
+                    games,
+                    wins,
+                    losses,
 
-                games,
+                    wlr:
+                        losses === 0
+                            ? wins
+                            : Number(
+                                (wins / losses).toFixed(2)
+                            ),
 
-                wins,
-                losses,
+                    winRate:
+                        games === 0
+                            ? 0
+                            : Number(
+                                (
+                                    wins /
+                                    games *
+                                    100
+                                ).toFixed(2)
+                            ),
 
-                winRate:
-                    games === 0
-                        ? 0
-                        : Number(
-                            (
-                                wins /
-                                games *
-                                100
-                            ).toFixed(2)
+                    currentWinStreak:
+                        Number(
+                            row.current_ranked_win_streak ||
+                            0
                         ),
 
-                kills:
-                    Number(row.kills || 0),
+                    bestWinStreak:
+                        Number(
+                            row.best_ranked_win_streak ||
+                            0
+                        ),
 
-                currentWinStreak:
-                    Number(
-                        row.current_ranked_win_streak || 0
-                    ),
+                    bedsBroken:
+                        mode === "BEDFIGHT"
+                            ? Number(
+                                row.beds_broken || 0
+                            )
+                            : null,
 
-                bestWinStreak:
-                    Number(
-                        row.best_ranked_win_streak || 0
-                    ),
+                    goalsScored:
+                        mode === "BRIDGE"
+                            ? Number(
+                                row.goals_scored || 0
+                            )
+                            : null
+                };
+            });
 
-                elo:
-                    Number(row.elo ?? 1000),
-
-                peakElo:
-                    Number(row.peak_elo ?? 1000),
-
-                bedsBroken:
-                    mode === "BEDFIGHT"
-                        ? Number(row.beds_broken || 0)
-                        : null,
-
-                goalsScored:
-                    mode === "BRIDGE"
-                        ? Number(row.goals_scored || 0)
-                        : null
-            };
-        });
-
-        const rankedTotals =
-            rankedModes.reduce(
+        const totals =
+            modes.reduce(
                 (total, mode) => {
                     total.games += mode.games;
                     total.wins += mode.wins;
                     total.losses += mode.losses;
+
+                    total.bestWinStreak =
+                        Math.max(
+                            total.bestWinStreak,
+                            mode.bestWinStreak
+                        );
+
                     return total;
                 },
                 {
                     games: 0,
                     wins: 0,
-                    losses: 0
+                    losses: 0,
+                    bestWinStreak: 0
                 }
             );
 
-        rankedTotals.winRate =
-            rankedTotals.games === 0
+        totals.wlr =
+            totals.losses === 0
+                ? totals.wins
+                : Number(
+                    (
+                        totals.wins /
+                        totals.losses
+                    ).toFixed(2)
+                );
+
+        totals.winRate =
+            totals.games === 0
                 ? 0
                 : Number(
                     (
-                        rankedTotals.wins /
-                        rankedTotals.games *
+                        totals.wins /
+                        totals.games *
                         100
                     ).toFixed(2)
                 );
 
+        totals.currentWinStreak = null;
+
         return res.status(200).json({
+            type: "COMPETITIVE",
 
             uuid: player.uuid,
             username: player.username,
 
-            globalElo:
-                Number(global.global_elo || 1000),
-
-            peakGlobalElo:
-                Number(global.peak_global_elo || 1000),
-
-            rankedTotals,
-
-            rankedModes
+            totals,
+            modes
         });
 
     } catch (error) {
-
         console.error(
-            "Duels player API error:",
+            "Competitive Duels player API error:",
             error
         );
 
         return res.status(500).json({
-            error: "Unable to load Duels player"
+            error:
+                "Unable to load Competitive Duels player"
         });
     }
 };
