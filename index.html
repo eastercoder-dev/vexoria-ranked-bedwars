@@ -1,568 +1,65 @@
-<!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Vexoria Network</title>
-<style>
-:root{
-  --bg:#090a0e;
-  --panel:#0f1117;
-  --panel2:#121722;
-  --line:#232936;
-  --text:#f7f8fb;
-  --muted:#8a94a3;
-  --muted2:#687386;
-  --blue:#4287f5;
-  --blue2:#6ecff6;
-  --good:#67d58c;
-  --red:#ff727c;
-  --max:1180px;
-}
-*{box-sizing:border-box}
-html{scroll-behavior:smooth}
-body{
-  margin:0;
-  color:var(--text);
-  background:
-    radial-gradient(520px 420px at 50% 11%,rgba(66,135,245,.08),transparent 68%),
-    var(--bg);
-  font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-  -webkit-font-smoothing:antialiased
-}
-button,input,select{font:inherit}
-button{cursor:pointer}
-.wrap{width:min(var(--max),calc(100% - 40px));margin:auto}
-.muted{color:var(--muted)}
-.kicker{font-size:10px;letter-spacing:.22em;text-transform:uppercase;font-weight:900;color:#788396}
-.btn{height:42px;padding:0 15px;border:1px solid #2c3545;background:#10151d;color:#fff;font-size:10px;font-weight:900;letter-spacing:.07em;text-transform:uppercase}
-.btn:hover{border-color:#496a96}.btn.primary{background:var(--blue);border-color:var(--blue)}
-.input,.select{width:100%;height:44px;border:1px solid #2b3444;background:#0d1118;color:#fff;padding:0 13px;outline:0}
-.input:focus,.select:focus{border-color:var(--blue)}
-.top{height:68px;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:50;background:rgba(9,10,14,.92);backdrop-filter:blur(14px)}
-.top .wrap{height:100%;display:flex;align-items:center;justify-content:space-between;gap:18px}
-.brand{display:flex;align-items:center;gap:10px;font-size:11px;font-weight:1000;letter-spacing:.08em}
-.mark{width:32px;height:32px;border:1px solid #34465d;display:grid;place-items:center;background:#0e141d;font-weight:1000}
-.gnav{display:flex;gap:2px;align-items:center}
-.gnav button{border:0;background:transparent;color:#7e8999;padding:10px 11px;font-size:10px;font-weight:900}
-.gnav button.active,.gnav button:hover{color:#fff;background:#111720}
-.modebar{border-bottom:1px solid var(--line);background:#0a0c11}
-.modebar .wrap{min-height:54px;display:flex;align-items:center;justify-content:space-between;gap:18px}
-.modebrand{font-size:10px;font-weight:1000;letter-spacing:.09em}.modebrand b{color:var(--blue2)}
-.tabs{display:flex;gap:2px;overflow:auto}
-.tabs button{border:0;background:transparent;color:#788394;padding:18px 11px;font-size:10px;font-weight:900;white-space:nowrap}
-.tabs button.active,.tabs button:hover{color:#fff;background:#111720}
 
-/* Skyline-style centered hero */
-.hero{padding:88px 0 68px;border-bottom:1px solid var(--line)}
-.hero-inner{text-align:center;max-width:880px;margin:auto}
-.hero .live{display:inline-flex;align-items:center;gap:8px;border:1px solid #2b3545;background:#0e131b;padding:7px 10px;font-size:10px;font-weight:900;letter-spacing:.08em;text-transform:uppercase}
-.live .dot{width:7px;height:7px;border-radius:50%;background:var(--good)}
-.hero h1{font-size:clamp(64px,9vw,116px);line-height:.82;letter-spacing:-.08em;margin:22px 0 22px;text-transform:uppercase}
-.hero h1 span{display:block;color:var(--blue)}
-.hero p{max-width:690px;margin:0 auto;color:var(--muted);font-size:16px;line-height:1.7}
-.hero-stats{display:flex;justify-content:center;gap:52px;flex-wrap:wrap;margin-top:32px}
-.hero-stat{min-width:120px}
-.hero-stat label{display:block;font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:#6c788a;font-weight:900}
-.hero-stat strong{display:block;margin-top:8px;font-size:18px}
-.logo-stage{margin:58px auto 0;width:min(520px,100%);height:250px;display:grid;place-items:center;position:relative}
-.logo-stage:before,.logo-stage:after{content:"";position:absolute;border:1px solid rgba(110,207,246,.11);border-radius:50%}
-.logo-stage:before{width:240px;height:240px}.logo-stage:after{width:165px;height:165px}
-.logo-stage .v{font-size:118px;font-weight:1000;letter-spacing:-.08em;position:relative;z-index:2}
-
-.section{padding:72px 0}
-.section-title{text-align:center;max-width:800px;margin:0 auto 30px}
-.section-title h2{font-size:42px;letter-spacing:-.05em;margin:8px 0 10px}
-.section-title p{color:var(--muted);line-height:1.65;margin:0}
-.server-card{border:1px solid var(--line);background:#0b0f15;display:grid;grid-template-columns:1.45fr repeat(4,.75fr)}
-.server-card>div{padding:20px 21px;border-right:1px solid var(--line)}
-.server-card>div:last-child{border-right:0}
-.server-card .main h3{font-size:20px;margin:6px 0}.server-card label{display:block;font-size:9px;letter-spacing:.13em;color:#6f7a8b;font-weight:900}
-.server-card strong{display:block;margin-top:8px;font-size:13px}
-.ipline{margin-top:14px;border:1px solid var(--line);background:#0b0f15;padding:15px 18px;display:flex;justify-content:space-between;align-items:center;gap:18px}
-.feature-list{border:1px solid var(--line);background:var(--line);display:grid;gap:1px}
-.feature{background:#0b0f15;padding:24px 26px;display:grid;grid-template-columns:76px 1fr auto;align-items:center;gap:18px}
-.feature:hover{background:#101620}
-.feature .num{font-size:10px;color:#687488;font-weight:900;letter-spacing:.15em}
-.feature h3{margin:0;font-size:22px}.feature p{margin:7px 0 0;color:var(--muted);font-size:12px}.feature .arr{font-size:21px;color:var(--blue2)}
-.pagehead{text-align:center;max-width:820px;margin:0 auto 34px}
-.pagehead h1{font-size:52px;letter-spacing:-.06em;margin:7px 0 10px}
-.pagehead p{color:var(--muted);line-height:1.65;margin:0}
-.controls{display:grid;grid-template-columns:1fr 1fr auto;gap:10px;align-items:end;margin-bottom:18px}
-.field label{display:block;font-size:9px;letter-spacing:.13em;color:#6e798b;font-weight:900;text-transform:uppercase;margin-bottom:7px}
-.empty{border:1px dashed #2b3443;background:#0a0d12;padding:52px 24px;text-align:center;color:#707b8c}
-.board{border:1px solid var(--line);background:#0a0e13;overflow:auto}
-table{width:100%;border-collapse:collapse;min-width:760px}
-th{height:47px;text-align:left;padding:0 15px;border-bottom:1px solid var(--line);font-size:9px;letter-spacing:.14em;color:#6e798b;text-transform:uppercase}
-td{height:66px;padding:0 15px;border-bottom:1px solid #171d26;font-size:13px}
-tbody tr:hover{background:#0f141d}
-.head{width:31px;height:31px;image-rendering:pixelated;border:1px solid #2c3748}
-.pcell{font-weight:900;cursor:pointer}.pcell:hover{color:var(--blue2)}
-.rank{font-weight:1000;color:#aab6c5}
-.report-head{display:grid;grid-template-columns:88px 1fr auto;gap:22px;align-items:center;padding-bottom:28px;border-bottom:1px solid var(--line)}
-.report-head img{width:88px;height:88px;image-rendering:pixelated;border:1px solid #2d394a}
-.report-head h2{font-size:36px;margin:2px 0}.report-score{text-align:right}.report-score strong{font-size:34px;display:block}
-.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line);margin-top:20px}
-.stat{background:#0b0f15;padding:18px}.stat label{display:block;font-size:9px;letter-spacing:.13em;text-transform:uppercase;color:#6f7b8c;font-weight:900}.stat strong{display:block;font-size:24px;margin-top:8px}
-.two{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
-.panel{border:1px solid var(--line);background:#0b0f15;padding:20px}.panel h3{margin:6px 0 13px}
-.row{display:grid;grid-template-columns:1fr auto;gap:14px;padding:10px 0;border-top:1px solid #161c25;font-size:12px}
-.compare-card{border:1px solid var(--line);background:#0a0e13;padding:24px}
-.compare-inputs,.team-inputs{display:grid;grid-template-columns:1fr 74px 1fr;gap:10px;align-items:end}.vs{text-align:center;padding-bottom:13px;color:#667184;font-size:11px;font-weight:1000}
-.compare-result{margin-top:18px;border:1px solid var(--line);background:#0a0e13}
-.people{display:grid;grid-template-columns:1fr 1fr}.person{padding:22px}.person+.person{border-left:1px solid var(--line)}
-.personline{display:flex;align-items:center;gap:12px}.personline img{width:52px;height:52px;image-rendering:pixelated}
-.crow{display:grid;grid-template-columns:1fr 170px 1fr;gap:10px;padding:12px 22px;border-top:1px solid #171d26;text-align:center}.crow .metric{font-size:9px;letter-spacing:.12em;color:#6d798b;text-transform:uppercase}.lead{color:var(--blue2);font-weight:900}
-.team-lab{margin-top:44px;padding-top:36px;border-top:1px solid var(--line)}
-.archive-metrics{display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:var(--line);border:1px solid var(--line);margin-bottom:24px}.archive-metrics>div{background:#0b0f15;padding:15px}.archive-metrics label{font-size:9px;color:#6e798b;letter-spacing:.11em}.archive-metrics strong{display:block;margin-top:6px}
-.match{border:1px solid var(--line);background:#0a0e13;padding:18px;margin-bottom:10px}.match-top{display:flex;justify-content:space-between;color:#7b8798;font-size:11px;margin-bottom:11px}.teamrow{display:grid;grid-template-columns:1fr auto;gap:12px;border-top:1px solid #171d26;padding:10px 0}.teamrow.win{color:#a0e2ae}
-.rule-tabs{display:flex;justify-content:center;gap:6px;flex-wrap:wrap;margin:20px 0 28px}.rule-tabs button{height:40px;border:1px solid #2b3545;background:#0b1017;color:#8490a2;padding:0 13px;font-size:10px;font-weight:900}.rule-tabs button.active{background:var(--blue);border-color:var(--blue);color:#fff}
-.rule-page{display:none}.rule-page.active{display:block}.season-card{text-align:center;border:1px solid var(--line);background:#0a0e13;padding:30px}.season-card h2{font-size:46px;margin:8px 0}.item-group{margin:28px 0}.item-group h3{text-align:center;font-size:11px;letter-spacing:.18em;text-transform:uppercase}.item-group .desc{text-align:center;color:var(--muted);margin-bottom:12px}.items{display:grid;grid-template-columns:repeat(auto-fill,minmax(84px,1fr));gap:8px}.item{height:86px;border:1px solid #2c3545;background:#0b1016;display:grid;place-items:center;text-align:center;font-size:9px}.item b{display:block;font-size:24px}.item img{width:32px;height:32px;image-rendering:pixelated;display:block;margin:0 auto 6px}
-.minemen{padding:54px 0}.minihead{display:flex;justify-content:space-between;align-items:center;gap:28px;margin-bottom:26px}.minihead h1{font-size:44px;letter-spacing:-.05em;margin:0}.mini-search{display:flex;gap:8px;max-width:360px;width:100%}
-.category-tabs{display:flex;gap:22px;border-bottom:1px solid var(--line);margin-bottom:18px}.category-tabs button{height:42px;border:0;background:transparent;color:#7f8999;font-size:11px;font-weight:900;border-bottom:2px solid transparent}.category-tabs button.active{color:#fff;border-bottom-color:var(--blue)}
-.mode-pills{display:flex;gap:7px;overflow:auto;padding-bottom:12px}.mode-pills button{height:37px;border:1px solid #293243;background:#0c1117;color:#8994a5;padding:0 12px;font-size:10px;font-weight:900;white-space:nowrap}.mode-pills button.active{background:#172235;border-color:#36557e;color:#fff}
-.profile-card{border:1px solid var(--line);background:#0b0f15;padding:25px}.profile-main{display:grid;grid-template-columns:78px 1fr auto;gap:20px;align-items:center}.profile-main img{width:78px;height:78px;image-rendering:pixelated}.profile-main h2{font-size:31px;margin:0}.profile-score{text-align:right}.profile-score strong{display:block;font-size:31px}
-.profile-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line);margin-top:18px}.profile-summary>div{background:#0c1118;padding:18px}
-.more{margin-top:18px;padding-top:15px;border-top:1px solid var(--line);display:flex;justify-content:flex-end}
-footer{border-top:1px solid var(--line);padding:28px 0;color:#6f7a8c;font-size:11px}.footer{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
-@media(max-width:900px){.server-card{grid-template-columns:1fr 1fr}.server-card .main{grid-column:1/-1}.stat-grid{grid-template-columns:1fr 1fr}.two{grid-template-columns:1fr}.compare-inputs,.team-inputs{grid-template-columns:1fr}.vs{padding:0}.archive-metrics{grid-template-columns:1fr 1fr}.gnav{display:none}.modebar .wrap{align-items:flex-start;flex-direction:column;padding:10px 0}.tabs{width:100%}.controls{grid-template-columns:1fr}.profile-main,.report-head{grid-template-columns:70px 1fr}.profile-score,.report-score{grid-column:1/-1;text-align:left}}
-@media(max-width:560px){.wrap{width:min(var(--max),calc(100% - 24px))}.hero h1{font-size:58px}.hero-stats{gap:24px}.server-card{grid-template-columns:1fr}.server-card>div{border-right:0;border-bottom:1px solid var(--line)}.feature{grid-template-columns:52px 1fr}.feature .arr{display:none}.stat-grid{grid-template-columns:1fr}.crow{grid-template-columns:1fr 100px 1fr}.archive-metrics{grid-template-columns:1fr}.profile-summary{grid-template-columns:1fr}}
-
-/* === FLOATING / COLORED SKYLINE-STYLE PASS === */
-body::before{
-  content:"";position:fixed;inset:68px 0 auto 0;height:760px;z-index:-2;
-  background:
-    linear-gradient(180deg,rgba(4,7,12,.32) 0%,rgba(7,9,13,.62) 56%,#090a0e 100%),
-    url('vexoria-castle-bg.jpg') center top/cover no-repeat;
-  opacity:.88;pointer-events:none;
-}
-body::after{
-  content:"";position:fixed;inset:68px 0 auto 0;height:760px;z-index:-1;
-  background:radial-gradient(circle at 50% 28%,rgba(66,135,245,.12),transparent 38%);
-  pointer-events:none;
-}
-.hero{background:transparent!important}
-.hero-inner{position:relative}
-.logo-stage{filter:drop-shadow(0 14px 42px rgba(0,0,0,.42))}
-.server-card{
-  position:relative;
-  transform:translateY(-14px);
-  border:1px solid rgba(77,115,168,.62)!important;
-  background:linear-gradient(145deg,rgba(12,18,28,.90),rgba(8,12,19,.84))!important;
-  box-shadow:0 24px 68px rgba(0,0,0,.40),0 0 0 1px rgba(66,135,245,.04) inset;
-}
-.server-card::before{
-  content:"";position:absolute;left:18px;right:18px;top:-1px;height:2px;
-  background:linear-gradient(90deg,transparent,#4287f5,#6ecff6,transparent);opacity:.78
-}
-.ipline{
-  width:min(920px,94%);margin:18px auto 0!important;position:relative;transform:translateY(-6px);
-  border:1px solid rgba(64,160,214,.48)!important;
-  background:linear-gradient(135deg,rgba(10,20,30,.94),rgba(8,13,20,.92))!important;
-  box-shadow:0 18px 50px rgba(0,0,0,.35),0 0 30px rgba(110,207,246,.035);
-}
-.ipline::before{
-  content:"";position:absolute;inset:-1px;border-radius:inherit;pointer-events:none;
-  background:linear-gradient(90deg,rgba(110,207,246,.25),transparent 24%,transparent 76%,rgba(66,135,245,.22));
-  mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
-  -webkit-mask-composite:xor;mask-composite:exclude;padding:1px
-}
-.feature-list{background:transparent!important;border:0!important;gap:12px!important;grid-template-columns:repeat(3,1fr)!important}
-.feature{
-  min-height:168px;border:1px solid var(--line);padding:25px!important;grid-template-columns:58px 1fr auto!important;
-  background:linear-gradient(145deg,rgba(11,15,21,.94),rgba(8,12,18,.94))!important;
-  box-shadow:0 18px 55px rgba(0,0,0,.28);transform:translateY(0);transition:.18s ease!important
-}
-.feature:nth-child(1){border-color:rgba(66,135,245,.62)!important;box-shadow:0 18px 55px rgba(0,0,0,.28),0 0 35px rgba(66,135,245,.045)}
-.feature:nth-child(2){border-color:rgba(74,204,202,.56)!important;box-shadow:0 18px 55px rgba(0,0,0,.28),0 0 35px rgba(74,204,202,.04)}
-.feature:nth-child(3){border-color:rgba(164,111,255,.58)!important;box-shadow:0 18px 55px rgba(0,0,0,.28),0 0 35px rgba(164,111,255,.04)}
-.feature:nth-child(1) .num,.feature:nth-child(1) .arr{color:#4287f5!important}
-.feature:nth-child(2) .num,.feature:nth-child(2) .arr{color:#57d5cf!important}
-.feature:nth-child(3) .num,.feature:nth-child(3) .arr{color:#b07cff!important}
-.feature:hover{transform:translateY(-6px)!important}
-.feature h3{font-size:20px!important}
-.section-title{margin-top:18px!important}
-.pagehead{position:relative}
-.pagehead::after{
-  content:"";display:block;width:54px;height:2px;margin:18px auto 0;
-  background:linear-gradient(90deg,var(--blue),var(--blue2))
-}
-.stat-grid{box-shadow:0 18px 54px rgba(0,0,0,.22)}
-.panel,.board,.compare-card,.compare-result,.season-card,.match{
-  box-shadow:0 15px 45px rgba(0,0,0,.20)
-}
-.minemen .board{border-color:rgba(66,135,245,.20)}
-@media(max-width:900px){.feature-list{grid-template-columns:1fr!important}.server-card{transform:none}.ipline{width:100%;transform:none}}
-
-
-/* ==============================
-   DUELS LEADERBOARDS
-   ============================== */
-.duels-leaderboards{min-height:760px}
-.duel-category-tabs{justify-content:center;margin-bottom:42px}
-.duel-category-tabs button{min-width:150px}
-.duel-board-heading,.duel-list-title{display:flex;justify-content:space-between;align-items:end;gap:24px}
-.duel-board-heading{margin-bottom:28px}
-.duel-board-heading h2,.duel-list-title h2{margin:5px 0 0;font-size:30px;letter-spacing:-.04em}
-.duel-stat-field{width:230px}
-.duel-podium{margin-bottom:58px}
-.duel-podium-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;align-items:end}
-.duel-podium-card{
-  position:relative;min-height:260px;border:1px solid #263247;
-  background:linear-gradient(145deg,rgba(14,20,30,.97),rgba(8,12,18,.97));
-  padding:29px 22px;text-align:center;overflow:hidden;
-  box-shadow:0 18px 50px rgba(0,0,0,.32)
-}
-.duel-podium-card::before{
-  content:"";position:absolute;left:15%;right:15%;top:-1px;height:2px;
-  background:linear-gradient(90deg,transparent,#4287f5,#6ecff6,transparent)
-}
-.duel-podium-card.rank-1{
-  min-height:300px;border-color:rgba(66,135,245,.72);transform:translateY(-12px);
-  box-shadow:0 24px 70px rgba(0,0,0,.42),0 0 45px rgba(66,135,245,.06)
-}
-.duel-podium-card.rank-2,.duel-podium-card.rank-3{opacity:.92}
-.duel-podium-rank{
-  position:absolute;top:15px;left:16px;font-size:11px;font-weight:1000;
-  color:#7f8ba0;letter-spacing:.08em
-}
-.duel-podium-card.rank-1 .duel-podium-rank{color:var(--blue2)}
-.duel-podium-head{
-  width:88px;height:88px;image-rendering:pixelated;border:1px solid #34435a;
-  margin:18px auto 18px
-}
-.duel-podium-card.rank-1 .duel-podium-head{width:106px;height:106px}
-.duel-podium-name{font-size:19px;font-weight:1000}
-.duel-podium-stat-label{
-  margin-top:22px;color:#6d788a;font-size:9px;font-weight:900;letter-spacing:.14em
-}
-.duel-podium-value{margin-top:5px;font-size:30px;font-weight:1000;color:#fff}
-.duel-podium-card.rank-1 .duel-podium-value{color:var(--blue2);font-size:38px}
-.duel-list-title{margin-bottom:15px}
-.duels-leaderboards .board{border-color:rgba(66,135,245,.28)}
-.duels-leaderboards tbody tr:nth-child(1){background:rgba(66,135,245,.035)}
-.duel-stat-active{color:var(--blue2)}
-@media(max-width:760px){
-  .duel-board-heading{align-items:stretch;flex-direction:column}
-  .duel-stat-field{width:100%}
-  .duel-podium-grid{grid-template-columns:1fr}
-  .duel-podium-card.rank-1{order:-1;transform:none}
-  .duel-podium-card{min-height:220px}
-}
-
-</style>
-</head>
-<body>
-<header class="top">
-<div class="wrap">
-  <div class="brand" onclick="go('#home')" style="cursor:pointer"><div class="mark">V</div>VEXORIA NETWORK</div>
-  <nav class="gnav">
-    <button data-r="home" onclick="go('#home')">Home</button>
-    <button data-r="rbw" onclick="go('#rbw-home')">Ranked BedWars</button>
-    <button data-r="duels" onclick="go('#duels')">Duels</button>
-    <button data-r="kitpvp" onclick="go('#kitpvp')">KitPvP</button>
-    <button onclick="window.open('https://discord.gg/vexorianetwork','_blank')">Discord ↗</button>
-  </nav>
-  <button class="btn" onclick="copyIP()">Copy IP</button>
-</div>
-</header>
-
-<main id="app"></main>
-
-<footer><div class="wrap footer"><div>© 2026 Vexoria Network</div><div>mc.vexoriannetwork.club · discord.gg/vexorianetwork</div></div></footer>
-
-<script>
-const IP='mc.vexoriannetwork.club';
-const API={
- network:'/api/network',
- rbwPlayer:(u,season='')=>`/api/player?username=${encodeURIComponent(u)}${season?`&season=${encodeURIComponent(season)}`:''}`,
- rbwSeasons:'/api/rbw/seasons',
- rbwSummary:(season='')=>`/api/rbw/summary${season?`?season=${encodeURIComponent(season)}`:''}`,
- rbwLeaderboard:(stat='elo',season='',username='')=>`/api/rbw/leaderboard?stat=${encodeURIComponent(stat)}${season?`&season=${encodeURIComponent(season)}`:''}${username?`&username=${encodeURIComponent(username)}`:''}`,
- rbwMatches:(username='',season='',page=1)=>`/api/rbw/matches?page=${page}${username?`&username=${encodeURIComponent(username)}`:''}${season?`&season=${encodeURIComponent(season)}`:''}`,
- rbwAnalytics:(action,p='',p2='',season='')=>`/api/rbw/analytics?action=${encodeURIComponent(action)}${p?`&player=${encodeURIComponent(p)}`:''}${p2?`&player2=${encodeURIComponent(p2)}`:''}${season?`&season=${encodeURIComponent(season)}`:''}`,
- duelsLeaderboard:(version='modern',stat='all')=>`/api/duels/leaderboard?version=${encodeURIComponent(version)}&stat=${encodeURIComponent(stat)}`,
- kpPlayer:u=>`/api/kitpvp/player?username=${encodeURIComponent(u)}`,
- kpLeaderboard:stat=>`/api/kitpvp/leaderboard?stat=${encodeURIComponent(stat)}`,
- kpKills:u=>`/api/kitpvp/kills${u?`?username=${encodeURIComponent(u)}`:''}`,
- kpKits:u=>`/api/kitpvp/kits?username=${encodeURIComponent(u)}`
-};
-const $=q=>document.querySelector(q), app=()=>$('#app');
-function go(h){location.hash=h}
-function esc(v){return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
-function n(v){return Number(v||0).toLocaleString()}
-function pct(v){return `${Number(v||0).toFixed(1)}%`}
-function head(u,s=31){return `https://mc-heads.net/avatar/${encodeURIComponent(u)}/${s}`}
-async function get(url){const r=await fetch(url);let d={};try{d=await r.json()}catch{}if(!r.ok)throw new Error(d.error||`Request failed (${r.status})`);return d}
-function copyIP(){navigator.clipboard?.writeText(IP);alert('Copied: '+IP)}
-function active(r){document.querySelectorAll('.gnav button[data-r]').forEach(b=>b.classList.toggle('active',b.dataset.r===r))}
-function stat(l,v){return `<div class="stat"><label>${l}</label><strong>${v}</strong></div>`}
-function row(a,b){return `<div class="row"><span>${esc(a)}</span><strong>${esc(b)}</strong></div>`}
-function rbwNav(a){const t=[['home','Home'],['stats','Stats'],['rankings','Leaderboards'],['compare','Compare'],['matches','Recaps'],['rules','Rules']];return `<div class="modebar"><div class="wrap"><div class="modebrand"><b>VEXORIA</b> RANKED BEDWARS · GLOBAL</div><div class="tabs">${t.map(([id,l])=>`<button class="${id===a?'active':''}" onclick="go('#rbw-${id}')">${l}</button>`).join('')}</div></div></div>`}
-function feat(no,t,d,h){return `<div class="feature" onclick="go('${h}')"><div class="num">${no}</div><div><h3>${t}</h3><p>${d}</p></div><div class="arr">↗</div></div>`}
-
-function renderHome(){
- active('home');
- app().innerHTML=`<section class="hero"><div class="wrap"><div class="hero-inner">
- <div class="live"><span class="dot"></span>NETWORK ONLINE</div>
- <h1>VEXORIA <span>NETWORK</span></h1>
- <p>A modern Minecraft network built around competitive BedWars, modern 1.21 duels and persistent KitPvP progression.</p>
- <div class="hero-stats"><div class="hero-stat"><label>VERSION</label><strong>1.21.x</strong></div><div class="hero-stat"><label>LOCATION</label><strong>SINGAPORE</strong></div><div class="hero-stat"><label>ONLINE PLAYERS</label><strong id="home-online">—</strong></div><div class="hero-stat"><label>SERVER IP</label><strong>${IP}</strong></div></div>
- <div class="logo-stage"><div class="v">V</div></div>
- </div></div></section>
- <section class="section"><div class="wrap">
- <div class="server-card"><div class="main"><div class="kicker">VEXORIA NETWORK</div><h3>Online · Java 1.21+</h3><div class="muted">Join with the server address below and choose your mode.</div></div><div><label>VERSION</label><strong>1.21.x</strong></div><div><label>LOCATION</label><strong>SINGAPORE</strong></div><div><label>ONLINE</label><strong id="home-online2">—</strong></div><div><label>SERVER IP</label><strong>${IP}</strong></div></div>
- <div class="section-title" style="margin-top:60px"><div class="kicker">NETWORK MODES</div><h2>Choose your arena.</h2><p>Three distinct experiences, each with its own stats, profile system and leaderboard.</p></div>
- <div class="feature-list">${feat('01','MODERN RANKED BEDWARS','Seasonal ELO, match history, player reports and competitive analytics','#rbw-home')}${feat('02','VANILLA × COMPETITIVE DUELS','Modern 1.21 PvP with ranked MultiDuels and casual practice','#duels')}${feat('03','KITPVP 1.21X','Persistent economy, kills, progression and kit ownership','#kitpvp')}</div>
- </div></section>`;
- get(API.network).then(d=>{const o=d.onlinePlayers??d.online??'—';$('#home-online')&&($('#home-online').textContent=o);$('#home-online2')&&($('#home-online2').textContent=o)}).catch(()=>{})
-}
-
-async function renderRBWHome(){
- active('rbw');let season='Between Seasons',seasonLive=false;try{const s=await get(API.rbwSeasons);if(s.activeSeason){season=s.activeSeason.name||`Season ${s.activeSeason.seasonNumber}`;seasonLive=true}}catch{}
- app().innerHTML=rbwNav('home')+`<section class="hero"><div class="wrap"><div class="hero-inner">
- <div class="live">${seasonLive?`NEW · ${esc(season)} LIVE NOW`:'RANKED BEDWARS IS CURRENTLY BETWEEN SEASONS'}</div>
- <h1>VEXORIA <span>RANKED BEDWARS</span></h1>
- <p>Play Ranked BedWars against Vexoria's strongest players. Climb the leaderboard, build your reputation and own the season.</p>
- <div class="hero-stats"><div class="hero-stat"><label>PLAYERS</label><strong id="rbwp">—</strong></div><div class="hero-stat"><label>GAMES PLAYED</label><strong id="rbwg">—</strong></div><div class="hero-stat"><label>COMPETITIVE REGION</label><strong>GLOBAL</strong></div></div>
- <div class="logo-stage"><div class="v">V</div></div>
- </div></div></section>
- <section class="section"><div class="wrap">
- <div class="server-card"><div class="main"><div class="kicker">VEXORIA RANKED BEDWARS</div><h3>Online · Java 1.21+</h3><div class="muted">Join the Ranked BedWars queue through Discord and play on Vexoria.</div></div><div><label>PLAYERS</label><strong id="rbwo">— online now</strong></div><div><label>LOCATION</label><strong>GLOBAL</strong></div><div><label>REGISTERED</label><strong id="rbwr">— ranked players</strong></div><div><label>GAMES</label><strong id="rbwgt">— recorded results</strong></div></div>
- <div class="ipline"><div><div class="kicker">SERVER ADDRESS</div><strong>${IP}</strong><div class="muted" style="font-size:11px;margin-top:4px">Add the server in Minecraft Java Edition and join the Ranked BedWars queue through Discord.</div></div><button class="btn" onclick="copyIP()">Copy</button></div>
- <div class="section-title" style="margin-top:60px"><div class="kicker">THE SEASON, LIVE</div><h2>Follow every fight.</h2><p>See who is climbing, inspect complete player careers and revisit the latest ranked results.</p></div>
- <div class="feature-list">${feat('01','LEADERBOARDS',"Vexoria's current standings",'#rbw-rankings')}${feat('02','MATCH RECAPS','Maps, teams and performance','#rbw-matches')}${feat('03','PLAYER PROFILES','Search any ranked competitor','#rbw-stats')}</div>
- </div></section>`;
- Promise.allSettled([get(API.rbwSummary()),get(API.network)]).then(([a,b])=>{if(a.status==='fulfilled'){const x=a.value;$('#rbwp')&&($('#rbwp').textContent=n(x.participatingPlayers));$('#rbwr')&&($('#rbwr').textContent=n(x.registeredPlayers)+' ranked players');$('#rbwg')&&($('#rbwg').textContent=n(x.totalGames));$('#rbwgt')&&($('#rbwgt').textContent=n(x.totalGames)+' recorded results')}if(b.status==='fulfilled'){$('#rbwo')&&($('#rbwo').textContent=n(b.value.onlinePlayers)+' online now')}})
-}
-
-function renderStats(){
- active('rbw');app().innerHTML=rbwNav('stats')+`<section class="section"><div class="wrap"><div class="pagehead"><div class="kicker">PLAYER STATISTICS</div><h1>Player Statistics</h1><p>Search any registered Minecraft player and explore their seasonal ranked record.</p></div><div class="controls" style="grid-template-columns:1fr 220px auto;max-width:980px;margin-left:auto;margin-right:auto"><div class="field"><label>PLAYER</label><input id="rq" class="input" placeholder="Enter Minecraft username"></div><div class="field"><label>SEASON</label><select id="rseason" class="select"><option value="">Active season</option></select></div><button class="btn primary" onclick="loadPlayer()">Search →</button></div><div id="rout" class="empty"><div style="font-size:34px;margin-bottom:10px">⌕</div>A player profile will appear here.</div></div></section>`;loadProfileSeasons()
-}
-async function loadProfileSeasons(){try{const d=await get(API.rbwSeasons),select=$('#rseason');if(!select)return;(d.seasons||[]).forEach(s=>{const option=document.createElement('option');option.value=s.seasonNumber;option.textContent=`Season ${s.seasonNumber} · ${s.status}`;select.appendChild(option)})}catch{}}
-async function loadPlayer(name){
- const q=(name||$('#rq')?.value||'').trim();if(!q)return;const selectedSeason=$('#rseason')?.value||'';const out=$('#rout');out.className='empty';out.textContent='Loading player report...';
- try{const [x,m,t,o,qp]=await Promise.all([get(API.rbwPlayer(q,selectedSeason)),get(API.rbwMatches(q,selectedSeason,1)).catch(()=>({matches:[]})),get(API.rbwAnalytics('teammates',q,'',selectedSeason)).catch(()=>({teammates:[]})),get(API.rbwAnalytics('opponents',q,'',selectedSeason)).catch(()=>({opponents:[]})),get(API.rbwAnalytics('queues',q,'',selectedSeason)).catch(()=>({queues:[]}))]);if(x.betweenSeasons){out.className='empty';out.textContent='Ranked BedWars is currently between seasons.';return}const games=Number(x.games||0),wr=games?Number(x.wins||0)/games*100:0;
- out.className='';out.innerHTML=`${!x.hasSeasonStats?'<div class="empty" style="margin-bottom:12px">This player is registered but has not participated in the selected season.</div>':''}<div class="report-head"><img src="${head(x.username,88)}"><div><div class="kicker">RANKED PLAYER REPORT</div><h2>${esc(x.username)}</h2><div class="muted">${esc(x.seasonName||`Season ${x.seasonNumber}`)} · ${esc(x.seasonType||'')} · ${esc(x.seasonStatus||'')}</div></div><div class="report-score"><div class="kicker">${x.seasonStatus==='ENDED'?'FINAL ELO':'CURRENT ELO'}</div><strong>${n(x.elo)}</strong><div class="muted">Peak ${n(x.peakElo)}</div></div></div>
- <div class="stat-grid">${stat('ELO',n(x.elo))}${stat('PEAK ELO',n(x.peakElo))}${stat('GAMES',n(games))}${stat('WIN RATE',pct(wr))}${stat('WINS',n(x.wins))}${stat('LOSSES',n(x.losses))}${stat('K/D',Number(x.kd||0).toFixed(2))}${stat('W/L',Number(x.wl||0).toFixed(2))}</div>
- <div class="two"><div class="panel"><div class="kicker">COMBAT REPORT</div><h3>Complete performance</h3>${row('Kills',x.kills)}${row('Deaths',x.deaths)}${row('Beds',x.beds)}${row('MVPs',x.mvps)}${row('Level',x.level)}${row('XP',x.xp)}</div><div class="panel"><div class="kicker">SEASON EFFICIENCY</div><h3>Ratios & streaks</h3>${row('Current Win Streak',x.currentWinStreak)}${row('Best Win Streak',x.highestWinStreak)}${row('Current Loss Streak',x.currentLossStreak)}${row('Highest Loss Streak',x.highestLossStreak)}${row('Kills / Game',games?(x.kills/games).toFixed(2):'0.00')}${row('Beds / Game',games?(x.beds/games).toFixed(2):'0.00')}</div></div>
- <div class="two"><div class="panel"><div class="kicker">STRONGEST TEAMMATES</div><h3>Best partners</h3>${(t.teammates||[]).slice(0,7).map(z=>row(z.username,`${z.winsTogether}W · ${pct(z.winRate)}`)).join('')||'<div class="muted">No qualifying teammate data yet.</div>'}</div><div class="panel"><div class="kicker">TOUGHEST OPPONENTS</div><h3>Hardest matchups</h3>${(o.opponents||[]).slice(0,7).map(z=>row(z.username,`${z.meetings} games · ${pct(z.lossRate)}`)).join('')||'<div class="muted">No qualifying opponent data yet.</div>'}</div></div>
- <div class="panel" style="margin-top:12px"><div class="kicker">QUEUE PERFORMANCE</div><h3>By queue</h3>${(qp.queues||[]).slice(0,8).map(z=>row(z.queue,`${z.games} games · ${pct(z.winRate)} · ${z.eloChange>=0?'+':''}${z.eloChange} ELO`)).join('')||'<div class="muted">No queue data yet.</div>'}</div><div style="margin-top:12px">${matchesHTML(m.matches||[])}</div>`}catch(e){out.className='empty';out.textContent=e.message}
-}
-
-const RBW_LB_STATS={elo:{label:'ELO',field:'elo'},peakelo:{label:'PEAK ELO',field:'peakElo'},wins:{label:'WINS',field:'wins'},kills:{label:'KILLS',field:'kills'},beds:{label:'BEDS',field:'beds'},mvps:{label:'MVPS',field:'mvps'},beststreak:{label:'BEST WIN STREAK',field:'highestWinStreak'}}
-function renderRankings(){
- active('rbw');app().innerHTML=rbwNav('rankings')+`<section class="section"><div class="wrap"><div class="pagehead"><div class="kicker">GLOBAL LEADERBOARDS</div><h1>Global Leaderboards</h1><p>Top Ranked BedWars players on Vexoria competing for seasonal placement.</p></div><div class="controls"><div class="field"><label>RANK BY</label><select id="lbst" class="select" onchange="loadRankings()"><option value="elo">ELO</option><option value="peakelo">Peak ELO</option><option value="wins">Wins</option><option value="kills">Kills</option><option value="beds">Beds</option><option value="mvps">MVPs</option><option value="beststreak">Best Win Streak</option></select></div><div class="field"><label>SEARCH PLAYER</label><input id="lbu" class="input" placeholder="Search IGN…"></div><button class="btn primary" onclick="openLB()">Update</button></div><div id="lbout" class="empty">Loading leaderboard…</div></div></section>`;setTimeout(loadRankings,0)
-}
-async function loadRankings(){const out=$('#lbout'),key=$('#lbst')?.value||'elo',meta=RBW_LB_STATS[key]||RBW_LB_STATS.elo;try{const d=await get(API.rbwLeaderboard(key));if(d.betweenSeasons){out.className='empty';out.textContent='Ranked BedWars is currently between seasons.';return}const rows=d.players||[];out.className='board';out.innerHTML=`<table><thead><tr><th>#</th><th></th><th>PLAYER</th><th>${meta.label}</th></tr></thead><tbody>${rows.map(x=>`<tr><td class="rank">#${x.position}</td><td><img class="head" src="${head(x.username)}"></td><td><div class="pcell" onclick="openRBW('${esc(x.username)}')">${esc(x.username)}</div></td><td><strong>${n(x[meta.field]||0)}</strong></td></tr>`).join('')}</tbody></table>`}catch(e){out.className='empty';out.textContent=e.message}}
-function openLB(){const u=$('#lbu').value.trim();if(u)openRBW(u)}
-function openRBW(u){go('#rbw-stats');setTimeout(()=>{if($('#rq')){$('#rq').value=u;loadPlayer(u)}},70)}
-
-function renderCompare(){
- active('rbw');app().innerHTML=rbwNav('compare')+`<section class="section"><div class="wrap"><div class="pagehead"><div class="kicker">HEAD-TO-HEAD COMPARISON</div><h1>Head-to-Head Comparison</h1><p>Compare ELO, combat ratios, win streaks and career statistics between two players.</p></div><div class="compare-card"><div class="kicker">SOLO ANALYSIS</div><h2 style="text-align:center;margin:8px 0 20px;font-size:28px">Player vs player</h2><div class="compare-inputs"><div class="field"><label>PLAYER ONE</label><input id="c1" class="input" placeholder="Player 1 IGN…"></div><div class="vs">VS</div><div class="field"><label>PLAYER TWO</label><input id="c2" class="input" placeholder="Player 2 IGN…"></div></div><div style="text-align:center"><button class="btn primary" style="margin-top:12px" onclick="comparePlayers()">Compare Profiles</button></div><div id="cout"></div></div>
- <div class="team-lab"><div class="pagehead" style="margin-bottom:24px"><div class="kicker">TEAM LAB</div><h1 style="font-size:38px">Compare full lineups.</h1><p>Built for 3v3, with support for any 1v1 through 4v4 selection—including uneven groups.</p></div><div class="team-inputs"><div class="field"><label>TEAM A · COMMA-SEPARATED</label><input id="ta" class="input" placeholder="player1, player2, player3"></div><div class="vs">VS</div><div class="field"><label>TEAM B · COMMA-SEPARATED</label><input id="tb" class="input" placeholder="player4, player5, player6"></div></div><div style="text-align:center"><button class="btn primary" style="margin-top:12px" onclick="compareTeams()">Analyze Teams</button></div><div id="tout"></div></div></div></section>`
-}
-async function comparePlayers(){const a=$('#c1').value.trim(),b=$('#c2').value.trim(),out=$('#cout');if(!a||!b)return;out.innerHTML='<div class="empty" style="margin-top:16px">Building comparison…</div>';try{const [x,y,h]=await Promise.all([get(API.rbwPlayer(a)),get(API.rbwPlayer(b)),get(API.rbwAnalytics('compare',a,b))]);const ms=[['ELO',x.elo,y.elo],['Peak ELO',x.peakElo,y.peakElo],['Wins',x.wins,y.wins],['Kills',x.kills,y.kills],['Beds',x.beds,y.beds],['MVPs',x.mvps,y.mvps],['Best Streak',x.highestWinStreak,y.highestWinStreak]];out.innerHTML=`<div class="compare-result"><div class="people"><div class="person"><div class="personline"><img src="${head(x.username,52)}"><div><div class="kicker">PLAYER ONE</div><strong>${esc(x.username)}</strong></div></div></div><div class="person"><div class="personline"><img src="${head(y.username,52)}"><div><div class="kicker">PLAYER TWO</div><strong>${esc(y.username)}</strong></div></div></div></div>${ms.map(([m,a,b])=>`<div class="crow"><div class="${Number(a)>Number(b)?'lead':''}">${n(a)}</div><div class="metric">${m}</div><div class="${Number(b)>Number(a)?'lead':''}">${n(b)}</div></div>`).join('')}<div class="crow"><div>${n(h.totalMeetings||0)}</div><div class="metric">TOTAL MEETINGS</div><div>${n(h.totalMeetings||0)}</div></div></div>`}catch(e){out.innerHTML=`<div class="empty">${esc(e.message)}</div>`}}
-async function compareTeams(){const A=$('#ta').value.split(',').map(x=>x.trim()).filter(Boolean),B=$('#tb').value.split(',').map(x=>x.trim()).filter(Boolean),out=$('#tout');if(!A.length||!B.length)return;out.innerHTML='<div class="empty" style="margin-top:16px">Analyzing lineups…</div>';try{const [a,b]=await Promise.all([Promise.all(A.map(u=>get(API.rbwPlayer(u)))),Promise.all(B.map(u=>get(API.rbwPlayer(u))))]);const avg=(arr,k)=>arr.reduce((s,x)=>s+Number(x[k]||0),0)/arr.length;const g=x=>Number(x.wins||0)+Number(x.losses||0),wr=x=>g(x)?x.wins/g(x)*100:0;out.innerHTML=`<div class="compare-result"><div class="people"><div class="person"><div class="kicker">TEAM A</div><strong>${A.map(esc).join(' · ')}</strong></div><div class="person"><div class="kicker">TEAM B</div><strong>${B.map(esc).join(' · ')}</strong></div></div>${cRow('AVG ELO',avg(a,'elo'),avg(b,'elo'))}${cRow('AVG WIN RATE',a.reduce((s,x)=>s+wr(x),0)/a.length,b.reduce((s,x)=>s+wr(x),0)/b.length,true)}${cRow('AVG K/D',avg(a,'kd'),avg(b,'kd'))}${cRow('COMBINED GAMES',a.reduce((s,x)=>s+g(x),0),b.reduce((s,x)=>s+g(x),0))}</div>`}catch(e){out.innerHTML=`<div class="empty">${esc(e.message)}</div>`}}
-function cRow(m,a,b,pc=false){return `<div class="crow"><div class="${a>b?'lead':''}">${pc?pct(a):Number(a).toFixed(a%1?2:0)}</div><div class="metric">${m}</div><div class="${b>a?'lead':''}">${pc?pct(b):Number(b).toFixed(b%1?2:0)}</div></div>`}
-
-function renderMatches(){
- active('rbw');app().innerHTML=rbwNav('matches')+`<section class="section"><div class="wrap"><div class="pagehead"><div class="kicker">MATCH RECAPS</div><h1>Match Recaps</h1><p>Forensic breakdowns and detailed performance logs of recent competitive matches.</p></div><div class="controls"><div class="field"><label>SEARCH MATCHES</label><input id="mq" class="input" placeholder="Search by player IGN…"></div><div class="field"><label>MATCH STATUS</label><select id="mstatus" class="select"><option value="">All Matches</option><option value="SCORED">Finished</option><option value="VOIDED">Voided</option></select></div><button class="btn primary" onclick="loadMatches()">Search</button></div><div class="archive-metrics"><div><label>Total loaded</label><strong id="mt">—</strong></div><div><label>Ongoing</label><strong>—</strong></div><div><label>Processing</label><strong>—</strong></div><div><label>Finished</label><strong id="mf">—</strong></div><div><label>Matching</label><strong id="mm">—</strong></div></div><div class="kicker" style="text-align:center;margin:0 0 14px">MATCH ARCHIVE</div><div id="mout" class="empty">Loading recent matches…</div></div></section>`;setTimeout(loadMatches,0)
-}
-async function loadMatches(){const out=$('#mout'),q=$('#mq')?.value.trim()||'',status=$('#mstatus')?.value||'';try{const url=`/api/rbw/matches?page=1&limit=20${q?`&username=${encodeURIComponent(q)}`:''}${status?`&status=${encodeURIComponent(status)}`:''}`,d=await get(url);if(d.betweenSeasons){out.className='empty';out.textContent='Ranked BedWars is currently between seasons.';return}const ms=d.matches||[];$('#mt')&&($('#mt').textContent=n(d.total));$('#mf')&&($('#mf').textContent=n(ms.filter(x=>x.status==='SCORED').length));$('#mm')&&($('#mm').textContent=n(ms.length));out.className='';out.innerHTML=matchesHTML(ms)}catch(e){out.className='empty';out.textContent=e.message}}
-function matchesHTML(ms){if(!ms.length)return '<div class="empty">No matches found.</div>';return ms.map(g=>`<div class="match"><div class="match-top"><span>GAME #${g.gameNumber??'—'} · ${esc(g.queueKey||g.queue?.name||'Ranked')}</span><span>${esc(typeof g.map==='string'?g.map:g.map?.name||'Unknown Map')}</span></div>${(g.teams||[]).map(t=>`<div class="teamrow ${t.winner?'win':''}"><div><strong>TEAM ${t.team??'—'}${t.winner?' · WINNER':''}</strong><div class="muted" style="margin-top:4px">${(t.players||[]).map(z=>`${esc(z.username)} · ${z.kills??'—'}K${z.beds?` · ${z.beds}B`:''}${z.mvp?' · MVP':''}${z.eloChange!=null?` · ${z.eloChange>=0?'+':''}${z.eloChange} ELO`:''}`).join('<br>')}</div></div><div>${g.status==='VOIDED'?'VOIDED':t.winner?'VICTORY':'DEFEAT'}</div></div>`).join('')}</div>`).join('')}
-
-function renderRules(){active('rbw');app().innerHTML=rbwNav('rules')+`<section class="section"><div class="wrap"><div class="pagehead"><div class="kicker">RANKED RULEBOOK</div><h1>Ranked Rules</h1><p>Vexoria's own season, gameplay and screenshare rules.</p></div><div class="rule-tabs"><button class="active" onclick="rule('season',this)">SEASON RULES</button><button onclick="rule('gameplay',this)">GAMEPLAY</button><button onclick="rule('screenshare',this)">SCREENSHARE</button></div><div id="rule-season" class="rule-page active">${seasonRules()}</div><div id="rule-gameplay" class="rule-page">${gameplayRules()}</div><div id="rule-screenshare" class="rule-page">${screenshareRules()}</div></div></section>`}
-function rule(id,b){document.querySelectorAll('.rule-page').forEach(x=>x.classList.remove('active'));$('#rule-'+id).classList.add('active');b.parentElement.querySelectorAll('button').forEach(x=>x.classList.toggle('active',x===b))}
-function mcTex(type,name){return `https://mcasset.cloud/1.21.1/assets/minecraft/textures/${type}/${name}.png`}
-function items(title,arr,desc){return `<div class="item-group"><h3>${title}</h3><div class="desc">${desc}</div>${arr.length?`<div class="items">${arr.map(([type,id,n])=>`<div class="item"><div><img src="${mcTex(type,id)}" alt="${esc(n)}"><span>${esc(n)}</span></div></div>`).join('')}</div>`:''}</div>`}
-function seasonRules(){return `<div class="season-card"><div class="kicker">RULE SEASON</div><h2>Season 1</h2><div class="muted">Modern Ranked BedWars Ruleset</div></div>
-${items('ALWAYS',[
-['block','white_wool','Wool'],['block','end_stone','End Stone'],['block','terracotta','Hardened Clay'],['block','ladder','Ladder'],['block','oak_planks','Oak Wood'],['block','glass','Blast Proof Glass'],['item','iron_sword','Iron Sword'],['item','stone_sword','Stone Sword'],['item','chainmail_boots','Chainmail Armor'],['item','diamond_boots','Diamond Armor'],['item','iron_axe','Axe'],['item','iron_pickaxe','Pickaxe'],['item','shears','Shears'],['item','fire_charge','Fireball'],['item','golden_apple','Golden Apple'],['item','snowball','Bedbug']
-],'Always available during the game.')}
-${items('DIAMOND II',[['item','milk_bucket','Magic Milk']],'Unlocked at Diamond II.')}
-${items('DIAMOND III',[['item','potion','Jump V'],['item','potion','Speed II'],['block','tnt_side','TNT']],'Unlocked at Diamond III.')}
-${items('EMERALD II',[],'No additional item unlocks. Diamond III rules continue.')}
-${items('EMERALD III',[['item','potion','Invisibility']],'Unlocked at Emerald III.')}
-${items('NEVER ALLOWED',[
-['item','string','Cobweb'],['item','brick','Compact Pop-up Tower'],['item','spawn_egg','Dream Defender'],['item','packed_ice','Ice Bridge'],['block','obsidian','Obsidian'],['item','chest_minecart','Portable Quick Buy'],['block','sponge','Sponge'],['item','water_bucket','Water Bucket']
-],'Disabled for the entire match.')}`}
-function rulesTable(rows){return `<div class="board"><table><thead><tr><th>RULE</th><th>1ST</th><th>2ND</th><th>3RD</th><th>4TH</th><th>5TH</th><th>6TH</th></tr></thead><tbody>${rows.map(x=>`<tr><td style="min-width:300px"><strong>${x[0]}</strong><div class="muted" style="margin-top:4px">${x[1]}</div></td>${x.slice(2).map(v=>`<td>${v}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`}
-function gameplayRules(){return rulesTable([['Unfair Gameplay','Stat manipulation, win trading, intentional throwing, or behavior designed to misrepresent true performance.','Warning','1-Day','3-Day','7-Day','14-Day','Permanent'],['Unauthorized Modifications','Running mods or clients outside the allowed modifications policy.','Warning','1-Day','3-Day','7-Day','14-Day','Permanent'],['Unfair Gameplay Methods','Teaming with opponents or exploiting edge-case methods that undermine fair competition.','Warning','1-Day','3-Day','7-Day','14-Day','Permanent'],['Exploiting Bugs / Systems','Knowingly using a bug, glitch, or unintended interaction for advantage.','Warning','1-Day','3-Day','7-Day','14-Day','Permanent'],['Unfair Progression Assistance','Boosting, carrying alts, smurfing, or playing matches for another account.','Warning','1-Day','3-Day','7-Day','14-Day','Permanent'],['Performance Disruption','Intentionally degrading the match experience through lag-causing behavior.','Warning','1-Day','3-Day','7-Day','14-Day','Permanent'],['Command Abuse','Spam, harassment via commands, or misuse of party and queue systems.','Warning','1-Day','3-Day','7-Day','14-Day','Permanent'],['Use of Cheats','Cheat clients, scripts, macros, autoclickers, or hardware automation.','3-Day','7-Day','14-Day','30-Day','Permanent','—'],['Duplication Abuse','Replicating items, currencies, or rewards through an exploit.','3-Day','7-Day','14-Day','30-Day','Permanent','—'],['Attempting to Circumvent Systems','Using technical means to dodge queue penalties or enforcement.','3-Day','7-Day','14-Day','30-Day','Permanent','—']])}
-function screenshareRules(){return rulesTable([['Unable to Verify Screen','System or share setup prevents verification.','Warning','1-Day','3-Day','—','—','—'],['Disconnecting During Review','Leaving before the Screensharer ends the review.','Warning','1-Day','3-Day','—','—','—'],['Delaying Staff Review','Stalling the start without valid reason.','Warning','1-Day','3-Day','—','—','—'],['Confession of Rule Violation','Admitting to a violation during review.','Warning','3-Day','7-Day','—','—','—'],['Refusal to Cooperate','Declining reasonable Screensharer instructions.','1-Day','3-Day','7-Day','—','—','—'],['Closing Verification Tools','Closing programs/windows staff asked you to keep open.','1-Day','3-Day','7-Day','—','—','—']])}
-
-/* Duels leaderboards + KitPvP */
-let duelCategory='modern';
-let duelStat='all';
-
-const DUEL_STATS={
- modern:{
-   title:'Modern 1.21',
-   subtitle:'StrikePractice',
-   defaultStat:'kills',
-   stats:[
-     {id:'all',label:'All Statistics'},
-     {id:'kills',label:'Kills'},
-     {id:'deaths',label:'Deaths'}
-   ]
- },
- 'modern-plus':{
-   title:'Modern 1.21+',
-   subtitle:'MultiDuels',
-   defaultStat:'wins',
-   stats:[
-     {id:'all',label:'All Statistics'},
-     {id:'wins',label:'Wins'},
-     {id:'losses',label:'Losses'},
-     {id:'kills',label:'Kills'}
-   ]
- }
-};
-
-function setDuelCategory(category){
- duelCategory=category;
- duelStat='all';
- renderDuels();
-}
-
-function setDuelStat(statistic){
- duelStat=statistic;
- loadDuelLeaderboard();
-}
-
-function duelStatLabel(statistic){
- return {wins:'WINS',losses:'LOSSES',kills:'KILLS',deaths:'DEATHS'}[statistic]||String(statistic).toUpperCase();
-}
-
-function renderDuels(){
- active('duels');
- const cfg=DUEL_STATS[duelCategory];
- app().innerHTML=`<section class="section duels-leaderboards"><div class="wrap">
-   <div class="pagehead">
-     <div class="kicker">VEXORIA DUELS</div>
-     <h1>Duels Leaderboards</h1>
-     <p>Competitive statistics across Vexoria's Modern 1.21 and Modern 1.21+ PvP systems.</p>
-   </div>
-
-   <div class="category-tabs duel-category-tabs">
-     <button class="${duelCategory==='modern'?'active':''}" onclick="setDuelCategory('modern')">Modern 1.21</button>
-     <button class="${duelCategory==='modern-plus'?'active':''}" onclick="setDuelCategory('modern-plus')">Modern 1.21+</button>
-   </div>
-
-   <div class="duel-board-heading">
-     <div>
-       <div class="kicker">${esc(cfg.subtitle)}</div>
-       <h2>${esc(cfg.title)}</h2>
-     </div>
-     <div class="field duel-stat-field">
-       <label>STATISTIC</label>
-       <select id="duel-stat" class="select" onchange="setDuelStat(this.value)">
-         ${cfg.stats.map(s=>`<option value="${s.id}" ${s.id===duelStat?'selected':''}>${esc(s.label)}</option>`).join('')}
-       </select>
-     </div>
-   </div>
-
-   <div id="duel-podium" class="duel-podium"><div class="empty">Loading top players…</div></div>
-
-   <div class="duel-list-title">
-     <div><div class="kicker">FULL RANKINGS</div><h2>Leaderboard</h2></div>
-   </div>
-   <div id="dboard" class="empty">Loading leaderboard…</div>
- </div></section>`;
- setTimeout(loadDuelLeaderboard,0);
-}
-
-async function loadDuelLeaderboard(){
- const board=$('#dboard'),podium=$('#duel-podium');
- if(!board||!podium)return;
-
- board.className='empty';
- board.textContent='Loading leaderboard…';
- podium.innerHTML='<div class="empty">Loading top players…</div>';
-
- try{
-   const data=await get(API.duelsLeaderboard(duelCategory,duelStat));
-   const rows=data.players||[];
-
-   if(!rows.length){
-     podium.innerHTML='<div class="empty">No leaderboard data yet.</div>';
-     board.className='empty';
-     board.textContent='No leaderboard data yet.';
-     return;
-   }
-
-   const cfg=DUEL_STATS[duelCategory];
-   const rankingStat=duelStat==='all'?cfg.defaultStat:duelStat;
-
-   renderDuelPodium(podium,rows.slice(0,3),rankingStat);
-   renderDuelTable(board,rows,duelCategory,duelStat,rankingStat);
- }catch(e){
-   podium.innerHTML=`<div class="empty">${esc(e.message)}</div>`;
-   board.className='empty';
-   board.textContent=e.message;
- }
-}
-
-function renderDuelPodium(container,players,rankingStat){
- const byRank={
-   1:players.find(x=>Number(x.rank)===1),
-   2:players.find(x=>Number(x.rank)===2),
-   3:players.find(x=>Number(x.rank)===3)
- };
- const ordered=[byRank[2],byRank[1],byRank[3]].filter(Boolean);
-
- container.innerHTML=`<div class="duel-podium-grid">${ordered.map(player=>{
-   const rank=Number(player.rank);
-   return `<div class="duel-podium-card rank-${rank}">
-     <div class="duel-podium-rank">#${rank}</div>
-     <img class="duel-podium-head" src="${head(player.username,88)}" alt="${esc(player.username)}">
-     <div class="duel-podium-name">${esc(player.username)}</div>
-     <div class="duel-podium-stat-label">${duelStatLabel(rankingStat)}</div>
-     <div class="duel-podium-value">${n(player[rankingStat]||0)}</div>
-   </div>`;
- }).join('')}</div>`;
-}
-
-function renderDuelTable(container,players,category,statistic,rankingStat){
- const all=statistic==='all';
- let headers='',cells=()=>''; 
-
- if(category==='modern'){
-   if(all){
-     headers='<th>KILLS</th><th>DEATHS</th>';
-     cells=p=>`<td class="${rankingStat==='kills'?'duel-stat-active':''}"><strong>${n(p.kills)}</strong></td><td>${n(p.deaths)}</td>`;
-   }else{
-     headers=`<th>${duelStatLabel(statistic)}</th>`;
-     cells=p=>`<td class="duel-stat-active"><strong>${n(p[statistic])}</strong></td>`;
-   }
- }else{
-   if(all){
-     headers='<th>WINS</th><th>LOSSES</th><th>KILLS</th>';
-     cells=p=>`<td class="${rankingStat==='wins'?'duel-stat-active':''}"><strong>${n(p.wins)}</strong></td><td>${n(p.losses)}</td><td>${n(p.kills)}</td>`;
-   }else{
-     headers=`<th>${duelStatLabel(statistic)}</th>`;
-     cells=p=>`<td class="duel-stat-active"><strong>${n(p[statistic])}</strong></td>`;
-   }
- }
-
- container.className='board';
- container.innerHTML=`<table><thead><tr><th>#</th><th></th><th>PLAYER</th>${headers}</tr></thead>
- <tbody>${players.map(player=>`<tr>
-   <td class="rank">#${player.rank}</td>
-   <td><img class="head" src="${head(player.username)}" alt="${esc(player.username)}"></td>
-   <td><strong>${esc(player.username)}</strong></td>
-   ${cells(player)}
- </tr>`).join('')}</tbody></table>`;
-}
-
-const KP_LB_STATS={coins:{label:'COINS',field:'coins'},kills:{label:'KILLS',field:'kills'},experience:{label:'EXPERIENCE',field:'experience'},bestkillstreak:{label:'BEST KILLSTREAK',field:'bestKillstreak'}}
-function renderKP(){active('kitpvp');app().innerHTML=`<section class="minemen"><div class="wrap"><div class="minihead"><div><div class="kicker">KITPVP 1.21X</div><h1>Leaderboards</h1></div><div class="mini-search"><input id="kq" class="input" placeholder="Search player..."><button class="btn" onclick="openKPSearch()">Open</button></div></div><div class="category-tabs"><button class="active">KitPvP</button></div><div class="controls" style="grid-template-columns:320px"><div class="field"><label>RANK BY</label><select id="kst" class="select" onchange="loadKPLB()"><option value="coins">Coins</option><option value="kills">Kills</option><option value="experience">Experience</option><option value="bestkillstreak">Best Killstreak</option></select></div></div><div id="kb" class="empty">Loading leaderboard…</div></div></section>`;setTimeout(loadKPLB,0)}
-async function loadKPLB(){const out=$('#kb'),key=$('#kst')?.value||'coins',meta=KP_LB_STATS[key]||KP_LB_STATS.coins;try{const d=await get(API.kpLeaderboard(key)),rows=d.players||[];out.className='board';out.innerHTML=`<table><thead><tr><th>#</th><th></th><th>PLAYER</th><th>${meta.label}</th></tr></thead><tbody>${rows.map(x=>`<tr><td class="rank">${x.position}</td><td><img class="head" src="${head(x.username)}"></td><td><div class="pcell" onclick="go('#kitpvp-player/${encodeURIComponent(x.username)}')">${esc(x.username)}</div></td><td><strong>${n(x[meta.field]||0)}</strong></td></tr>`).join('')}</tbody></table>`}catch(e){out.className='empty';out.textContent=e.message}}
-function openKPSearch(){const q=$('#kq').value.trim();if(q)go('#kitpvp-player/'+encodeURIComponent(q))}
-async function renderKPPlayer(u){active('kitpvp');app().innerHTML=`<section class="minemen"><div class="wrap"><div id="kp" class="empty">Loading player…</div></div></section>`;const out=$('#kp');try{const [x,k,h]=await Promise.all([get(API.kpPlayer(u)),get(API.kpKits(u)).catch(()=>({ownedKits:[]})),get(API.kpKills(u)).catch(()=>({kills:[]}))]);const kd=x.deaths?x.kills/x.deaths:x.kills;out.className='';out.innerHTML=`<div class="profile-card"><div class="profile-main"><img src="${head(x.username,78)}"><div><div class="kicker">VEXORIA KITPVP</div><h2>${esc(x.username)}</h2><div class="muted">${esc(x.selectedKit||'No selected kit')}</div></div><div class="profile-score"><div class="kicker">COINS</div><strong>${n(x.coins)}</strong></div></div><div class="profile-summary"><div><div class="kicker">KILLS</div><strong>${n(x.kills)}</strong></div><div><div class="kicker">K/D</div><strong>${Number(kd).toFixed(2)}</strong></div><div><div class="kicker">BEST STREAK</div><strong>${n(x.bestKillstreak)}</strong></div></div></div><div class="pagehead" style="margin-top:50px"><div class="kicker">COMPLETE PROFILE</div><h1>KitPvP Record</h1></div><div class="stat-grid">${stat('COINS',n(x.coins))}${stat('KILLS',n(x.kills))}${stat('DEATHS',n(x.deaths))}${stat('K/D',Number(kd).toFixed(2))}${stat('EXPERIENCE',n(x.experience))}${stat('CURRENT STREAK',n(x.currentKillstreak))}${stat('BEST STREAK',n(x.bestKillstreak))}${stat('OWNED KITS',n(k.ownedKitCount||k.ownedKits?.length||0))}</div><div class="two"><div class="panel"><div class="kicker">OWNED KITS</div><h3>${n(k.ownedKitCount||k.ownedKits?.length||0)} unlocked</h3>${(k.ownedKits||[]).slice(0,30).map(z=>`<span class="live" style="margin:3px">${esc(z)}</span>`).join('')||'<div class="muted">No kit data.</div>'}</div><div class="panel"><div class="kicker">RECENT KILLS</div><h3>Combat activity</h3>${(h.kills||[]).slice(0,8).map(z=>row(`${z.killer?.username||x.username} → ${z.victim?.username||'Unknown'}`,z.kit||'KitPvP')).join('')||'<div class="muted">No recent kill history.</div>'}</div></div>`}catch(e){out.className='empty';out.textContent=e.message}}
-
-function router(){const h=(location.hash||'#home').slice(1);if(h==='home')return renderHome();if(h==='rbw-home')return renderRBWHome();if(h==='rbw-stats')return renderStats();if(h==='rbw-rankings')return renderRankings();if(h==='rbw-compare')return renderCompare();if(h==='rbw-matches')return renderMatches();if(h==='rbw-rules')return renderRules();if(h==='duels')return renderDuels();if(h==='kitpvp')return renderKP();if(h.startsWith('kitpvp-player/'))return renderKPPlayer(decodeURIComponent(h.slice(14)));return renderHome()}
-addEventListener('hashchange',router);router();
-</script>
-</body>
-</html>
+ACCOUNT & MARKETPLACE
+RULE
+1ST
+2ND
+3RD
+4TH
+5TH
+6TH
+Unauthorized Promotion
+Advertising other servers, services, or platforms in chat, names, or cosmetics.
+7-Day Restriction
+30-Day Restriction
+Permanent Restriction
+—
+—
+—
+Fraud / Scamming
+Tricking another player out of items, currency, or account access.
+7-Day Restriction
+30-Day Restriction
+Permanent Restriction
+—
+—
+—
+Unauthorized Trading
+Trading accounts, ranks, or in-game items outside official systems.
+7-Day Account Restriction
+14-Day Account Restriction
+Permanent Restriction
+—
+—
+—
+Evading Punishments
+Using alternate accounts to bypass an active ban, mute, or restriction.
+30-Day Restriction
+Permanent Restriction
+—
+—
+—
+—
+Marketplace Fraud
+Misrepresenting goods, refusing delivery, or scamming through the in-game shop or trades.
+30-Day Restriction
+Permanent Restriction
+—
+—
+—
+—
+False Reports / Evidence
+Submitting fake screenshots, edited videos, or knowingly inaccurate reports.
+30-Day Restriction
+Permanent Restriction
+—
+—
+—
+—
+Payment Fraud
+Chargebacks, stolen payment methods, or any fraudulent purchase.
+Permanent Restriction
+—
+—
+—
+—
+—
