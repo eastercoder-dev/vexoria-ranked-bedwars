@@ -19,7 +19,11 @@ function getPool() {
 
         const port = Number(process.env.DB_PORT || 3306);
 
-        if (!Number.isInteger(port) || port <= 0 || port > 65535) {
+        if (
+            !Number.isInteger(port) ||
+            port <= 0 ||
+            port > 65535
+        ) {
             throw new Error("Invalid DB_PORT");
         }
 
@@ -29,9 +33,11 @@ function getPool() {
             user: process.env.DB_USER,
             password: process.env.DB_PASSWORD,
             database: process.env.DB_NAME,
+
             waitForConnections: true,
-            connectionLimit: 2,
+            connectionLimit: 5,
             queueLimit: 0,
+
             enableKeepAlive: true,
             keepAliveInitialDelay: 0
         });
@@ -39,6 +45,12 @@ function getPool() {
 
     return pool;
 }
+
+/*
+ * ============================================
+ * SUPPORTED LEADERBOARD STATISTICS
+ * ============================================
+ */
 
 const MODERN_121_STATS = new Set([
     "all",
@@ -53,6 +65,10 @@ const MODERN_121_PLUS_STATS = new Set([
     "kills"
 ]);
 
+/*
+ * MultiDuels modes that belong to
+ * Modern 1.21+
+ */
 const MD_MODES = [
     "BEDFIGHT",
     "FIREBALL_FIGHT",
@@ -62,224 +78,490 @@ const MD_MODES = [
     "BATTLERUSH"
 ];
 
+/*
+ * ============================================
+ * HELPERS
+ * ============================================
+ */
+
 function getQueryValue(value) {
-    return Array.isArray(value) ? value[0] : value;
+    return Array.isArray(value)
+        ? value[0]
+        : value;
 }
 
 function parseLimit(value) {
-    if (value === undefined) {
+    if (
+        value === undefined ||
+        value === null ||
+        value === ""
+    ) {
         return 100;
     }
 
     const parsed = Number(value);
 
-    if (!Number.isInteger(parsed) || parsed < 1 || parsed > 100) {
+    if (
+        !Number.isInteger(parsed) ||
+        parsed < 1 ||
+        parsed > 100
+    ) {
         return null;
     }
 
     return parsed;
 }
 
-async function getModern121Leaderboard(db, statistic, limit) {
-    /*
-     * "all" defaults ranking to kills.
-     */
-    const sortStat = statistic === "all"
-        ? "kills"
-        : statistic;
+/*
+ * ============================================
+ * MODERN 1.21
+ * StrikePractice
+ * ============================================
+ */
 
-    const orderColumn = sortStat === "deaths"
-        ? "`deaths`"
-        : "`kills`";
+async function getModern121Leaderboard(
+    db,
+    statistic,
+    limit
+) {
+    /*
+     * ALL defaults to KILLS.
+     */
+    const sortStat =
+        statistic === "all"
+            ? "kills"
+            : statistic;
+
+    /*
+     * We aggregate by UUID.
+     *
+     * This prevents duplicate leaderboard entries
+     * if the stats table ever contains multiple
+     * records belonging to the same player.
+     */
+    const orderExpression =
+        sortStat === "deaths"
+            ? "SUM(COALESCE(deaths, 0))"
+            : "SUM(COALESCE(kills, 0))";
+
+    const safeLimit = Math.max(
+        1,
+        Math.min(100, Number(limit))
+    );
 
     const sql = `
         SELECT
             uuid,
-            username,
-            kills,
-            deaths
+
+            MAX(username) AS username,
+
+            COALESCE(
+                SUM(kills),
+                0
+            ) AS kills,
+
+            COALESCE(
+                SUM(deaths),
+                0
+            ) AS deaths
+
         FROM stats
-        WHERE ${orderColumn} > 0
+
+        GROUP BY
+            uuid
+
         ORDER BY
-            ${orderColumn} DESC,
+            ${orderExpression} DESC,
             username ASC,
             uuid ASC
-        LIMIT ?
+
+        LIMIT ${safeLimit}
     `;
 
-    const [rows] = await db.query(sql, [limit]);
+    const [rows] = await db.query(sql);
 
-    return rows.map((row, index) => ({
-        rank: index + 1,
-        uuid: row.uuid,
-        username: row.username,
-        kills: Number(row.kills || 0),
-        deaths: Number(row.deaths || 0),
-        value: Number(row[sortStat] || 0)
-    }));
+    return rows.map(
+        (row, index) => ({
+            rank: index + 1,
+
+            uuid:
+                row.uuid,
+
+            username:
+                row.username,
+
+            kills:
+                Number(row.kills || 0),
+
+            deaths:
+                Number(row.deaths || 0),
+
+            value:
+                Number(
+                    row[sortStat] || 0
+                )
+        })
+    );
 }
 
-async function getModern121PlusLeaderboard(db, statistic, limit) {
+/*
+ * ============================================
+ * MODERN 1.21+
+ * MultiDuels
+ * ============================================
+ */
+
+async function getModern121PlusLeaderboard(
+    db,
+    statistic,
+    limit
+) {
     /*
-     * "all" defaults ranking to wins.
-     *
-     * IMPORTANT:
-     * md_stats.wins already includes ranked + unranked wins.
-     * md_stats.losses already includes ranked + unranked losses.
-     *
-     * Do NOT add ranked_wins/ranked_losses again.
+     * ALL defaults to WINS.
      */
+    const sortStat =
+        statistic === "all"
+            ? "wins"
+            : statistic;
 
-    const sortStat = statistic === "all"
-        ? "wins"
-        : statistic;
-
+    /*
+     * md_stats.wins already contains the
+     * appropriate wins.
+     *
+     * Do NOT add ranked_wins again.
+     */
     const statisticExpression = {
-        wins: "SUM(s.wins)",
-        losses: "SUM(s.losses)",
-        kills: "SUM(s.kills)"
+        wins:
+            "SUM(COALESCE(s.wins, 0))",
+
+        losses:
+            "SUM(COALESCE(s.losses, 0))",
+
+        kills:
+            "SUM(COALESCE(s.kills, 0))"
     }[sortStat];
 
-    const placeholders = MD_MODES.map(() => "?").join(", ");
+    const placeholders =
+        MD_MODES
+            .map(() => "?")
+            .join(", ");
+
+    const safeLimit = Math.max(
+        1,
+        Math.min(100, Number(limit))
+    );
 
     const sql = `
         SELECT
             p.uuid,
-            p.username,
-            COALESCE(SUM(s.wins), 0) AS wins,
-            COALESCE(SUM(s.losses), 0) AS losses,
-            COALESCE(SUM(s.kills), 0) AS kills
+
+            MAX(p.username)
+                AS username,
+
+            COALESCE(
+                SUM(s.wins),
+                0
+            ) AS wins,
+
+            COALESCE(
+                SUM(s.losses),
+                0
+            ) AS losses,
+
+            COALESCE(
+                SUM(s.kills),
+                0
+            ) AS kills
+
         FROM md_players p
+
         INNER JOIN md_stats s
             ON s.uuid = p.uuid
-        WHERE s.mode IN (${placeholders})
+
+        WHERE s.mode IN (
+            ${placeholders}
+        )
+
         GROUP BY
-            p.uuid,
-            p.username
-        HAVING ${statisticExpression} > 0
+            p.uuid
+
         ORDER BY
             ${statisticExpression} DESC,
-            p.username ASC,
+            username ASC,
             p.uuid ASC
-        LIMIT ?
+
+        LIMIT ${safeLimit}
     `;
 
-    const [rows] = await db.query(sql, [
-        ...MD_MODES,
-        limit
-    ]);
+    const [rows] = await db.query(
+        sql,
+        MD_MODES
+    );
 
-    return rows.map((row, index) => ({
-        rank: index + 1,
-        uuid: row.uuid,
-        username: row.username,
-        wins: Number(row.wins || 0),
-        losses: Number(row.losses || 0),
-        kills: Number(row.kills || 0),
-        value: Number(row[sortStat] || 0)
-    }));
+    return rows.map(
+        (row, index) => ({
+            rank: index + 1,
+
+            uuid:
+                row.uuid,
+
+            username:
+                row.username,
+
+            wins:
+                Number(row.wins || 0),
+
+            losses:
+                Number(row.losses || 0),
+
+            kills:
+                Number(row.kills || 0),
+
+            value:
+                Number(
+                    row[sortStat] || 0
+                )
+        })
+    );
 }
 
-module.exports = async function handler(req, res) {
-    res.setHeader("Cache-Control", "no-store");
+/*
+ * ============================================
+ * API HANDLER
+ * ============================================
+ */
 
+module.exports = async function handler(
+    req,
+    res
+) {
+    /*
+     * Always request fresh leaderboard data.
+     */
+    res.setHeader(
+        "Cache-Control",
+        "no-store, no-cache, must-revalidate"
+    );
+
+    res.setHeader(
+        "Pragma",
+        "no-cache"
+    );
+
+    res.setHeader(
+        "Expires",
+        "0"
+    );
+
+    /*
+     * GET only.
+     */
     if (req.method !== "GET") {
-        res.setHeader("Allow", "GET");
+        res.setHeader(
+            "Allow",
+            "GET"
+        );
 
-        return res.status(405).json({
-            error: "Method not allowed"
-        });
+        return res
+            .status(405)
+            .json({
+                error:
+                    "Method not allowed"
+            });
     }
 
     try {
+        /*
+         * Category/version.
+         */
         const version = String(
-            getQueryValue(req.query.version) || "modern"
-        ).toLowerCase();
+            getQueryValue(
+                req.query.version
+            ) || "modern"
+        )
+            .trim()
+            .toLowerCase();
 
-        let statistic = String(
-            getQueryValue(req.query.stat) || "all"
-        ).toLowerCase();
+        /*
+         * Selected statistic.
+         */
+        const statistic = String(
+            getQueryValue(
+                req.query.stat
+            ) || "all"
+        )
+            .trim()
+            .toLowerCase();
 
+        /*
+         * Result limit.
+         */
         const limit = parseLimit(
-            getQueryValue(req.query.limit)
+            getQueryValue(
+                req.query.limit
+            )
         );
 
         if (limit === null) {
-            return res.status(400).json({
-                error: "limit must be between 1 and 100"
-            });
+            return res
+                .status(400)
+                .json({
+                    error:
+                        "limit must be between 1 and 100"
+                });
         }
 
         const db = getPool();
 
         /*
+         * ====================================
          * MODERN 1.21
-         *
-         * StrikePractice
+         * ====================================
          */
-        if (version === "modern" || version === "1.21") {
-            if (!MODERN_121_STATS.has(statistic)) {
-                return res.status(400).json({
-                    error: "Invalid statistic for Modern 1.21"
-                });
+
+        if (
+            version === "modern" ||
+            version === "1.21"
+        ) {
+            if (
+                !MODERN_121_STATS.has(
+                    statistic
+                )
+            ) {
+                return res
+                    .status(400)
+                    .json({
+                        error:
+                            "Invalid statistic for Modern 1.21",
+
+                        allowedStats:
+                            Array.from(
+                                MODERN_121_STATS
+                            )
+                    });
             }
 
-            const players = await getModern121Leaderboard(
-                db,
-                statistic,
-                limit
-            );
+            const players =
+                await getModern121Leaderboard(
+                    db,
+                    statistic,
+                    limit
+                );
 
-            return res.status(200).json({
-                category: "modern",
-                name: "Modern 1.21",
-                statistic,
-                defaultStatistic: "kills",
-                count: players.length,
-                players
-            });
+            return res
+                .status(200)
+                .json({
+                    category:
+                        "modern",
+
+                    name:
+                        "Modern 1.21",
+
+                    statistic,
+
+                    orderBy:
+                        statistic === "all"
+                            ? "kills"
+                            : statistic,
+
+                    defaultStatistic:
+                        "kills",
+
+                    count:
+                        players.length,
+
+                    players
+                });
         }
 
         /*
+         * ====================================
          * MODERN 1.21+
-         *
-         * MultiDuels
+         * ====================================
          */
+
         if (
             version === "modern-plus" ||
             version === "1.21+" ||
             version === "plus"
         ) {
-            if (!MODERN_121_PLUS_STATS.has(statistic)) {
-                return res.status(400).json({
-                    error: "Invalid statistic for Modern 1.21+"
-                });
+            if (
+                !MODERN_121_PLUS_STATS.has(
+                    statistic
+                )
+            ) {
+                return res
+                    .status(400)
+                    .json({
+                        error:
+                            "Invalid statistic for Modern 1.21+",
+
+                        allowedStats:
+                            Array.from(
+                                MODERN_121_PLUS_STATS
+                            )
+                    });
             }
 
-            const players = await getModern121PlusLeaderboard(
-                db,
-                statistic,
-                limit
-            );
+            const players =
+                await getModern121PlusLeaderboard(
+                    db,
+                    statistic,
+                    limit
+                );
 
-            return res.status(200).json({
-                category: "modern-plus",
-                name: "Modern 1.21+",
-                statistic,
-                defaultStatistic: "wins",
-                count: players.length,
-                players
-            });
+            return res
+                .status(200)
+                .json({
+                    category:
+                        "modern-plus",
+
+                    name:
+                        "Modern 1.21+",
+
+                    statistic,
+
+                    orderBy:
+                        statistic === "all"
+                            ? "wins"
+                            : statistic,
+
+                    defaultStatistic:
+                        "wins",
+
+                    count:
+                        players.length,
+
+                    players
+                });
         }
 
-        return res.status(400).json({
-            error: "Invalid leaderboard category"
-        });
-    } catch (error) {
-        console.error("Duels leaderboard error:", error);
+        /*
+         * Unknown category.
+         */
+        return res
+            .status(400)
+            .json({
+                error:
+                    "Invalid leaderboard category",
 
-        return res.status(500).json({
-            error: "Failed to load leaderboard"
-        });
+                allowedCategories: [
+                    "modern",
+                    "modern-plus"
+                ]
+            });
+
+    } catch (error) {
+        console.error(
+            "Duels leaderboard error:",
+            error
+        );
+
+        return res
+            .status(500)
+            .json({
+                error:
+                    "Failed to load leaderboard"
+            });
     }
 };
