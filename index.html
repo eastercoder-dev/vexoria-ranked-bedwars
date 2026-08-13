@@ -421,13 +421,74 @@ body::after{
 .rbw-record-big,.rbw-rating strong,.match-vs,.sky-pod .place{color:#6ecff6}
 .rule-note{border-left-color:#4287f5}
 
+
+/* ===== FINAL FLOW / LOGO / RULES PATCH ===== */
+.sky-brand .site-logo{
+  width:38px;height:38px;border-radius:10px;object-fit:cover;display:block;
+  box-shadow:0 0 18px rgba(66,135,245,.18)
+}
+.rbw-card-logo-img{
+  width:58px;height:58px;border-radius:13px;object-fit:cover;display:block;
+  border:1px solid #3c70b2
+}
+.hero-home-bg{
+  position:relative;min-height:600px;
+  background:
+    linear-gradient(90deg,rgba(5,9,15,.92) 0%,rgba(5,9,15,.73) 42%,rgba(5,9,15,.30) 72%,rgba(5,9,15,.12) 100%),
+    linear-gradient(180deg,rgba(5,9,15,.12),rgba(5,9,15,.55)),
+    url('assets/vexoria-home-bg.png') center/cover no-repeat;
+}
+.hero-home-bg .wrap{position:relative;z-index:2}
+.hero-home-bg .hero-inner{max-width:650px}
+.hero-home-bg .logo-stage{display:none}
+.modebar{padding:8px 0;background:#080b10}
+.modebar .wrap{min-height:48px}
+.modebar .tabs{
+  border:1px solid #24344a;background:#0b1119;padding:4px;border-radius:26px;
+  gap:3px
+}
+.modebar .tabs button{height:38px;padding:0 15px;border-radius:21px}
+.modebar .tabs button.active,.modebar .tabs button:hover{
+  background:linear-gradient(180deg,#4287f5,#285cb0);color:#fff
+}
+.rbw-lb-player{min-width:190px}
+.rbw-lb-player .pcell{white-space:nowrap;gap:12px}
+.rbw-lb-player .phead{flex:0 0 34px}
+.season-card{
+  border:1px solid #2b3544;background:linear-gradient(145deg,#0c1118,#0a0d12);
+  border-radius:14px;padding:25px;margin-bottom:18px
+}
+.season-item-groups{display:grid;gap:14px}
+.season-item-group{
+  border:1px solid #2b3544;background:#0b1016;border-radius:13px;padding:19px
+}
+.season-item-group h3{font-size:11px;letter-spacing:.17em;margin:0 0 6px}
+.season-item-grid{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(94px,1fr));gap:8px;margin-top:14px
+}
+.mc-item{
+  min-height:96px;border:1px solid #344152;background:linear-gradient(180deg,#111822,#0b1016);
+  border-radius:8px;padding:10px 6px;text-align:center;display:flex;flex-direction:column;
+  justify-content:center;align-items:center;gap:7px
+}
+.mc-item .emoji{font-size:30px;line-height:1;filter:drop-shadow(0 3px 4px rgba(0,0,0,.3))}
+.mc-item .name{font-size:9px;font-weight:850;color:#d7dce6}
+.rules-enforcement-title{margin:42px 0 14px}
+.rule-tabs.enforcement-tabs{margin-bottom:18px}
+.rule-tabs.enforcement-tabs button{min-width:132px}
+.rule-info-card p{margin:10px 0;color:#c2bdc8}
+@media(max-width:900px){
+  .hero-home-bg{min-height:520px;background-position:center}
+  .modebar .wrap{gap:8px}
+}
+
 </style>
 </head>
 <body>
 <header class="top sky-header">
 <div class="wrap">
   <div class="sky-brand" onclick="go('#home')" style="cursor:pointer">
-    <div class="mark">V</div>
+    <img class="site-logo" src="assets/vexoria-logo.png" alt="Vexoria Network">
     <div>VEXORIA<small>VEXORIA NETWORK</small></div>
   </div>
   <nav class="sky-nav">
@@ -479,7 +540,7 @@ function feat(no,t,d,h){return `<div class="feature" onclick="go('${h}')"><div c
 
 function renderHome(){
  active('home');
- app().innerHTML=`<section class="hero"><div class="wrap"><div class="hero-inner">
+ app().innerHTML=`<section class="hero hero-home-bg"><div class="wrap"><div class="hero-inner">
  <div class="live"><span class="dot"></span>NETWORK ONLINE</div>
  <h1>VEXORIA <span>NETWORK</span></h1>
  <p>A modern Minecraft network built around RankedBedwars, modern 1.21 duels and persistent KITPVP progression.</p>
@@ -487,7 +548,7 @@ function renderHome(){
  </div></div></section>
  <section class="section"><div class="wrap">
  <div class="rbw-home-card">
-   <div class="rbw-card-head"><div class="rbw-card-logo">V</div><div><h2>Vexoria Network</h2><div class="muted"><span class="dot" style="display:inline-block;margin-right:7px"></span>Online · JAVA 1.21+</div></div></div>
+   <div class="rbw-card-head"><img class="rbw-card-logo-img" src="assets/vexoria-logo.png" alt="Vexoria Network"><div><h2>Vexoria Network</h2><div class="muted"><span class="dot" style="display:inline-block;margin-right:7px"></span>Online · JAVA 1.21+</div></div></div>
    <div class="rbw-facts">
      <div class="rbw-fact"><label>VERSION</label><strong>1.21+</strong></div>
      <div class="rbw-fact"><label>ONLINE PLAYERS</label><strong id="home-online">—</strong></div>
@@ -516,7 +577,7 @@ async function renderRBWHome(){
  </div></div></section>
  <section class="section"><div class="wrap">
  <div class="rbw-home-card">
-   <div class="rbw-card-head"><div class="rbw-card-logo">V</div><div><h2>Vexoria RankedBedwars</h2><div class="muted"><span class="dot" style="display:inline-block;margin-right:7px"></span>Online · JAVA 1.21+</div></div></div>
+   <div class="rbw-card-head"><img class="rbw-card-logo-img" src="assets/vexoria-logo.png" alt="Vexoria RankedBedwars"><div><h2>Vexoria RankedBedwars</h2><div class="muted"><span class="dot" style="display:inline-block;margin-right:7px"></span>Online · JAVA 1.21+</div></div></div>
    <div class="rbw-facts">
      <div class="rbw-fact"><label>VERSION</label><strong>1.21+</strong></div>
      <div class="rbw-fact"><label>ONLINE PLAYERS</label><strong id="rbwo">—</strong></div>
@@ -603,7 +664,7 @@ function rbwStatValue(x,s){return ({elo:x.elo,peakelo:x.peakElo,wins:x.wins,loss
 function rbwStatName(s){return ({elo:'ELO',peakelo:'PEAK ELO',wins:'WINS',losses:'LOSSES',kills:'KILLS',deaths:'DEATHS',finalkills:'FINAL KILLS',finaldeaths:'FINAL DEATHS',beds:'BEDS',mvps:'MVPS',beststreak:'BEST STREAK'})[s]||'ELO'}
 function rbwLeaderboardTable(rows,stat){
  const all=stat==='all';
- return `<div class="board"><table><thead><tr><th>#</th><th>PLAYER</th>${all?'<th>ELO</th><th>WINS</th><th>LOSSES</th><th>KILLS</th><th>DEATHS</th><th>FINAL KILLS</th><th>BEDS</th><th>MVPS</th>':`<th>${rbwStatName(stat)}</th>`}</tr></thead><tbody>${rows.map(x=>`<tr><td class="pos">#${x.position}</td><td><div class="pcell" onclick="openRBW('${esc(x.username)}')"><img class="phead" src="${head(x.username,32)}">${esc(x.username)}</div></td>${all?`<td>${n(x.elo)}</td><td>${n(x.wins)}</td><td>${n(x.losses)}</td><td>${n(x.kills)}</td><td>${n(x.deaths)}</td><td>${n(x.finalKills)}</td><td>${n(x.beds)}</td><td>${n(x.mvps)}</td>`:`<td><strong>${n(rbwStatValue(x,stat))}</strong></td>`}</tr>`).join('')}</tbody></table></div>`
+ return `<div class="board"><table><thead><tr><th>#</th><th class="rbw-lb-player">PLAYER</th>${all?'<th>ELO</th><th>WINS</th><th>LOSSES</th><th>KILLS</th><th>DEATHS</th><th>FINAL KILLS</th><th>BEDS</th><th>MVPS</th>':`<th>${rbwStatName(stat)}</th>`}</tr></thead><tbody>${rows.map(x=>`<tr><td class="pos">#${x.position}</td><td class="rbw-lb-player"><div class="pcell" onclick="openRBW('${esc(x.username)}')"><img class="phead" src="${head(x.username,32)}">${esc(x.username)}</div></td>${all?`<td>${n(x.elo)}</td><td>${n(x.wins)}</td><td>${n(x.losses)}</td><td>${n(x.kills)}</td><td>${n(x.deaths)}</td><td>${n(x.finalKills)}</td><td>${n(x.beds)}</td><td>${n(x.mvps)}</td>`:`<td><strong>${n(rbwStatValue(x,stat))}</strong></td>`}</tr>`).join('')}</tbody></table></div>`
 }
 async function loadHotSearches(id,handler){
  const el=document.getElementById(id);if(!el)return;
@@ -651,58 +712,97 @@ function skyTeam(t){if(!t)return `<div class="match-team muted">Team data unavai
 
 function renderRules(){
  active('rbw');
- app().innerHTML=rbwNav('rules')+`<section class="section"><div class="wrap"><div class="pagehead"><div class="kicker">RANKED RULEBOOK</div><h1>Ranked Rules</h1><p>Season rules, gameplay standards and Screenshare Terms.</p></div><div class="rule-tabs"><button class="active" onclick="rule('season',this)">SEASON RULES</button><button onclick="rule('gameplay',this)">GAMEPLAY</button><button onclick="rule('screenshare',this)">SCREENSHARE TERMS</button></div><div id="rule-season" class="rule-page active">${seasonRules()}</div><div id="rule-gameplay" class="rule-page">${gameplayRules()}</div><div id="rule-screenshare" class="rule-page">${screenshareRules()}</div></div></section>`
-}
-function rule(id,b){document.querySelectorAll('.rule-page').forEach(x=>x.classList.remove('active'));$('#rule-'+id).classList.add('active');b.parentElement.querySelectorAll('button').forEach(x=>x.classList.toggle('active',x===b))}
-function textItemGroup(title,arr,desc){return `<div class="item-group"><h3>${title}</h3><div class="desc">${desc}</div>${arr.length?`<div class="text-items">${arr.map(x=>`<span class="text-item">${esc(x)}</span>`).join('')}</div>`:''}</div>`}
-function seasonRules(){return `<div class="season-card"><div class="kicker">CURRENT RULESET</div><h2>RankedBedwars Season Rules</h2><div class="muted">Text cards replace the broken external Minecraft item images.</div></div>
-${textItemGroup('ALLOWED ALL GAME',['Axe','Bedbug','Blast Proof Glass','Chainmail Armor','Diamond Armor','End Stone','Fireball','Golden Apple','Hardened Clay','Iron Armor','Iron Sword','Ladder','Oak Wood / Planks','Pickaxe','Shears','Stone Sword','Wool'],'Available throughout the game.')}
-${textItemGroup('DIAMOND II',['Magic Milk'],'Unlocked at Diamond II.')}
-${textItemGroup('DIAMOND III',['Jump V Potion','Speed II Potion','TNT'],'Unlocked at Diamond III.')}
-${textItemGroup('EMERALD II',[],'No additional unlocks; Diamond III rules continue.')}
-${textItemGroup('EMERALD III',['Invisibility Potion'],'Unlocked at Emerald III.')}
-${textItemGroup('NEVER ALLOWED',['Cobweb','Compact Pop-up Tower','Dream Defender','Ice Bridge','Obsidian','Portable Quick Buy','Sponges','Water Bucket'],'Never allowed during RankedBedwars.')}`}
-function rulesTable(rows){return `<div class="board"><table><thead><tr><th>RULE</th><th>1ST</th><th>2ND</th><th>3RD</th><th>4TH</th><th>5TH</th><th>6TH</th></tr></thead><tbody>${rows.map(x=>`<tr><td style="min-width:300px"><strong>${x[0]}</strong><div class="muted" style="margin-top:4px">${x[1]}</div></td>${x.slice(2).map(v=>`<td>${v}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`}
-function gameplayRules(){return rulesTable([['Unfair Gameplay','Stat manipulation, win trading, intentional throwing, or behavior designed to misrepresent true performance.','Warning','1-Day','3-Day','7-Day','14-Day','Permanent'],['Unauthorized Modifications','Running mods or clients outside the allowed modifications policy.','Warning','1-Day','3-Day','7-Day','14-Day','Permanent'],['Exploiting Bugs / Systems','Knowingly using a bug, glitch, or unintended interaction for advantage.','Warning','1-Day','3-Day','7-Day','14-Day','Permanent'],['Unfair Progression Assistance','Boosting, carrying alts, smurfing, or playing matches for another account.','Warning','1-Day','3-Day','7-Day','14-Day','Permanent'],['Use of Cheats','Cheat clients, scripts, macros, autoclickers, or hardware automation.','3-Day','7-Day','14-Day','30-Day','Permanent','—']])}
-function screenshareRules(){return `<div class="rule-info-grid">
- <div class="rule-info-card"><div class="kicker">PLAYERS MUST NOT DURING SCREENSHARE</div><h3>Screenshare Restrictions</h3><p>Disconnect from the server</p><p>Close Minecraft</p><p>Modify or delete files</p><p>Refuse staff instructions</p><div class="rule-note">ADMITTING TO CHEATING MAY REDUCE PUNISHMENT.</div></div>
- <div class="rule-info-card"><div class="kicker">A REQUEST MAY BE DENIED IF</div><h3>When and how can you deny screenshare?</h3><p>The reporter did not play against you.</p><p>The "don't log" message was not sent during the game.</p><p>Invalid or cropped screenshot evidence was provided.</p><p>The request was made over 5 minutes after match completion.</p><p>The same player screenshare-requested you multiple times in one day.</p><p>The reporter wishes to cancel the request.</p><p>The assigned Screensharer participated in the match.</p></div>
- </div>`}
+ app().innerHTML=rbwNav('rules')+`<section class="section"><div class="wrap">
+ <div class="pagehead"><div class="kicker">RANKED RULEBOOK</div><h1>Ranked Rules</h1><p>Season item availability, competitive enforcement and Screenshare Terms.</p></div>
 
-const CONDUCT_RULES=[
-['Toxic Behaviour','Insults, name-calling, or sustained negativity directed at another player.',['Warning','12-Hour Mute','1-Day Mute','3-Day Mute','7-Day Mute','14-Day Mute']],
-['Spam / Flooding','Repeated messages, character flooding, or any pattern designed to bury chat.',['Warning','12-Hour Mute','1-Day Mute','3-Day Mute','7-Day Mute','14-Day Mute']],
-['Non-Primary Language Spam','Repeatedly using non-English in English-only channels after being asked to switch.',['Warning','12-Hour Mute','1-Day Mute','3-Day Mute','7-Day Mute','14-Day Mute']],
-['Excessive Profanity','Repeated heavy profanity in public channels after warnings.',['Warning','12-Hour Mute','1-Day Mute','3-Day Mute','7-Day Mute','14-Day Mute']],
-['Association with Rule Breakers','Knowingly partying or queueing with players you know are breaking rules.',['Warning','3-Day Restriction','7-Day Restriction','14-Day Restriction','—','—']],
-['Insensitive Language','Language that demeans groups based on race, gender, orientation, religion, ability, or background.',['Warning','3-Day Restriction','7-Day Restriction','14-Day Restriction','—','—']],
-['Disrespectful Conduct','Rudeness, dismissiveness, or unsporting behavior toward other players or staff.',['Warning','1-Day Mute','3-Day Mute','7-Day Mute','14-Day Mute','30-Day Mute']],
-['Encouraging Rule Breaking','Suggesting, teaching, or pressuring others to violate any rule.',['Warning','1-Day Mute','3-Day Mute','7-Day Mute','14-Day Mute','30-Day Mute']],
-['Intentional Community Disruption','Deliberately derailing chat, queues, or events to upset others or grief the community.',['Warning','1-Day Restriction','3-Day Restriction','7-Day Restriction','14-Day Restriction','30-Day Restriction']],
-['Harassment / Coercion',"Targeted, repeated unwanted contact or pressuring another player into anything they don't consent to.",['1-Day Restriction','3-Day Restriction','7-Day Restriction','14-Day Restriction','30-Day Restriction','Permanent Restriction']],
-['Threatening Behaviour','Threats of violence, doxxing, swatting, or any real-world harm.',['1-Day Restriction','3-Day Restriction','7-Day Restriction','14-Day Restriction','30-Day Restriction','Permanent Restriction']],
-['Mute Circumvention','Using signs, books, item names, or alts to talk while muted.',['14-Day Mute','Permanent Mute','—','—','—','—']],
-['Inappropriate Cosmetics','Capes, skins, or cosmetics depicting offensive, NSFW, or banned imagery.',['Warning','3-Day Restriction','7-Day Restriction','14-Day Restriction','—','—']],
-['External Media Promotion','Promoting your own social media, YouTube, Twitch, or website without staff permission.',['Warning','3-Day Restriction','7-Day Restriction','14-Day Restriction','—','—']],
-['Inappropriate Content','Posting NSFW, gore, or otherwise unwelcome content in any channel or in-game medium.',['Warning','1-Day Restriction','3-Day Restriction','7-Day Restriction','14-Day Restriction','30-Day Restriction']],
-['Flash / Triggering Content','Sharing seizure-risk imagery, jumpscares, or content known to cause harm.',['Warning','3-Day Mute','7-Day Mute','14-Day Mute','Permanent Mute','—']],
-['Inappropriate Username','Names containing slurs, NSFW terms, impersonations, or violations of platform policy.',['Username Reset Required','7-Day Restriction','Permanent Restriction','—','—','—']],
-['Staff Impersonation','Pretending to be a staff member, mod, or admin in any context.',['1-Day Restriction','3-Day Restriction','7-Day Restriction','14-Day Restriction','Permanent Restriction','—']],
-['Threats to Privacy',"Threatening to dox, leak, or share another player's private information.",['14-Day Restriction','Permanent Restriction','—','—','—','—']],
-['Restricted Content Sharing','Posting links to malware, phishing, illegal content, or anything banned by platform policy.',['14-Day Restriction','Permanent Restriction','—','—','—','—']],
-['Privacy Violations',"Sharing someone's personal info without consent.",['30-Day Restriction','Permanent Restriction','—','—','—','—']]
-];
-const MARKET_RULES=[
-['Unauthorized Promotion','Advertising other servers, services, or platforms in chat, names, or cosmetics.',['7-Day Restriction','30-Day Restriction','Permanent Restriction','—','—','—']],
-['Fraud / Scamming','Tricking another player out of items, currency, or account access.',['7-Day Restriction','30-Day Restriction','Permanent Restriction','—','—','—']],
-['Unauthorized Trading','Trading accounts, ranks, or in-game items outside official systems.',['7-Day Account Restriction','14-Day Account Restriction','Permanent Restriction','—','—','—']],
-['Evading Punishments','Using alternate accounts to bypass an active ban, mute, or restriction.',['30-Day Restriction','Permanent Restriction','—','—','—','—']],
-['Marketplace Fraud','Misrepresenting goods, refusing delivery, or scamming through the in-game shop or trades.',['30-Day Restriction','Permanent Restriction','—','—','—','—']],
-['False Reports / Evidence','Submitting fake screenshots, edited videos, or knowingly inaccurate reports.',['30-Day Restriction','Permanent Restriction','—','—','—','—']],
-['Payment Fraud','Chargebacks, stolen payment methods, or any fraudulent purchase.',['Permanent Restriction','—','—','—','—','—']]
-];
-function serverRules(){return `<div class="kicker" style="margin:25px 0 16px">CONDUCT & COMMUNITY</div><div class="server-rule-grid">${ruleCards(CONDUCT_RULES)}</div><div class="kicker" style="margin:42px 0 16px">ACCOUNT & MARKETPLACE</div><div class="server-rule-grid">${ruleCards(MARKET_RULES)}</div>`}
-function ruleCards(arr){return arr.map(x=>`<div class="server-rule"><h3>${esc(x[0])}</h3><p class="muted">${esc(x[1])}</p><div class="punish-row">${x[2].map(v=>`<span>${esc(v)}</span>`).join('')}</div></div>`).join('')}
+ <div class="section-title"><div class="kicker">SEASON RULES</div><h2>Item Availability</h2><p>The current RankedBedwars item ruleset.</p></div>
+ ${seasonRules()}
+
+ <div class="rules-enforcement-title"><div class="kicker">RULE ENFORCEMENT</div><h2 style="margin:7px 0">Gameplay & Screenshare</h2></div>
+ <div class="rule-tabs enforcement-tabs">
+   <button class="active" onclick="rule('gameplay',this)">GAMEPLAY</button>
+   <button onclick="rule('screenshare',this)">SCREENSHARE</button>
+   <button onclick="rule('terms',this)">SCREENSHARE TERMS</button>
+ </div>
+ <div id="rule-gameplay" class="rule-page active">${gameplayRules()}</div>
+ <div id="rule-screenshare" class="rule-page">${screenshareLadder()}</div>
+ <div id="rule-terms" class="rule-page">${screenshareTerms()}</div>
+ </div></section>`
+}
+function rule(id,b){
+ document.querySelectorAll('.rule-page').forEach(x=>x.classList.remove('active'));
+ $('#rule-'+id).classList.add('active');
+ b.parentElement.querySelectorAll('button').forEach(x=>x.classList.toggle('active',x===b))
+}
+const MC_ICONS={
+ 'Axe':'🪓','Bedbug':'🥚','Blast Proof Glass':'⬜','Chainmail Armor':'🛡️','Diamond Armor':'💎',
+ 'End Stone':'🟨','Fireball':'🔥','Golden Apple':'🍎','Hardened Clay':'🧱','Iron Armor':'🛡️',
+ 'Iron Sword':'🗡️','Ladder':'🪜','Oak Wood / Planks':'🪵','Pickaxe':'⛏️','Shears':'✂️',
+ 'Stone Sword':'⚔️','Wool':'⬜','Magic Milk':'🥛','Jump V Potion':'🧪','Speed II Potion':'💨',
+ 'TNT':'🧨','Invisibility Potion':'🫥','Cobweb':'🕸️','Compact Pop-up Tower':'🏰',
+ 'Dream Defender':'🐺','Ice Bridge':'🧊','Obsidian':'⬛','Portable Quick Buy':'🛒',
+ 'Sponges':'🧽','Water Bucket':'🪣'
+};
+function seasonItemGroup(title,items,desc){
+ return `<div class="season-item-group"><h3>${title}</h3><div class="muted">${desc}</div>${items.length?`<div class="season-item-grid">${items.map(name=>`<div class="mc-item"><div class="emoji">${MC_ICONS[name]||'◈'}</div><div class="name">${esc(name)}</div></div>`).join('')}</div>`:''}</div>`
+}
+function seasonRules(){
+ return `<div class="season-card"><div class="kicker">RULE SEASON</div><h2 style="font-size:40px;margin:8px 0">Season 1</h2><div class="muted">Modern RankedBedwars Ruleset</div></div>
+ <div class="season-item-groups">
+ ${seasonItemGroup('ALLOWED ALL GAME',['Axe','Bedbug','Blast Proof Glass','Chainmail Armor','Diamond Armor','End Stone','Fireball','Golden Apple','Hardened Clay','Iron Armor','Iron Sword','Ladder','Oak Wood / Planks','Pickaxe','Shears','Stone Sword','Wool'],'Available throughout the entire game.')}
+ ${seasonItemGroup('DIAMOND II',['Magic Milk'],'Unlocked at Diamond II.')}
+ ${seasonItemGroup('DIAMOND III',['Jump V Potion','Speed II Potion','TNT'],'Unlocked at Diamond III.')}
+ ${seasonItemGroup('EMERALD II',[],'No additional unlocks. Diamond III availability continues.')}
+ ${seasonItemGroup('EMERALD III',['Invisibility Potion'],'Unlocked at Emerald III.')}
+ ${seasonItemGroup('NEVER ALLOWED',['Cobweb','Compact Pop-up Tower','Dream Defender','Ice Bridge','Obsidian','Portable Quick Buy','Sponges','Water Bucket'],'Disabled for the entire RankedBedwars match.')}
+ </div>`
+}
+function rulesTable(rows){
+ return `<div class="board"><table><thead><tr><th>RULE</th><th>1ST</th><th>2ND</th><th>3RD</th><th>4TH</th><th>5TH</th><th>6TH</th></tr></thead><tbody>${rows.map(x=>`<tr><td style="min-width:300px"><strong>${x[0]}</strong><div class="muted" style="margin-top:4px">${x[1]}</div></td>${x.slice(2).map(v=>`<td>${v}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`
+}
+function gameplayRules(){
+ return rulesTable([
+ ['Unfair Gameplay','Stat manipulation, win trading, intentional throwing, or behavior designed to misrepresent true performance.','Warning','1-Day','3-Day','7-Day','14-Day','Permanent'],
+ ['Unauthorized Modifications','Running mods or clients outside the allowed modifications policy.','Warning','1-Day','3-Day','7-Day','14-Day','Permanent'],
+ ['Exploiting Bugs / Systems','Knowingly using a bug, glitch, or unintended interaction for advantage.','Warning','1-Day','3-Day','7-Day','14-Day','Permanent'],
+ ['Unfair Progression Assistance','Boosting, carrying alts, smurfing, or playing matches for another account.','Warning','1-Day','3-Day','7-Day','14-Day','Permanent'],
+ ['Use of Cheats','Cheat clients, scripts, macros, autoclickers, or hardware automation.','3-Day','7-Day','14-Day','30-Day','Permanent','—']
+ ])
+}
+function screenshareLadder(){
+ return rulesTable([
+ ['Unable to Verify Screen','System or share setup prevents verification.','Warning','1-Day','3-Day','—','—','—'],
+ ['Disconnecting During Review','Leaving before the Screensharer ends the review.','Warning','1-Day','3-Day','—','—','—'],
+ ['Delaying Staff Review','Stalling the start without valid reason.','Warning','1-Day','3-Day','—','—','—'],
+ ['Confession of Rule Violation','Admitting to a violation during review.','Warning','3-Day','7-Day','—','—','—'],
+ ['Refusal to Cooperate','Declining reasonable Screensharer instructions.','1-Day','3-Day','7-Day','—','—','—'],
+ ['Closing Verification Tools','Closing programs/windows staff asked you to keep open.','1-Day','3-Day','7-Day','—','—','—']
+ ])
+}
+function screenshareTerms(){
+ return `<div class="rule-info-grid">
+ <div class="rule-info-card">
+   <div class="kicker">PLAYERS MUST NOT DURING SCREENSHARE</div>
+   <h3>Screenshare Restrictions</h3>
+   <p>Disconnect from the server</p>
+   <p>Close Minecraft</p>
+   <p>Modify or delete files</p>
+   <p>Refuse staff instructions</p>
+   <div class="rule-note">ADMITTING TO CHEATING MAY REDUCE PUNISHMENT.</div>
+ </div>
+ <div class="rule-info-card">
+   <div class="kicker">A REQUEST MAY BE DENIED IF</div>
+   <h3>When and how can you deny screenshare?</h3>
+   <p>The reporter did not play against you.</p>
+   <p>The "don't log" message was not sent during the game.</p>
+   <p>Invalid or cropped screenshot evidence was provided.</p>
+   <p>The request was made over 5 minutes after match completion.</p>
+   <p>The same player screenshare-requested you multiple times in one day.</p>
+   <p>The reporter wishes to cancel the request.</p>
+   <p>The assigned Screensharer participated in the match.</p>
+ </div>
+ </div>`
+}
 
 /* Duels leaderboards + KITPVP */
 let duelCategory='modern';
