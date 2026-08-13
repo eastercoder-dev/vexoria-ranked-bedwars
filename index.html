@@ -785,6 +785,56 @@ function screenshareTerms(){
  </div>`
 }
 
+
+const CONDUCT_RULES=[
+['Toxic Behaviour','Insults, name-calling, or sustained negativity directed at another player.',['Warning','12-Hour Mute','1-Day Mute','3-Day Mute','7-Day Mute','14-Day Mute']],
+['Spam / Flooding','Repeated messages, character flooding, or any pattern designed to bury chat.',['Warning','12-Hour Mute','1-Day Mute','3-Day Mute','7-Day Mute','14-Day Mute']],
+['Non-Primary Language Spam','Repeatedly using non-English in English-only channels after being asked to switch.',['Warning','12-Hour Mute','1-Day Mute','3-Day Mute','7-Day Mute','14-Day Mute']],
+['Excessive Profanity','Repeated heavy profanity in public channels after warnings.',['Warning','12-Hour Mute','1-Day Mute','3-Day Mute','7-Day Mute','14-Day Mute']],
+['Association with Rule Breakers','Knowingly partying or queueing with players you know are breaking rules.',['Warning','3-Day Restriction','7-Day Restriction','14-Day Restriction','—','—']],
+['Insensitive Language','Language that demeans groups based on race, gender, orientation, religion, ability, or background.',['Warning','3-Day Restriction','7-Day Restriction','14-Day Restriction','—','—']],
+['Disrespectful Conduct','Rudeness, dismissiveness, or unsporting behavior toward other players or staff.',['Warning','1-Day Mute','3-Day Mute','7-Day Mute','14-Day Mute','30-Day Mute']],
+['Encouraging Rule Breaking','Suggesting, teaching, or pressuring others to violate any rule.',['Warning','1-Day Mute','3-Day Mute','7-Day Mute','14-Day Mute','30-Day Mute']],
+['Intentional Community Disruption','Deliberately derailing chat, queues, or events to upset others or grief the community.',['Warning','1-Day Restriction','3-Day Restriction','7-Day Restriction','14-Day Restriction','30-Day Restriction']],
+['Harassment / Coercion',"Targeted, repeated unwanted contact or pressuring another player into anything they don't consent to.",['1-Day Restriction','3-Day Restriction','7-Day Restriction','14-Day Restriction','30-Day Restriction','Permanent Restriction']],
+['Threatening Behaviour','Threats of violence, doxxing, swatting, or any real-world harm.',['1-Day Restriction','3-Day Restriction','7-Day Restriction','14-Day Restriction','30-Day Restriction','Permanent Restriction']],
+['Mute Circumvention','Using signs, books, item names, or alts to talk while muted.',['14-Day Mute','Permanent Mute','—','—','—','—']],
+['Inappropriate Cosmetics','Capes, skins, or cosmetics depicting offensive, NSFW, or banned imagery.',['Warning','3-Day Restriction','7-Day Restriction','14-Day Restriction','—','—']],
+['External Media Promotion','Promoting your own social media, YouTube, Twitch, or website without staff permission.',['Warning','3-Day Restriction','7-Day Restriction','14-Day Restriction','—','—']],
+['Inappropriate Content','Posting NSFW, gore, or otherwise unwelcome content in any channel or in-game medium.',['Warning','1-Day Restriction','3-Day Restriction','7-Day Restriction','14-Day Restriction','30-Day Restriction']],
+['Flash / Triggering Content','Sharing seizure-risk imagery, jumpscares, or content known to cause harm.',['Warning','3-Day Mute','7-Day Mute','14-Day Mute','Permanent Mute','—']],
+['Inappropriate Username','Names containing slurs, NSFW terms, impersonations, or violations of platform policy.',['Username Reset Required','7-Day Restriction','Permanent Restriction','—','—','—']],
+['Staff Impersonation','Pretending to be a staff member, mod, or admin in any context.',['1-Day Restriction','3-Day Restriction','7-Day Restriction','14-Day Restriction','Permanent Restriction','—']],
+['Threats to Privacy',"Threatening to dox, leak, or share another player's private information.",['14-Day Restriction','Permanent Restriction','—','—','—','—']],
+['Restricted Content Sharing','Posting links to malware, phishing, illegal content, or anything banned by platform policy.',['14-Day Restriction','Permanent Restriction','—','—','—','—']],
+['Privacy Violations',"Sharing someone's personal info without consent.",['30-Day Restriction','Permanent Restriction','—','—','—','—']]
+];
+
+const MARKET_RULES=[
+['Unauthorized Promotion','Advertising other servers, services, or platforms in chat, names, or cosmetics.',['7-Day Restriction','30-Day Restriction','Permanent Restriction','—','—','—']],
+['Fraud / Scamming','Tricking another player out of items, currency, or account access.',['7-Day Restriction','30-Day Restriction','Permanent Restriction','—','—','—']],
+['Unauthorized Trading','Trading accounts, ranks, or in-game items outside official systems.',['7-Day Account Restriction','14-Day Account Restriction','Permanent Restriction','—','—','—']],
+['Evading Punishments','Using alternate accounts to bypass an active ban, mute, or restriction.',['30-Day Restriction','Permanent Restriction','—','—','—','—']],
+['Marketplace Fraud','Misrepresenting goods, refusing delivery, or scamming through the in-game shop or trades.',['30-Day Restriction','Permanent Restriction','—','—','—','—']],
+['False Reports / Evidence','Submitting fake screenshots, edited videos, or knowingly inaccurate reports.',['30-Day Restriction','Permanent Restriction','—','—','—','—']],
+['Payment Fraud','Chargebacks, stolen payment methods, or any fraudulent purchase.',['Permanent Restriction','—','—','—','—','—']]
+];
+
+function serverRules(){
+ return `<div class="kicker" style="margin:25px 0 16px">CONDUCT & COMMUNITY</div>
+ <div class="server-rule-grid">${ruleCards(CONDUCT_RULES)}</div>
+ <div class="kicker" style="margin:42px 0 16px">ACCOUNT & MARKETPLACE</div>
+ <div class="server-rule-grid">${ruleCards(MARKET_RULES)}</div>`
+}
+
+function ruleCards(arr){
+ return arr.map(x=>`<div class="server-rule">
+   <h3>${esc(x[0])}</h3>
+   <p class="muted">${esc(x[1])}</p>
+   <div class="punish-row">${x[2].map(v=>`<span>${esc(v)}</span>`).join('')}</div>
+ </div>`).join('')
+}
+
 /* Duels leaderboards + KITPVP */
 let duelCategory='modern';
 let duelStat='all';
