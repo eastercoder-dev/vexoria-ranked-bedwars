@@ -5,7 +5,6 @@ const {
     getPool,
     positiveInt,
     publicError,
-    resolveSeason,
     seasonJson,
     username
 } = require("../../lib/rbw");
@@ -46,9 +45,12 @@ module.exports = async function handler(req, res) {
                     "game number"
                 );
 
-        const playerName = username(req.query.username);
+        const playerName =
+            username(req.query.username);
 
-        const map = String(req.query.map || "").trim();
+        const map =
+            String(req.query.map || "")
+                .trim();
 
         if (map.length > 100) {
             return res.status(400).json({
@@ -56,55 +58,103 @@ module.exports = async function handler(req, res) {
             });
         }
 
-        const status = String(req.query.status || "")
-            .trim()
-            .toUpperCase();
+        const status =
+            String(req.query.status || "")
+                .trim()
+                .toUpperCase();
 
-        if (status && !GAME_STATUSES.has(status)) {
+        if (
+            status &&
+            !GAME_STATUSES.has(status)
+        ) {
             return res.status(400).json({
                 error: "Invalid match status"
             });
         }
 
-        // Resolve season
-        const { season } = await resolveSeason(
-            pool,
-            req.query.season
-        );
+        /*
+         * =========================================
+         * SEASON FILTER
+         * =========================================
+         *
+         * IMPORTANT:
+         *
+         * No season parameter:
+         *     Show matches from ALL seasons.
+         *
+         * ?season=1:
+         *     Show only Season 1.
+         *
+         * ?season=2:
+         *     Show only Season 2.
+         */
 
-        // No season exists
-        if (!season) {
-            return res.status(200).json({
-                activeSeason: null,
-                betweenSeasons: true,
+        const rawSeason =
+            req.query.season === undefined
+                ? ""
+                : String(req.query.season).trim();
 
-                page,
-                limit,
+        let selectedSeason = null;
 
-                total: 0,
-                totalPages: 0,
-                count: 0,
+        if (rawSeason !== "") {
+            const seasonNumber =
+                Number(rawSeason);
 
-                filters: {
-                    game: gameNumber,
-                    username: playerName || null,
-                    map: map || null,
-                    status: status || null
-                },
+            if (
+                !Number.isInteger(seasonNumber) ||
+                seasonNumber <= 0
+            ) {
+                return res.status(400).json({
+                    error: "Invalid season"
+                });
+            }
 
-                rows: [],
-                matches: []
-            });
+            const [seasonRows] =
+                await pool.execute(
+                    `
+                    SELECT
+                        season_id,
+                        season_number,
+                        name,
+                        type,
+                        status,
+                        started_at,
+                        ended_at,
+                        created_at
+
+                    FROM vrbw_seasons
+
+                    WHERE season_number = ?
+
+                    LIMIT 1
+                    `,
+                    [seasonNumber]
+                );
+
+            if (!seasonRows.length) {
+                return res.status(404).json({
+                    error: "Season not found"
+                });
+            }
+
+            selectedSeason =
+                seasonRows[0];
         }
 
-        // Optional player filter
+        /*
+         * =========================================
+         * PLAYER FILTER
+         * =========================================
+         */
+
         let player = null;
 
         if (playerName) {
-            player = await findPlayer(
-                pool,
-                playerName
-            );
+            player =
+                await findPlayer(
+                    pool,
+                    playerName
+                );
 
             if (!player) {
                 return res.status(404).json({
@@ -113,14 +163,28 @@ module.exports = async function handler(req, res) {
             }
         }
 
-        // Build WHERE conditions
-        const conditions = [
-            "g.season_id = ?"
-        ];
+        /*
+         * =========================================
+         * BUILD WHERE CONDITIONS
+         * =========================================
+         */
 
-        const params = [
-            season.season_id
-        ];
+        const conditions = [];
+        const params = [];
+
+        /*
+         * Only filter season when specifically
+         * requested by the website.
+         */
+        if (selectedSeason) {
+            conditions.push(
+                "g.season_id = ?"
+            );
+
+            params.push(
+                selectedSeason.season_id
+            );
+        }
 
         if (gameNumber !== null) {
             conditions.push(
@@ -150,103 +214,203 @@ module.exports = async function handler(req, res) {
             conditions.push(`
                 EXISTS (
                     SELECT 1
+
                     FROM vrbw_ranked_game_players f
-                    WHERE f.game_id = g.game_id
-                    AND f.player_id = ?
+
+                    WHERE
+                        f.game_id = g.game_id
+                        AND f.player_id = ?
                 )
             `);
 
-            params.push(player.player_id);
+            params.push(
+                player.player_id
+            );
         }
 
-        const where = conditions.join(" AND ");
+        const where =
+            conditions.length > 0
+                ? `WHERE ${conditions.join(" AND ")}`
+                : "";
 
-        // Count matches
-        const [countRows] = await pool.execute(
-            `
-            SELECT COUNT(*) AS total
-            FROM vrbw_ranked_games g
-            WHERE ${where}
-            `,
-            params
-        );
+        /*
+         * =========================================
+         * COUNT MATCHES
+         * =========================================
+         */
+
+        const [countRows] =
+            await pool.execute(
+                `
+                SELECT
+                    COUNT(*) AS total
+
+                FROM vrbw_ranked_games g
+
+                ${where}
+                `,
+                params
+            );
 
         const total =
-            Number(countRows[0]?.total || 0);
+            Number(
+                countRows[0]?.total || 0
+            );
 
         const totalPages =
             total === 0
                 ? 0
-                : Math.ceil(total / limit);
+                : Math.ceil(
+                    total / limit
+                );
 
-        // Safe integers
+        /*
+         * Pagination
+         */
         const safeLimit =
             Math.max(
                 1,
-                Math.min(100, Number(limit))
+                Math.min(
+                    100,
+                    Number(limit)
+                )
             );
 
         const safeOffset =
             Math.max(
                 0,
-                (Number(page) - 1) * safeLimit
+                (Number(page) - 1) *
+                    safeLimit
             );
 
         /*
-         * Load matches.
-         *
-         * limit/offset are already validated numbers,
-         * so they can safely be inserted directly.
+         * =========================================
+         * LOAD MATCHES
+         * =========================================
          */
-        const [games] = await pool.execute(
-            `
-            SELECT
-                g.*,
-                s.season_number,
-                s.name AS season_name,
-                s.type AS season_type
 
-            FROM vrbw_ranked_games g
+        const [games] =
+            await pool.execute(
+                `
+                SELECT
+                    g.*,
 
-            INNER JOIN vrbw_seasons s
-                ON s.season_id = g.season_id
+                    s.season_number,
+                    s.name AS season_name,
+                    s.type AS season_type
 
-            WHERE ${where}
+                FROM vrbw_ranked_games g
 
-            ORDER BY g.game_number DESC
+                INNER JOIN vrbw_seasons s
+                    ON s.season_id =
+                       g.season_id
 
-            LIMIT ${safeLimit}
-            OFFSET ${safeOffset}
-            `,
-            params
-        );
+                ${where}
 
-        // Load participants
+                ORDER BY
+                    g.created_at DESC,
+                    g.game_number DESC
+
+                LIMIT ${safeLimit}
+                OFFSET ${safeOffset}
+                `,
+                params
+            );
+
+        /*
+         * =========================================
+         * LOAD PARTICIPANTS
+         * =========================================
+         */
+
         const participants =
             await loadParticipants(
                 pool,
                 games
             );
 
-        // Build website response
-        const rows = games.map(game =>
-            gameView(
-                game,
-                participants.get(
-                    String(game.game_id)
-                ) || []
-            )
-        );
+        /*
+         * =========================================
+         * BUILD MATCH OBJECTS
+         * =========================================
+         */
+
+        const rows =
+            games.map(game =>
+                gameView(
+                    game,
+                    participants.get(
+                        String(
+                            game.game_id
+                        )
+                    ) || []
+                )
+            );
+
+        /*
+         * =========================================
+         * LOAD CURRENT ACTIVE SEASON
+         *
+         * This is metadata only.
+         * It does NOT limit recap matches.
+         * =========================================
+         */
+
+        const [activeSeasonRows] =
+            await pool.execute(
+                `
+                SELECT
+                    season_id,
+                    season_number,
+                    name,
+                    type,
+                    status,
+                    started_at,
+                    ended_at,
+                    created_at
+
+                FROM vrbw_seasons
+
+                WHERE status = 'ACTIVE'
+
+                ORDER BY
+                    season_number DESC
+
+                LIMIT 1
+                `
+            );
+
+        const activeSeason =
+            activeSeasonRows.length
+                ? activeSeasonRows[0]
+                : null;
+
+        /*
+         * =========================================
+         * RESPONSE
+         * =========================================
+         */
 
         return res.status(200).json({
-            ...seasonJson(season),
-
             activeSeason:
-                season.status === "ACTIVE"
-                    ? seasonJson(season)
+                activeSeason
+                    ? seasonJson(
+                        activeSeason
+                    )
                     : null,
 
-            betweenSeasons: false,
+            betweenSeasons:
+                !activeSeason,
+
+            selectedSeason:
+                selectedSeason
+                    ? seasonJson(
+                        selectedSeason
+                    )
+                    : null,
+
+            allSeasons:
+                selectedSeason === null,
 
             page,
             limit: safeLimit,
@@ -256,10 +420,25 @@ module.exports = async function handler(req, res) {
             count: rows.length,
 
             filters: {
-                game: gameNumber,
-                username: playerName || null,
-                map: map || null,
-                status: status || null
+                season:
+                    selectedSeason
+                        ? Number(
+                            selectedSeason
+                                .season_number
+                        )
+                        : null,
+
+                game:
+                    gameNumber,
+
+                username:
+                    playerName || null,
+
+                map:
+                    map || null,
+
+                status:
+                    status || null
             },
 
             rows,
