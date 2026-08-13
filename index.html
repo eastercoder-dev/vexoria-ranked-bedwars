@@ -194,6 +194,62 @@ body::after{
 .minemen .board{border-color:rgba(66,135,245,.20)}
 @media(max-width:900px){.feature-list{grid-template-columns:1fr!important}.server-card{transform:none}.ipline{width:100%;transform:none}}
 
+
+/* ==============================
+   DUELS LEADERBOARDS
+   ============================== */
+.duels-leaderboards{min-height:760px}
+.duel-category-tabs{justify-content:center;margin-bottom:42px}
+.duel-category-tabs button{min-width:150px}
+.duel-board-heading,.duel-list-title{display:flex;justify-content:space-between;align-items:end;gap:24px}
+.duel-board-heading{margin-bottom:28px}
+.duel-board-heading h2,.duel-list-title h2{margin:5px 0 0;font-size:30px;letter-spacing:-.04em}
+.duel-stat-field{width:230px}
+.duel-podium{margin-bottom:58px}
+.duel-podium-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;align-items:end}
+.duel-podium-card{
+  position:relative;min-height:260px;border:1px solid #263247;
+  background:linear-gradient(145deg,rgba(14,20,30,.97),rgba(8,12,18,.97));
+  padding:29px 22px;text-align:center;overflow:hidden;
+  box-shadow:0 18px 50px rgba(0,0,0,.32)
+}
+.duel-podium-card::before{
+  content:"";position:absolute;left:15%;right:15%;top:-1px;height:2px;
+  background:linear-gradient(90deg,transparent,#4287f5,#6ecff6,transparent)
+}
+.duel-podium-card.rank-1{
+  min-height:300px;border-color:rgba(66,135,245,.72);transform:translateY(-12px);
+  box-shadow:0 24px 70px rgba(0,0,0,.42),0 0 45px rgba(66,135,245,.06)
+}
+.duel-podium-card.rank-2,.duel-podium-card.rank-3{opacity:.92}
+.duel-podium-rank{
+  position:absolute;top:15px;left:16px;font-size:11px;font-weight:1000;
+  color:#7f8ba0;letter-spacing:.08em
+}
+.duel-podium-card.rank-1 .duel-podium-rank{color:var(--blue2)}
+.duel-podium-head{
+  width:88px;height:88px;image-rendering:pixelated;border:1px solid #34435a;
+  margin:18px auto 18px
+}
+.duel-podium-card.rank-1 .duel-podium-head{width:106px;height:106px}
+.duel-podium-name{font-size:19px;font-weight:1000}
+.duel-podium-stat-label{
+  margin-top:22px;color:#6d788a;font-size:9px;font-weight:900;letter-spacing:.14em
+}
+.duel-podium-value{margin-top:5px;font-size:30px;font-weight:1000;color:#fff}
+.duel-podium-card.rank-1 .duel-podium-value{color:var(--blue2);font-size:38px}
+.duel-list-title{margin-bottom:15px}
+.duels-leaderboards .board{border-color:rgba(66,135,245,.28)}
+.duels-leaderboards tbody tr:nth-child(1){background:rgba(66,135,245,.035)}
+.duel-stat-active{color:var(--blue2)}
+@media(max-width:760px){
+  .duel-board-heading{align-items:stretch;flex-direction:column}
+  .duel-stat-field{width:100%}
+  .duel-podium-grid{grid-template-columns:1fr}
+  .duel-podium-card.rank-1{order:-1;transform:none}
+  .duel-podium-card{min-height:220px}
+}
+
 </style>
 </head>
 <body>
@@ -225,9 +281,7 @@ const API={
  rbwLeaderboard:(stat='elo',season='',username='')=>`/api/rbw/leaderboard?stat=${encodeURIComponent(stat)}${season?`&season=${encodeURIComponent(season)}`:''}${username?`&username=${encodeURIComponent(username)}`:''}`,
  rbwMatches:(username='',season='',page=1)=>`/api/rbw/matches?page=${page}${username?`&username=${encodeURIComponent(username)}`:''}${season?`&season=${encodeURIComponent(season)}`:''}`,
  rbwAnalytics:(action,p='',p2='',season='')=>`/api/rbw/analytics?action=${encodeURIComponent(action)}${p?`&player=${encodeURIComponent(p)}`:''}${p2?`&player2=${encodeURIComponent(p2)}`:''}${season?`&season=${encodeURIComponent(season)}`:''}`,
- duelsPlayer:u=>`/api/duels/player?username=${encodeURIComponent(u)}`,
- duelsCasual:u=>`/api/duels/casual?username=${encodeURIComponent(u)}`,
- duelsLeaderboard:(mode='BEDFIGHT',stat='elo')=>`/api/duels/leaderboard?mode=${encodeURIComponent(mode)}&stat=${encodeURIComponent(stat)}`,
+ duelsLeaderboard:(version='modern',stat='all')=>`/api/duels/leaderboard?version=${encodeURIComponent(version)}&stat=${encodeURIComponent(stat)}`,
  kpPlayer:u=>`/api/kitpvp/player?username=${encodeURIComponent(u)}`,
  kpLeaderboard:stat=>`/api/kitpvp/leaderboard?stat=${encodeURIComponent(stat)}`,
  kpKills:u=>`/api/kitpvp/kills${u?`?username=${encodeURIComponent(u)}`:''}`,
@@ -337,17 +391,169 @@ function rulesTable(rows){return `<div class="board"><table><thead><tr><th>RULE<
 function gameplayRules(){return rulesTable([['Unfair Gameplay','Stat manipulation, win trading, intentional throwing, or behavior designed to misrepresent true performance.','Warning','1-Day','3-Day','7-Day','14-Day','Permanent'],['Unauthorized Modifications','Running mods or clients outside the allowed modifications policy.','Warning','1-Day','3-Day','7-Day','14-Day','Permanent'],['Unfair Gameplay Methods','Teaming with opponents or exploiting edge-case methods that undermine fair competition.','Warning','1-Day','3-Day','7-Day','14-Day','Permanent'],['Exploiting Bugs / Systems','Knowingly using a bug, glitch, or unintended interaction for advantage.','Warning','1-Day','3-Day','7-Day','14-Day','Permanent'],['Unfair Progression Assistance','Boosting, carrying alts, smurfing, or playing matches for another account.','Warning','1-Day','3-Day','7-Day','14-Day','Permanent'],['Performance Disruption','Intentionally degrading the match experience through lag-causing behavior.','Warning','1-Day','3-Day','7-Day','14-Day','Permanent'],['Command Abuse','Spam, harassment via commands, or misuse of party and queue systems.','Warning','1-Day','3-Day','7-Day','14-Day','Permanent'],['Use of Cheats','Cheat clients, scripts, macros, autoclickers, or hardware automation.','3-Day','7-Day','14-Day','30-Day','Permanent','—'],['Duplication Abuse','Replicating items, currencies, or rewards through an exploit.','3-Day','7-Day','14-Day','30-Day','Permanent','—'],['Attempting to Circumvent Systems','Using technical means to dodge queue penalties or enforcement.','3-Day','7-Day','14-Day','30-Day','Permanent','—']])}
 function screenshareRules(){return rulesTable([['Unable to Verify Screen','System or share setup prevents verification.','Warning','1-Day','3-Day','—','—','—'],['Disconnecting During Review','Leaving before the Screensharer ends the review.','Warning','1-Day','3-Day','—','—','—'],['Delaying Staff Review','Stalling the start without valid reason.','Warning','1-Day','3-Day','—','—','—'],['Confession of Rule Violation','Admitting to a violation during review.','Warning','3-Day','7-Day','—','—','—'],['Refusal to Cooperate','Declining reasonable Screensharer instructions.','1-Day','3-Day','7-Day','—','—','—'],['Closing Verification Tools','Closing programs/windows staff asked you to keep open.','1-Day','3-Day','7-Day','—','—','—']])}
 
-/* Minemen-like duels + kitpvp */
-const DUEL_MODES=[
-{id:'SWORD',label:'Sword',icon:'🗡️'},{id:'NETHERITEPOT',label:'NetheritePot',icon:'🧪'},{id:'BUILDUHC',label:'BuildUHC',icon:'🛡️'},{id:'CRYSTAL',label:'Crystal',icon:'💎'},{id:'MACE',label:'Mace',icon:'🔨'},{id:'LIFESTEAL',label:'Lifesteal',icon:'❤'},{id:'BEDFIGHT',label:'Bed Fight',icon:'🛏️'},{id:'FIREBALL_FIGHT',label:'Fireball Fight',icon:'🔥'},{id:'FIREBALL_MACE',label:'Fireball Mace',icon:'💥'},{id:'SKYFIGHT',label:'Sky Fight',icon:'☁️'},{id:'BATTLERUSH',label:'Battle Rush',icon:'⚡'},{id:'BRIDGE',label:'Bridge',icon:'🌉'}]
-let dmode='BEDFIGHT';
-function renderDuels(){active('duels');app().innerHTML=`<section class="minemen"><div class="wrap"><div class="minihead"><div><div class="kicker">VANILLA × COMPETITIVE</div><h1>Leaderboards</h1></div><div class="mini-search"><input id="dq" class="input" placeholder="Search player..."><button class="btn" onclick="openDuelSearch()">Open</button></div></div><div class="category-tabs"><button class="active">Modern (1.21)</button></div><div class="mode-pills">${DUEL_MODES.map(m=>`<button class="${m.id===dmode?'active':''}" onclick="setDMode('${m.id}',this)">${m.icon} ${m.label}</button>`).join('')}</div><div id="dboard" class="empty">Loading leaderboard…</div></div></section>`;setTimeout(loadDuelLB,0)}
-function pretty(m){return DUEL_MODES.find(x=>x.id===m)?.label||m}
-function setDMode(m,b){dmode=m;b.parentElement.querySelectorAll('button').forEach(x=>x.classList.toggle('active',x===b));loadDuelLB()}
-async function loadDuelLB(){const out=$('#dboard');try{const d=await get(API.duelsLeaderboard(dmode,'winrate')),rows=d.players||[];out.className='board';out.innerHTML=`<table><thead><tr><th>#</th><th></th><th>PLAYER</th><th>WIN RATE</th></tr></thead><tbody>${rows.map((x,i)=>`<tr><td class="rank">${i+1}</td><td><img class="head" src="${head(x.username)}"></td><td><div class="pcell" onclick="go('#duels-player/${encodeURIComponent(x.username)}')">${esc(x.username)}</div></td><td><strong>${pct(x.winRate||0)}</strong></td></tr>`).join('')}</tbody></table>`}catch(e){out.className='empty';out.textContent=e.message}}
-function openDuelSearch(){const q=$('#dq').value.trim();if(q)go('#duels-player/'+encodeURIComponent(q))}
-async function renderDuelPlayer(u){active('duels');app().innerHTML=`<section class="minemen"><div class="wrap"><div id="dp" class="empty">Loading player…</div></div></section>`;const out=$('#dp');try{const [x,c]=await Promise.all([get(API.duelsPlayer(u)),get(API.duelsCasual(u)).catch(()=>null)]);out.className='';out.innerHTML=`<div class="profile-card"><div class="profile-main"><img src="${head(x.username,78)}"><div><div class="kicker">VEXORIA DUELS</div><h2>${esc(x.username)}</h2><div class="muted">Modern 1.21 Practice</div></div><div class="profile-score"><div class="kicker">GLOBAL ELO</div><strong>${n(x.globalElo)}</strong></div></div><div class="profile-summary"><div><div class="kicker">RANKED GAMES</div><strong>${n(x.rankedTotals?.games||0)}</strong></div><div><div class="kicker">RANKED WIN RATE</div><strong>${pct(x.rankedTotals?.winRate||0)}</strong></div><div><div class="kicker">CASUAL KILLS</div><strong>${n(c?.kills||0)}</strong></div></div><div class="more"><button class="btn primary" onclick="go('#duels-detail/${encodeURIComponent(x.username)}')">View More →</button></div></div>`}catch(e){out.className='empty';out.textContent=e.message}}
-async function renderDuelDetail(u){active('duels');app().innerHTML=`<section class="minemen"><div class="wrap"><div id="dd" class="empty">Loading complete profile…</div></div></section>`;const out=$('#dd');try{const [x,c]=await Promise.all([get(API.duelsPlayer(u)),get(API.duelsCasual(u)).catch(()=>null)]);out.className='';out.innerHTML=`<div class="profile-card"><div class="profile-main"><img src="${head(x.username,78)}"><div><div class="kicker">MODERN PRACTICE PROFILE</div><h2>${esc(x.username)}</h2><div class="muted">Detailed competitive record</div></div><div class="profile-score"><div class="kicker">GLOBAL ELO</div><strong>${n(x.globalElo)}</strong><div class="muted">Peak ${n(x.peakGlobalElo)}</div></div></div></div><div class="pagehead" style="margin-top:50px"><div class="kicker">CASUAL</div><h1>Practice Record</h1></div><div class="stat-grid">${stat('CASUAL KILLS',n(c?.kills||0))}</div><div class="pagehead" style="margin-top:50px"><div class="kicker">COMPETITIVE</div><h1>Ranked Modes</h1></div><div class="board"><table><thead><tr><th>MODE</th><th>ELO</th><th>PEAK</th><th>WINS</th><th>LOSSES</th><th>WIN RATE</th><th>KILLS</th><th>STREAK</th></tr></thead><tbody>${(x.rankedModes||[]).map(m=>`<tr><td><strong>${pretty(m.mode)}</strong></td><td>${n(m.elo)}</td><td>${n(m.peakElo)}</td><td>${n(m.wins)}</td><td>${n(m.losses)}</td><td>${pct(m.winRate)}</td><td>${n(m.kills)}</td><td>${n(m.currentWinStreak)} / ${n(m.bestWinStreak)}</td></tr>`).join('')}</tbody></table></div>`}catch(e){out.className='empty';out.textContent=e.message}}
+/* Duels leaderboards + KitPvP */
+let duelCategory='modern';
+let duelStat='all';
+
+const DUEL_STATS={
+ modern:{
+   title:'Modern 1.21',
+   subtitle:'StrikePractice',
+   defaultStat:'kills',
+   stats:[
+     {id:'all',label:'All Statistics'},
+     {id:'kills',label:'Kills'},
+     {id:'deaths',label:'Deaths'}
+   ]
+ },
+ 'modern-plus':{
+   title:'Modern 1.21+',
+   subtitle:'MultiDuels',
+   defaultStat:'wins',
+   stats:[
+     {id:'all',label:'All Statistics'},
+     {id:'wins',label:'Wins'},
+     {id:'losses',label:'Losses'},
+     {id:'kills',label:'Kills'}
+   ]
+ }
+};
+
+function setDuelCategory(category){
+ duelCategory=category;
+ duelStat='all';
+ renderDuels();
+}
+
+function setDuelStat(statistic){
+ duelStat=statistic;
+ loadDuelLeaderboard();
+}
+
+function duelStatLabel(statistic){
+ return {wins:'WINS',losses:'LOSSES',kills:'KILLS',deaths:'DEATHS'}[statistic]||String(statistic).toUpperCase();
+}
+
+function renderDuels(){
+ active('duels');
+ const cfg=DUEL_STATS[duelCategory];
+ app().innerHTML=`<section class="section duels-leaderboards"><div class="wrap">
+   <div class="pagehead">
+     <div class="kicker">VEXORIA DUELS</div>
+     <h1>Duels Leaderboards</h1>
+     <p>Competitive statistics across Vexoria's Modern 1.21 and Modern 1.21+ PvP systems.</p>
+   </div>
+
+   <div class="category-tabs duel-category-tabs">
+     <button class="${duelCategory==='modern'?'active':''}" onclick="setDuelCategory('modern')">Modern 1.21</button>
+     <button class="${duelCategory==='modern-plus'?'active':''}" onclick="setDuelCategory('modern-plus')">Modern 1.21+</button>
+   </div>
+
+   <div class="duel-board-heading">
+     <div>
+       <div class="kicker">${esc(cfg.subtitle)}</div>
+       <h2>${esc(cfg.title)}</h2>
+     </div>
+     <div class="field duel-stat-field">
+       <label>STATISTIC</label>
+       <select id="duel-stat" class="select" onchange="setDuelStat(this.value)">
+         ${cfg.stats.map(s=>`<option value="${s.id}" ${s.id===duelStat?'selected':''}>${esc(s.label)}</option>`).join('')}
+       </select>
+     </div>
+   </div>
+
+   <div id="duel-podium" class="duel-podium"><div class="empty">Loading top players…</div></div>
+
+   <div class="duel-list-title">
+     <div><div class="kicker">FULL RANKINGS</div><h2>Leaderboard</h2></div>
+   </div>
+   <div id="dboard" class="empty">Loading leaderboard…</div>
+ </div></section>`;
+ setTimeout(loadDuelLeaderboard,0);
+}
+
+async function loadDuelLeaderboard(){
+ const board=$('#dboard'),podium=$('#duel-podium');
+ if(!board||!podium)return;
+
+ board.className='empty';
+ board.textContent='Loading leaderboard…';
+ podium.innerHTML='<div class="empty">Loading top players…</div>';
+
+ try{
+   const data=await get(API.duelsLeaderboard(duelCategory,duelStat));
+   const rows=data.players||[];
+
+   if(!rows.length){
+     podium.innerHTML='<div class="empty">No leaderboard data yet.</div>';
+     board.className='empty';
+     board.textContent='No leaderboard data yet.';
+     return;
+   }
+
+   const cfg=DUEL_STATS[duelCategory];
+   const rankingStat=duelStat==='all'?cfg.defaultStat:duelStat;
+
+   renderDuelPodium(podium,rows.slice(0,3),rankingStat);
+   renderDuelTable(board,rows,duelCategory,duelStat,rankingStat);
+ }catch(e){
+   podium.innerHTML=`<div class="empty">${esc(e.message)}</div>`;
+   board.className='empty';
+   board.textContent=e.message;
+ }
+}
+
+function renderDuelPodium(container,players,rankingStat){
+ const byRank={
+   1:players.find(x=>Number(x.rank)===1),
+   2:players.find(x=>Number(x.rank)===2),
+   3:players.find(x=>Number(x.rank)===3)
+ };
+ const ordered=[byRank[2],byRank[1],byRank[3]].filter(Boolean);
+
+ container.innerHTML=`<div class="duel-podium-grid">${ordered.map(player=>{
+   const rank=Number(player.rank);
+   return `<div class="duel-podium-card rank-${rank}">
+     <div class="duel-podium-rank">#${rank}</div>
+     <img class="duel-podium-head" src="${head(player.username,88)}" alt="${esc(player.username)}">
+     <div class="duel-podium-name">${esc(player.username)}</div>
+     <div class="duel-podium-stat-label">${duelStatLabel(rankingStat)}</div>
+     <div class="duel-podium-value">${n(player[rankingStat]||0)}</div>
+   </div>`;
+ }).join('')}</div>`;
+}
+
+function renderDuelTable(container,players,category,statistic,rankingStat){
+ const all=statistic==='all';
+ let headers='',cells=()=>''; 
+
+ if(category==='modern'){
+   if(all){
+     headers='<th>KILLS</th><th>DEATHS</th>';
+     cells=p=>`<td class="${rankingStat==='kills'?'duel-stat-active':''}"><strong>${n(p.kills)}</strong></td><td>${n(p.deaths)}</td>`;
+   }else{
+     headers=`<th>${duelStatLabel(statistic)}</th>`;
+     cells=p=>`<td class="duel-stat-active"><strong>${n(p[statistic])}</strong></td>`;
+   }
+ }else{
+   if(all){
+     headers='<th>WINS</th><th>LOSSES</th><th>KILLS</th>';
+     cells=p=>`<td class="${rankingStat==='wins'?'duel-stat-active':''}"><strong>${n(p.wins)}</strong></td><td>${n(p.losses)}</td><td>${n(p.kills)}</td>`;
+   }else{
+     headers=`<th>${duelStatLabel(statistic)}</th>`;
+     cells=p=>`<td class="duel-stat-active"><strong>${n(p[statistic])}</strong></td>`;
+   }
+ }
+
+ container.className='board';
+ container.innerHTML=`<table><thead><tr><th>#</th><th></th><th>PLAYER</th>${headers}</tr></thead>
+ <tbody>${players.map(player=>`<tr>
+   <td class="rank">#${player.rank}</td>
+   <td><img class="head" src="${head(player.username)}" alt="${esc(player.username)}"></td>
+   <td><strong>${esc(player.username)}</strong></td>
+   ${cells(player)}
+ </tr>`).join('')}</tbody></table>`;
+}
 
 const KP_LB_STATS={coins:{label:'COINS',field:'coins'},kills:{label:'KILLS',field:'kills'},experience:{label:'EXPERIENCE',field:'experience'},bestkillstreak:{label:'BEST KILLSTREAK',field:'bestKillstreak'}}
 function renderKP(){active('kitpvp');app().innerHTML=`<section class="minemen"><div class="wrap"><div class="minihead"><div><div class="kicker">KITPVP 1.21X</div><h1>Leaderboards</h1></div><div class="mini-search"><input id="kq" class="input" placeholder="Search player..."><button class="btn" onclick="openKPSearch()">Open</button></div></div><div class="category-tabs"><button class="active">KitPvP</button></div><div class="controls" style="grid-template-columns:320px"><div class="field"><label>RANK BY</label><select id="kst" class="select" onchange="loadKPLB()"><option value="coins">Coins</option><option value="kills">Kills</option><option value="experience">Experience</option><option value="bestkillstreak">Best Killstreak</option></select></div></div><div id="kb" class="empty">Loading leaderboard…</div></div></section>`;setTimeout(loadKPLB,0)}
@@ -355,7 +561,7 @@ async function loadKPLB(){const out=$('#kb'),key=$('#kst')?.value||'coins',meta=
 function openKPSearch(){const q=$('#kq').value.trim();if(q)go('#kitpvp-player/'+encodeURIComponent(q))}
 async function renderKPPlayer(u){active('kitpvp');app().innerHTML=`<section class="minemen"><div class="wrap"><div id="kp" class="empty">Loading player…</div></div></section>`;const out=$('#kp');try{const [x,k,h]=await Promise.all([get(API.kpPlayer(u)),get(API.kpKits(u)).catch(()=>({ownedKits:[]})),get(API.kpKills(u)).catch(()=>({kills:[]}))]);const kd=x.deaths?x.kills/x.deaths:x.kills;out.className='';out.innerHTML=`<div class="profile-card"><div class="profile-main"><img src="${head(x.username,78)}"><div><div class="kicker">VEXORIA KITPVP</div><h2>${esc(x.username)}</h2><div class="muted">${esc(x.selectedKit||'No selected kit')}</div></div><div class="profile-score"><div class="kicker">COINS</div><strong>${n(x.coins)}</strong></div></div><div class="profile-summary"><div><div class="kicker">KILLS</div><strong>${n(x.kills)}</strong></div><div><div class="kicker">K/D</div><strong>${Number(kd).toFixed(2)}</strong></div><div><div class="kicker">BEST STREAK</div><strong>${n(x.bestKillstreak)}</strong></div></div></div><div class="pagehead" style="margin-top:50px"><div class="kicker">COMPLETE PROFILE</div><h1>KitPvP Record</h1></div><div class="stat-grid">${stat('COINS',n(x.coins))}${stat('KILLS',n(x.kills))}${stat('DEATHS',n(x.deaths))}${stat('K/D',Number(kd).toFixed(2))}${stat('EXPERIENCE',n(x.experience))}${stat('CURRENT STREAK',n(x.currentKillstreak))}${stat('BEST STREAK',n(x.bestKillstreak))}${stat('OWNED KITS',n(k.ownedKitCount||k.ownedKits?.length||0))}</div><div class="two"><div class="panel"><div class="kicker">OWNED KITS</div><h3>${n(k.ownedKitCount||k.ownedKits?.length||0)} unlocked</h3>${(k.ownedKits||[]).slice(0,30).map(z=>`<span class="live" style="margin:3px">${esc(z)}</span>`).join('')||'<div class="muted">No kit data.</div>'}</div><div class="panel"><div class="kicker">RECENT KILLS</div><h3>Combat activity</h3>${(h.kills||[]).slice(0,8).map(z=>row(`${z.killer?.username||x.username} → ${z.victim?.username||'Unknown'}`,z.kit||'KitPvP')).join('')||'<div class="muted">No recent kill history.</div>'}</div></div>`}catch(e){out.className='empty';out.textContent=e.message}}
 
-function router(){const h=(location.hash||'#home').slice(1);if(h==='home')return renderHome();if(h==='rbw-home')return renderRBWHome();if(h==='rbw-stats')return renderStats();if(h==='rbw-rankings')return renderRankings();if(h==='rbw-compare')return renderCompare();if(h==='rbw-matches')return renderMatches();if(h==='rbw-rules')return renderRules();if(h==='duels')return renderDuels();if(h.startsWith('duels-player/'))return renderDuelPlayer(decodeURIComponent(h.slice(13)));if(h.startsWith('duels-detail/'))return renderDuelDetail(decodeURIComponent(h.slice(13)));if(h==='kitpvp')return renderKP();if(h.startsWith('kitpvp-player/'))return renderKPPlayer(decodeURIComponent(h.slice(14)));return renderHome()}
+function router(){const h=(location.hash||'#home').slice(1);if(h==='home')return renderHome();if(h==='rbw-home')return renderRBWHome();if(h==='rbw-stats')return renderStats();if(h==='rbw-rankings')return renderRankings();if(h==='rbw-compare')return renderCompare();if(h==='rbw-matches')return renderMatches();if(h==='rbw-rules')return renderRules();if(h==='duels')return renderDuels();if(h==='kitpvp')return renderKP();if(h.startsWith('kitpvp-player/'))return renderKPPlayer(decodeURIComponent(h.slice(14)));return renderHome()}
 addEventListener('hashchange',router);router();
 </script>
 </body>
