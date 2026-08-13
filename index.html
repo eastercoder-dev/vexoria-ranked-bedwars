@@ -1,65 +1,1083 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Vexoria Network</title>
+<style>
+:root{
+  --bg:#090a0e;
+  --panel:#0f1117;
+  --panel2:#121722;
+  --line:#232936;
+  --text:#f7f8fb;
+  --muted:#8a94a3;
+  --muted2:#687386;
+  --blue:#4287f5;
+  --blue2:#6ecff6;
+  --good:#67d58c;
+  --red:#ff727c;
+  --max:1180px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;
+  color:var(--text);
+  background:
+    radial-gradient(520px 420px at 50% 11%,rgba(66,135,245,.08),transparent 68%),
+    var(--bg);
+  font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  -webkit-font-smoothing:antialiased
+}
+button,input,select{font:inherit}
+button{cursor:pointer}
+.wrap{width:min(var(--max),calc(100% - 40px));margin:auto}
+.muted{color:var(--muted)}
+.kicker{font-size:10px;letter-spacing:.22em;text-transform:uppercase;font-weight:900;color:#788396}
+.btn{height:42px;padding:0 15px;border:1px solid #2c3545;background:#10151d;color:#fff;font-size:10px;font-weight:900;letter-spacing:.07em;text-transform:uppercase}
+.btn:hover{border-color:#496a96}.btn.primary{background:var(--blue);border-color:var(--blue)}
+.input,.select{width:100%;height:44px;border:1px solid #2b3444;background:#0d1118;color:#fff;padding:0 13px;outline:0}
+.input:focus,.select:focus{border-color:var(--blue)}
+.top{height:68px;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:50;background:rgba(9,10,14,.92);backdrop-filter:blur(14px)}
+.top .wrap{height:100%;display:flex;align-items:center;justify-content:space-between;gap:18px}
+.brand{display:flex;align-items:center;gap:10px;font-size:11px;font-weight:1000;letter-spacing:.08em}
+.mark{width:32px;height:32px;border:1px solid #34465d;display:grid;place-items:center;background:#0e141d;font-weight:1000}
+.gnav{display:flex;gap:2px;align-items:center}
+.gnav button{border:0;background:transparent;color:#7e8999;padding:10px 11px;font-size:10px;font-weight:900}
+.gnav button.active,.gnav button:hover{color:#fff;background:#111720}
+.modebar{border-bottom:1px solid var(--line);background:#0a0c11}
+.modebar .wrap{min-height:54px;display:flex;align-items:center;justify-content:space-between;gap:18px}
+.modebrand{font-size:10px;font-weight:1000;letter-spacing:.09em}.modebrand b{color:var(--blue2)}
+.tabs{display:flex;gap:2px;overflow:auto}
+.tabs button{border:0;background:transparent;color:#788394;padding:18px 11px;font-size:10px;font-weight:900;white-space:nowrap}
+.tabs button.active,.tabs button:hover{color:#fff;background:#111720}
 
-ACCOUNT & MARKETPLACE
-RULE
-1ST
-2ND
-3RD
-4TH
-5TH
-6TH
-Unauthorized Promotion
-Advertising other servers, services, or platforms in chat, names, or cosmetics.
-7-Day Restriction
-30-Day Restriction
-Permanent Restriction
-—
-—
-—
-Fraud / Scamming
-Tricking another player out of items, currency, or account access.
-7-Day Restriction
-30-Day Restriction
-Permanent Restriction
-—
-—
-—
-Unauthorized Trading
-Trading accounts, ranks, or in-game items outside official systems.
-7-Day Account Restriction
-14-Day Account Restriction
-Permanent Restriction
-—
-—
-—
-Evading Punishments
-Using alternate accounts to bypass an active ban, mute, or restriction.
-30-Day Restriction
-Permanent Restriction
-—
-—
-—
-—
-Marketplace Fraud
-Misrepresenting goods, refusing delivery, or scamming through the in-game shop or trades.
-30-Day Restriction
-Permanent Restriction
-—
-—
-—
-—
-False Reports / Evidence
-Submitting fake screenshots, edited videos, or knowingly inaccurate reports.
-30-Day Restriction
-Permanent Restriction
-—
-—
-—
-—
-Payment Fraud
-Chargebacks, stolen payment methods, or any fraudulent purchase.
-Permanent Restriction
-—
-—
-—
-—
-—
+/* Skyline-style centered hero */
+.hero{padding:88px 0 68px;border-bottom:1px solid var(--line)}
+.hero-inner{text-align:center;max-width:880px;margin:auto}
+.hero .live{display:inline-flex;align-items:center;gap:8px;border:1px solid #2b3545;background:#0e131b;padding:7px 10px;font-size:10px;font-weight:900;letter-spacing:.08em;text-transform:uppercase}
+.live .dot{width:7px;height:7px;border-radius:50%;background:var(--good)}
+.hero h1{font-size:clamp(64px,9vw,116px);line-height:.82;letter-spacing:-.08em;margin:22px 0 22px;text-transform:uppercase}
+.hero h1 span{display:block;color:var(--blue)}
+.hero p{max-width:690px;margin:0 auto;color:var(--muted);font-size:16px;line-height:1.7}
+.hero-stats{display:flex;justify-content:center;gap:52px;flex-wrap:wrap;margin-top:32px}
+.hero-stat{min-width:120px}
+.hero-stat label{display:block;font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:#6c788a;font-weight:900}
+.hero-stat strong{display:block;margin-top:8px;font-size:18px}
+.logo-stage{margin:58px auto 0;width:min(520px,100%);height:250px;display:grid;place-items:center;position:relative}
+.logo-stage:before,.logo-stage:after{content:"";position:absolute;border:1px solid rgba(110,207,246,.11);border-radius:50%}
+.logo-stage:before{width:240px;height:240px}.logo-stage:after{width:165px;height:165px}
+.logo-stage .v{font-size:118px;font-weight:1000;letter-spacing:-.08em;position:relative;z-index:2}
+
+.section{padding:72px 0}
+.section-title{text-align:center;max-width:800px;margin:0 auto 30px}
+.section-title h2{font-size:42px;letter-spacing:-.05em;margin:8px 0 10px}
+.section-title p{color:var(--muted);line-height:1.65;margin:0}
+.server-card{border:1px solid var(--line);background:#0b0f15;display:grid;grid-template-columns:1.45fr repeat(4,.75fr)}
+.server-card>div{padding:20px 21px;border-right:1px solid var(--line)}
+.server-card>div:last-child{border-right:0}
+.server-card .main h3{font-size:20px;margin:6px 0}.server-card label{display:block;font-size:9px;letter-spacing:.13em;color:#6f7a8b;font-weight:900}
+.server-card strong{display:block;margin-top:8px;font-size:13px}
+.ipline{margin-top:14px;border:1px solid var(--line);background:#0b0f15;padding:15px 18px;display:flex;justify-content:space-between;align-items:center;gap:18px}
+.feature-list{border:1px solid var(--line);background:var(--line);display:grid;gap:1px}
+.feature{background:#0b0f15;padding:24px 26px;display:grid;grid-template-columns:76px 1fr auto;align-items:center;gap:18px}
+.feature:hover{background:#101620}
+.feature .num{font-size:10px;color:#687488;font-weight:900;letter-spacing:.15em}
+.feature h3{margin:0;font-size:22px}.feature p{margin:7px 0 0;color:var(--muted);font-size:12px}.feature .arr{font-size:21px;color:var(--blue2)}
+.pagehead{text-align:center;max-width:820px;margin:0 auto 34px}
+.pagehead h1{font-size:52px;letter-spacing:-.06em;margin:7px 0 10px}
+.pagehead p{color:var(--muted);line-height:1.65;margin:0}
+.controls{display:grid;grid-template-columns:1fr 1fr auto;gap:10px;align-items:end;margin-bottom:18px}
+.field label{display:block;font-size:9px;letter-spacing:.13em;color:#6e798b;font-weight:900;text-transform:uppercase;margin-bottom:7px}
+.empty{border:1px dashed #2b3443;background:#0a0d12;padding:52px 24px;text-align:center;color:#707b8c}
+.board{border:1px solid var(--line);background:#0a0e13;overflow:auto}
+table{width:100%;border-collapse:collapse;min-width:760px}
+th{height:47px;text-align:left;padding:0 15px;border-bottom:1px solid var(--line);font-size:9px;letter-spacing:.14em;color:#6e798b;text-transform:uppercase}
+td{height:66px;padding:0 15px;border-bottom:1px solid #171d26;font-size:13px}
+tbody tr:hover{background:#0f141d}
+.head{width:31px;height:31px;image-rendering:pixelated;border:1px solid #2c3748}
+.pcell{font-weight:900;cursor:pointer}.pcell:hover{color:var(--blue2)}
+.rank{font-weight:1000;color:#aab6c5}
+.report-head{display:grid;grid-template-columns:88px 1fr auto;gap:22px;align-items:center;padding-bottom:28px;border-bottom:1px solid var(--line)}
+.report-head img{width:88px;height:88px;image-rendering:pixelated;border:1px solid #2d394a}
+.report-head h2{font-size:36px;margin:2px 0}.report-score{text-align:right}.report-score strong{font-size:34px;display:block}
+.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line);margin-top:20px}
+.stat{background:#0b0f15;padding:18px}.stat label{display:block;font-size:9px;letter-spacing:.13em;text-transform:uppercase;color:#6f7b8c;font-weight:900}.stat strong{display:block;font-size:24px;margin-top:8px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
+.panel{border:1px solid var(--line);background:#0b0f15;padding:20px}.panel h3{margin:6px 0 13px}
+.row{display:grid;grid-template-columns:1fr auto;gap:14px;padding:10px 0;border-top:1px solid #161c25;font-size:12px}
+.compare-card{border:1px solid var(--line);background:#0a0e13;padding:24px}
+.compare-inputs,.team-inputs{display:grid;grid-template-columns:1fr 74px 1fr;gap:10px;align-items:end}.vs{text-align:center;padding-bottom:13px;color:#667184;font-size:11px;font-weight:1000}
+.compare-result{margin-top:18px;border:1px solid var(--line);background:#0a0e13}
+.people{display:grid;grid-template-columns:1fr 1fr}.person{padding:22px}.person+.person{border-left:1px solid var(--line)}
+.personline{display:flex;align-items:center;gap:12px}.personline img{width:52px;height:52px;image-rendering:pixelated}
+.crow{display:grid;grid-template-columns:1fr 170px 1fr;gap:10px;padding:12px 22px;border-top:1px solid #171d26;text-align:center}.crow .metric{font-size:9px;letter-spacing:.12em;color:#6d798b;text-transform:uppercase}.lead{color:var(--blue2);font-weight:900}
+.team-lab{margin-top:44px;padding-top:36px;border-top:1px solid var(--line)}
+.archive-metrics{display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:var(--line);border:1px solid var(--line);margin-bottom:24px}.archive-metrics>div{background:#0b0f15;padding:15px}.archive-metrics label{font-size:9px;color:#6e798b;letter-spacing:.11em}.archive-metrics strong{display:block;margin-top:6px}
+.match{border:1px solid var(--line);background:#0a0e13;padding:18px;margin-bottom:10px}.match-top{display:flex;justify-content:space-between;color:#7b8798;font-size:11px;margin-bottom:11px}.teamrow{display:grid;grid-template-columns:1fr auto;gap:12px;border-top:1px solid #171d26;padding:10px 0}.teamrow.win{color:#a0e2ae}
+.rule-tabs{display:flex;justify-content:center;gap:6px;flex-wrap:wrap;margin:20px 0 28px}.rule-tabs button{height:40px;border:1px solid #2b3545;background:#0b1017;color:#8490a2;padding:0 13px;font-size:10px;font-weight:900}.rule-tabs button.active{background:var(--blue);border-color:var(--blue);color:#fff}
+.rule-page{display:none}.rule-page.active{display:block}.season-card{text-align:center;border:1px solid var(--line);background:#0a0e13;padding:30px}.season-card h2{font-size:46px;margin:8px 0}.item-group{margin:28px 0}.item-group h3{text-align:center;font-size:11px;letter-spacing:.18em;text-transform:uppercase}.item-group .desc{text-align:center;color:var(--muted);margin-bottom:12px}.items{display:grid;grid-template-columns:repeat(auto-fill,minmax(84px,1fr));gap:8px}.item{height:86px;border:1px solid #2c3545;background:#0b1016;display:grid;place-items:center;text-align:center;font-size:9px}.item b{display:block;font-size:24px}.item img{width:32px;height:32px;image-rendering:pixelated;display:block;margin:0 auto 6px}
+.minemen{padding:54px 0}.minihead{display:flex;justify-content:space-between;align-items:center;gap:28px;margin-bottom:26px}.minihead h1{font-size:44px;letter-spacing:-.05em;margin:0}.mini-search{display:flex;gap:8px;max-width:360px;width:100%}
+.category-tabs{display:flex;gap:22px;border-bottom:1px solid var(--line);margin-bottom:18px}.category-tabs button{height:42px;border:0;background:transparent;color:#7f8999;font-size:11px;font-weight:900;border-bottom:2px solid transparent}.category-tabs button.active{color:#fff;border-bottom-color:var(--blue)}
+.mode-pills{display:flex;gap:7px;overflow:auto;padding-bottom:12px}.mode-pills button{height:37px;border:1px solid #293243;background:#0c1117;color:#8994a5;padding:0 12px;font-size:10px;font-weight:900;white-space:nowrap}.mode-pills button.active{background:#172235;border-color:#36557e;color:#fff}
+.profile-card{border:1px solid var(--line);background:#0b0f15;padding:25px}.profile-main{display:grid;grid-template-columns:78px 1fr auto;gap:20px;align-items:center}.profile-main img{width:78px;height:78px;image-rendering:pixelated}.profile-main h2{font-size:31px;margin:0}.profile-score{text-align:right}.profile-score strong{display:block;font-size:31px}
+.profile-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line);margin-top:18px}.profile-summary>div{background:#0c1118;padding:18px}
+.more{margin-top:18px;padding-top:15px;border-top:1px solid var(--line);display:flex;justify-content:flex-end}
+footer{border-top:1px solid var(--line);padding:28px 0;color:#6f7a8c;font-size:11px}.footer{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
+@media(max-width:900px){.server-card{grid-template-columns:1fr 1fr}.server-card .main{grid-column:1/-1}.stat-grid{grid-template-columns:1fr 1fr}.two{grid-template-columns:1fr}.compare-inputs,.team-inputs{grid-template-columns:1fr}.vs{padding:0}.archive-metrics{grid-template-columns:1fr 1fr}.gnav{display:none}.modebar .wrap{align-items:flex-start;flex-direction:column;padding:10px 0}.tabs{width:100%}.controls{grid-template-columns:1fr}.profile-main,.report-head{grid-template-columns:70px 1fr}.profile-score,.report-score{grid-column:1/-1;text-align:left}}
+@media(max-width:560px){.wrap{width:min(var(--max),calc(100% - 24px))}.hero h1{font-size:58px}.hero-stats{gap:24px}.server-card{grid-template-columns:1fr}.server-card>div{border-right:0;border-bottom:1px solid var(--line)}.feature{grid-template-columns:52px 1fr}.feature .arr{display:none}.stat-grid{grid-template-columns:1fr}.crow{grid-template-columns:1fr 100px 1fr}.archive-metrics{grid-template-columns:1fr}.profile-summary{grid-template-columns:1fr}}
+
+/* === FLOATING / COLORED SKYLINE-STYLE PASS === */
+body::before{
+  content:"";position:fixed;inset:68px 0 auto 0;height:760px;z-index:-2;
+  background:
+    linear-gradient(180deg,rgba(4,7,12,.32) 0%,rgba(7,9,13,.62) 56%,#090a0e 100%),
+    url('vexoria-castle-bg.jpg') center top/cover no-repeat;
+  opacity:.88;pointer-events:none;
+}
+body::after{
+  content:"";position:fixed;inset:68px 0 auto 0;height:760px;z-index:-1;
+  background:radial-gradient(circle at 50% 28%,rgba(66,135,245,.12),transparent 38%);
+  pointer-events:none;
+}
+.hero{background:transparent!important}
+.hero-inner{position:relative}
+.logo-stage{filter:drop-shadow(0 14px 42px rgba(0,0,0,.42))}
+.server-card{
+  position:relative;
+  transform:translateY(-14px);
+  border:1px solid rgba(77,115,168,.62)!important;
+  background:linear-gradient(145deg,rgba(12,18,28,.90),rgba(8,12,19,.84))!important;
+  box-shadow:0 24px 68px rgba(0,0,0,.40),0 0 0 1px rgba(66,135,245,.04) inset;
+}
+.server-card::before{
+  content:"";position:absolute;left:18px;right:18px;top:-1px;height:2px;
+  background:linear-gradient(90deg,transparent,#4287f5,#6ecff6,transparent);opacity:.78
+}
+.ipline{
+  width:min(920px,94%);margin:18px auto 0!important;position:relative;transform:translateY(-6px);
+  border:1px solid rgba(64,160,214,.48)!important;
+  background:linear-gradient(135deg,rgba(10,20,30,.94),rgba(8,13,20,.92))!important;
+  box-shadow:0 18px 50px rgba(0,0,0,.35),0 0 30px rgba(110,207,246,.035);
+}
+.ipline::before{
+  content:"";position:absolute;inset:-1px;border-radius:inherit;pointer-events:none;
+  background:linear-gradient(90deg,rgba(110,207,246,.25),transparent 24%,transparent 76%,rgba(66,135,245,.22));
+  mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+  -webkit-mask-composite:xor;mask-composite:exclude;padding:1px
+}
+.feature-list{background:transparent!important;border:0!important;gap:12px!important;grid-template-columns:repeat(3,1fr)!important}
+.feature{
+  min-height:168px;border:1px solid var(--line);padding:25px!important;grid-template-columns:58px 1fr auto!important;
+  background:linear-gradient(145deg,rgba(11,15,21,.94),rgba(8,12,18,.94))!important;
+  box-shadow:0 18px 55px rgba(0,0,0,.28);transform:translateY(0);transition:.18s ease!important
+}
+.feature:nth-child(1){border-color:rgba(66,135,245,.62)!important;box-shadow:0 18px 55px rgba(0,0,0,.28),0 0 35px rgba(66,135,245,.045)}
+.feature:nth-child(2){border-color:rgba(74,204,202,.56)!important;box-shadow:0 18px 55px rgba(0,0,0,.28),0 0 35px rgba(74,204,202,.04)}
+.feature:nth-child(3){border-color:rgba(164,111,255,.58)!important;box-shadow:0 18px 55px rgba(0,0,0,.28),0 0 35px rgba(164,111,255,.04)}
+.feature:nth-child(1) .num,.feature:nth-child(1) .arr{color:#4287f5!important}
+.feature:nth-child(2) .num,.feature:nth-child(2) .arr{color:#57d5cf!important}
+.feature:nth-child(3) .num,.feature:nth-child(3) .arr{color:#b07cff!important}
+.feature:hover{transform:translateY(-6px)!important}
+.feature h3{font-size:20px!important}
+.section-title{margin-top:18px!important}
+.pagehead{position:relative}
+.pagehead::after{
+  content:"";display:block;width:54px;height:2px;margin:18px auto 0;
+  background:linear-gradient(90deg,var(--blue),var(--blue2))
+}
+.stat-grid{box-shadow:0 18px 54px rgba(0,0,0,.22)}
+.panel,.board,.compare-card,.compare-result,.season-card,.match{
+  box-shadow:0 15px 45px rgba(0,0,0,.20)
+}
+.minemen .board{border-color:rgba(66,135,245,.20)}
+@media(max-width:900px){.feature-list{grid-template-columns:1fr!important}.server-card{transform:none}.ipline{width:100%;transform:none}}
+
+
+/* ==============================
+   DUELS LEADERBOARDS
+   ============================== */
+.duels-leaderboards{min-height:760px}
+.duel-category-tabs{justify-content:center;margin-bottom:42px}
+.duel-category-tabs button{min-width:150px}
+.duel-board-heading,.duel-list-title{display:flex;justify-content:space-between;align-items:end;gap:24px}
+.duel-board-heading{margin-bottom:28px}
+.duel-board-heading h2,.duel-list-title h2{margin:5px 0 0;font-size:30px;letter-spacing:-.04em}
+.duel-stat-field{width:230px}
+.duel-podium{margin-bottom:58px}
+.duel-podium-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;align-items:end}
+.duel-podium-card{
+  position:relative;min-height:260px;border:1px solid #263247;
+  background:linear-gradient(145deg,rgba(14,20,30,.97),rgba(8,12,18,.97));
+  padding:29px 22px;text-align:center;overflow:hidden;
+  box-shadow:0 18px 50px rgba(0,0,0,.32)
+}
+.duel-podium-card::before{
+  content:"";position:absolute;left:15%;right:15%;top:-1px;height:2px;
+  background:linear-gradient(90deg,transparent,#4287f5,#6ecff6,transparent)
+}
+.duel-podium-card.rank-1{
+  min-height:300px;border-color:rgba(66,135,245,.72);transform:translateY(-12px);
+  box-shadow:0 24px 70px rgba(0,0,0,.42),0 0 45px rgba(66,135,245,.06)
+}
+.duel-podium-card.rank-2,.duel-podium-card.rank-3{opacity:.92}
+.duel-podium-rank{
+  position:absolute;top:15px;left:16px;font-size:11px;font-weight:1000;
+  color:#7f8ba0;letter-spacing:.08em
+}
+.duel-podium-card.rank-1 .duel-podium-rank{color:var(--blue2)}
+.duel-podium-head{
+  width:88px;height:88px;image-rendering:pixelated;border:1px solid #34435a;
+  margin:18px auto 18px
+}
+.duel-podium-card.rank-1 .duel-podium-head{width:106px;height:106px}
+.duel-podium-name{font-size:19px;font-weight:1000}
+.duel-podium-stat-label{
+  margin-top:22px;color:#6d788a;font-size:9px;font-weight:900;letter-spacing:.14em
+}
+.duel-podium-value{margin-top:5px;font-size:30px;font-weight:1000;color:#fff}
+.duel-podium-card.rank-1 .duel-podium-value{color:var(--blue2);font-size:38px}
+.duel-list-title{margin-bottom:15px}
+.duels-leaderboards .board{border-color:rgba(66,135,245,.28)}
+.duels-leaderboards tbody tr:nth-child(1){background:rgba(66,135,245,.035)}
+.duel-stat-active{color:var(--blue2)}
+@media(max-width:760px){
+  .duel-board-heading{align-items:stretch;flex-direction:column}
+  .duel-stat-field{width:100%}
+  .duel-podium-grid{grid-template-columns:1fr}
+  .duel-podium-card.rank-1{order:-1;transform:none}
+  .duel-podium-card{min-height:220px}
+}
+
+
+/* ==============================
+   KITPVP SKYLINE-STYLE PROFILE + LEADERBOARD
+   ============================== */
+.kp-shell{padding:62px 0 78px}
+.kp-tabs{display:flex;justify-content:center;gap:22px;border-bottom:1px solid var(--line);margin-bottom:36px}
+.kp-tabs button{height:44px;border:0;background:transparent;color:#7f8999;font-size:11px;font-weight:900;border-bottom:2px solid transparent}
+.kp-tabs button.active{color:#fff;border-bottom-color:var(--blue)}
+.kp-profile-search{display:grid;grid-template-columns:1fr auto;gap:10px;max-width:820px;margin:0 auto 36px}
+.kp-hero-card{
+  border:1px solid rgba(66,135,245,.48);
+  background:linear-gradient(135deg,rgba(21,24,36,.97),rgba(12,14,21,.98));
+  padding:44px 46px;display:grid;grid-template-columns:150px 1fr auto;align-items:center;gap:34px;
+  box-shadow:0 24px 70px rgba(0,0,0,.34),0 0 40px rgba(66,135,245,.04)
+}
+.kp-hero-head{
+  width:150px;height:150px;image-rendering:pixelated;border:1px solid #3b4860;
+  padding:8px;background:#151924
+}
+.kp-hero-meta .kicker{margin-bottom:9px}
+.kp-hero-meta h2{font-size:56px;line-height:1;margin:0 0 14px;letter-spacing:-.06em}
+.kp-badges{display:flex;gap:8px;flex-wrap:wrap}
+.kp-badge{
+  border:1px solid #30405a;background:#121a27;padding:7px 10px;font-size:9px;font-weight:900;
+  letter-spacing:.08em;text-transform:uppercase;color:#aebad0
+}
+.kp-badge.primary{border-color:rgba(66,135,245,.55);color:var(--blue2);background:rgba(66,135,245,.08)}
+.kp-hero-score{text-align:right;min-width:150px}
+.kp-hero-score label{display:block;font-size:9px;letter-spacing:.14em;color:#7e8798;font-weight:900;text-transform:uppercase}
+.kp-hero-score strong{display:block;font-size:52px;margin-top:10px;color:var(--blue2)}
+.kp-hero-score span{display:block;margin-top:6px;color:var(--muted);font-size:10px;letter-spacing:.08em}
+.kp-stat-strip{
+  margin-top:18px;border:1px solid var(--line);display:grid;grid-template-columns:repeat(6,1fr);
+  background:#0a0e13
+}
+.kp-stat-strip>div{padding:20px 18px;border-right:1px solid var(--line)}
+.kp-stat-strip>div:last-child{border-right:0}
+.kp-stat-strip label{display:block;color:#717c8e;font-size:9px;font-weight:900;letter-spacing:.12em;text-transform:uppercase}
+.kp-stat-strip strong{display:block;margin-top:8px;font-size:23px}
+.kp-performance{display:grid;grid-template-columns:2fr 1fr;gap:16px;margin-top:18px}
+.kp-performance-main,.kp-record{
+  border:1px solid var(--line);background:linear-gradient(145deg,#0b0f15,#0c1119);
+  padding:28px;box-shadow:0 18px 54px rgba(0,0,0,.22)
+}
+.kp-performance-grid{display:grid;grid-template-columns:repeat(2,1fr);margin-top:24px;border-top:1px solid var(--line);border-left:1px solid var(--line)}
+.kp-performance-grid>div{padding:20px;border-right:1px solid var(--line);border-bottom:1px solid var(--line)}
+.kp-performance-grid label{display:block;color:#6f7a8c;font-size:9px;font-weight:900;letter-spacing:.12em;text-transform:uppercase}
+.kp-performance-grid strong{display:block;margin-top:8px;font-size:22px}
+.kp-record strong{display:block;font-size:52px;color:var(--blue2);margin:16px 0 6px}
+.kp-record-line{height:4px;background:#1a2230;margin:18px 0 10px;overflow:hidden}
+.kp-record-line span{display:block;height:100%;background:linear-gradient(90deg,var(--blue),var(--blue2))}
+.kp-leader-head{display:flex;justify-content:space-between;align-items:end;gap:24px;margin:58px 0 24px}
+.kp-stat-field{width:240px}
+.kp-podium{margin-bottom:48px}
+.kp-podium-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;align-items:end}
+.kp-podium-card{
+  position:relative;min-height:250px;border:1px solid #263247;
+  background:linear-gradient(145deg,rgba(14,20,30,.97),rgba(8,12,18,.97));
+  padding:28px 22px;text-align:center;overflow:hidden;box-shadow:0 18px 50px rgba(0,0,0,.32)
+}
+.kp-podium-card::before{content:"";position:absolute;left:15%;right:15%;top:-1px;height:2px;background:linear-gradient(90deg,transparent,#4287f5,#6ecff6,transparent)}
+.kp-podium-card.rank-1{min-height:290px;transform:translateY(-12px);border-color:rgba(66,135,245,.72)}
+.kp-podium-rank{position:absolute;top:15px;left:16px;font-size:11px;font-weight:1000;color:#7f8ba0}
+.kp-podium-card.rank-1 .kp-podium-rank{color:var(--blue2)}
+.kp-podium-head{width:88px;height:88px;image-rendering:pixelated;border:1px solid #34435a;margin:18px auto}
+.kp-podium-card.rank-1 .kp-podium-head{width:104px;height:104px}
+.kp-podium-name{font-size:19px;font-weight:1000}
+.kp-podium-label{margin-top:20px;color:#6d788a;font-size:9px;font-weight:900;letter-spacing:.14em}
+.kp-podium-value{margin-top:5px;font-size:31px;font-weight:1000}
+.kp-podium-card.rank-1 .kp-podium-value{font-size:38px;color:var(--blue2)}
+@media(max-width:900px){
+  .kp-hero-card{grid-template-columns:110px 1fr}.kp-hero-score{grid-column:1/-1;text-align:left}
+  .kp-hero-head{width:110px;height:110px}.kp-stat-strip{grid-template-columns:repeat(3,1fr)}
+  .kp-performance{grid-template-columns:1fr}
+}
+@media(max-width:700px){
+  .kp-hero-card{padding:28px;grid-template-columns:82px 1fr;gap:18px}
+  .kp-hero-head{width:82px;height:82px}.kp-hero-meta h2{font-size:38px}
+  .kp-stat-strip{grid-template-columns:repeat(2,1fr)}
+  .kp-podium-grid{grid-template-columns:1fr}.kp-podium-card.rank-1{order:-1;transform:none}
+  .kp-leader-head{align-items:stretch;flex-direction:column}.kp-stat-field{width:100%}
+}
+
+
+/* ===== 2026 VEXORIA / SKYLINE-INSPIRED RBW REBUILD ===== */
+:root{
+  --rbw-purple:#9755ff;
+  --rbw-purple2:#c06cff;
+  --rbw-panel:#0d0d13;
+  --rbw-panel2:#14121b;
+  --rbw-line:#2a2732;
+}
+.sky-header .wrap{height:72px;display:grid;grid-template-columns:1fr auto 1fr;align-items:center}
+.sky-brand{display:flex;align-items:center;gap:12px;font-weight:1000;letter-spacing:.1em}
+.sky-brand small{display:block;font-size:7px;letter-spacing:.21em;color:#777283;margin-top:4px}
+.sky-nav{display:flex;gap:4px;border:1px solid #2a2631;background:#111017;padding:5px;border-radius:30px}
+.sky-nav button{border:0;background:transparent;color:#8c8795;padding:11px 18px;border-radius:22px;font-size:11px;font-weight:900}
+.sky-nav button:hover,.sky-nav button.active{color:#fff;background:linear-gradient(180deg,#7438d8,#5224a4)}
+.sky-discord{justify-self:end}
+.rbw-home-card{margin-top:34px;border:1px solid #3a3342;border-radius:22px;background:linear-gradient(120deg,rgba(60,27,87,.25),rgba(11,11,16,.97));padding:30px}
+.rbw-card-head{display:flex;gap:16px;align-items:center;padding-bottom:24px;border-bottom:1px solid #282430}
+.rbw-card-logo{width:58px;height:58px;border-radius:13px;border:1px solid #684291;background:linear-gradient(135deg,#2c173e,#8243d0);display:grid;place-items:center;font-size:25px;font-weight:1000}
+.rbw-card-head h2{margin:0 0 5px;font-size:21px}
+.rbw-facts{display:grid;grid-template-columns:repeat(4,1fr);border-bottom:1px solid #282430}
+.rbw-fact{padding:22px 18px;border-right:1px solid #282430}
+.rbw-fact:last-child{border-right:0}.rbw-fact label{display:block;font-size:8px;letter-spacing:.15em;color:#77717f;font-weight:900}.rbw-fact strong{display:block;margin-top:9px;font-size:17px}
+.rbw-ip{margin-top:18px;border:1px solid #523478;border-radius:10px;background:linear-gradient(90deg,rgba(91,43,147,.27),rgba(19,17,28,.85));display:flex;justify-content:space-between;align-items:center;padding:15px 17px}
+.rbw-ip small{font-size:8px;letter-spacing:.14em;color:#837d8b}.rbw-ip strong{display:block;margin-top:5px}
+.sky-podium{display:grid;grid-template-columns:1fr 1.14fr 1fr;gap:14px;align-items:end;margin:24px 0 34px}
+.sky-pod{position:relative;border:1px solid #302b38;background:linear-gradient(180deg,#15131c,#0b0c11);border-radius:17px;text-align:center;padding:24px;min-height:240px}
+.sky-pod.first{min-height:285px;border-color:#5d3a87;box-shadow:0 0 40px rgba(151,85,255,.08);transform:translateY(-10px)}
+.sky-pod .place{position:absolute;left:16px;top:14px;color:var(--rbw-purple2);font-size:12px;font-weight:1000}
+.sky-pod img{width:78px;height:78px;image-rendering:pixelated;border-radius:12px;margin-top:18px}.sky-pod.first img{width:96px;height:96px}
+.sky-pod h3{font-size:19px;margin:12px 0 5px}.sky-pod strong{font-size:30px}.sky-pod .lab{font-size:9px;letter-spacing:.14em;color:#77717f;margin-top:4px}
+.rbw-profile-hero{border:1px solid #49355f;border-radius:20px;background:linear-gradient(110deg,rgba(73,34,106,.3),#0d0e14 66%);padding:34px;display:grid;grid-template-columns:118px 1fr auto;gap:28px;align-items:center}
+.rbw-profile-hero img{width:118px;height:118px;image-rendering:pixelated;border-radius:16px;border:1px solid #5a496c}
+.rbw-profile-hero h2{font-size:54px;letter-spacing:-.05em;margin:3px 0 10px}
+.rbw-rating{text-align:right}.rbw-rating strong{display:block;font-size:58px;line-height:1;color:var(--rbw-purple)}.rbw-rating span{font-size:10px;color:#837e8c}
+.rbw-stat-strip{display:grid;grid-template-columns:repeat(6,1fr);border:1px solid var(--line);border-radius:14px;overflow:hidden;margin-top:18px}
+.rbw-stat-strip>div{background:#0d0e13;padding:20px;border-right:1px solid var(--line)}.rbw-stat-strip>div:last-child{border:0}.rbw-stat-strip label{display:block;color:#746f7d;font-size:8px;letter-spacing:.13em;font-weight:900}.rbw-stat-strip strong{display:block;margin-top:8px;font-size:22px}
+.rbw-performance{display:grid;grid-template-columns:2fr 1fr;gap:15px;margin-top:15px}.rbw-performance .panel{border-radius:14px}
+.rbw-perf-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:#27232d;margin-top:20px}.rbw-perf-grid>div{background:#0d0f15;padding:20px}.rbw-perf-grid label{display:block;font-size:8px;color:#77717f;letter-spacing:.13em}.rbw-perf-grid strong{display:block;margin-top:8px;font-size:20px}
+.rbw-record-big{font-size:50px;color:var(--rbw-purple);font-weight:1000;margin:15px 0 2px}
+.hot-searches{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:12px 0 22px}.hot-searches .hot-label{font-size:9px;letter-spacing:.14em;color:#7c7686;font-weight:900;margin-right:4px}.hot-searches button{border:1px solid #342e3e;background:#111018;color:#bbb4c3;border-radius:20px;padding:8px 12px;font-size:10px;font-weight:800}
+.match-sky{border:1px solid #292631;border-radius:15px;background:#0c0d12;margin:12px 0;overflow:hidden}.match-sky-head{display:flex;justify-content:space-between;align-items:center;padding:16px 19px;border-bottom:1px solid #1e1d23}.match-sky-head strong{font-size:13px}.match-sky-body{display:grid;grid-template-columns:1fr 90px 1fr}.match-team{padding:18px}.match-vs{display:grid;place-items:center;border-left:1px solid #1e1d23;border-right:1px solid #1e1d23;color:#9e61ff;font-weight:1000}.match-player{display:flex;justify-content:space-between;gap:12px;padding:8px 0;border-top:1px solid #1b1b21;font-size:11px}
+.rule-info-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.rule-info-card{border:1px solid #2b2832;background:#0d0e13;padding:22px;border-radius:13px}.rule-info-card h3{margin:7px 0 14px}.rule-note{border-left:3px solid var(--rbw-purple);background:#121019;padding:12px 14px;margin-top:15px}
+.server-rule-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.server-rule{border:1px solid #292630;border-radius:12px;background:#0d0e13;padding:18px}.server-rule h3{margin:0 0 7px;font-size:15px}.punish-row{display:grid;grid-template-columns:repeat(6,1fr);gap:4px;margin-top:12px}.punish-row span{border:1px solid #292630;background:#14131a;padding:7px 5px;font-size:8px;text-align:center}
+.text-items{display:flex;gap:7px;flex-wrap:wrap;margin-top:12px}.text-item{padding:9px 11px;border:1px solid #302b38;background:#111219;border-radius:8px;font-size:10px}
+@media(max-width:900px){.sky-podium{grid-template-columns:1fr}.sky-pod.first{order:-1;transform:none}.rbw-facts,.rbw-stat-strip{grid-template-columns:1fr 1fr}.rbw-profile-hero{grid-template-columns:95px 1fr}.rbw-rating{grid-column:1/-1;text-align:left}.rbw-performance,.rule-info-grid,.server-rule-grid{grid-template-columns:1fr}.rbw-perf-grid{grid-template-columns:1fr 1fr}.match-sky-body{grid-template-columns:1fr}.match-vs{border:0;border-top:1px solid #1e1d23;border-bottom:1px solid #1e1d23;padding:10px}}
+@media(max-width:560px){.rbw-facts,.rbw-stat-strip{grid-template-columns:1fr}.rbw-profile-hero{grid-template-columns:1fr}.rbw-profile-hero h2{font-size:40px}.punish-row{grid-template-columns:1fr 1fr}}
+
+</style>
+</head>
+<body>
+<header class="top sky-header">
+<div class="wrap">
+  <div class="sky-brand" onclick="go('#home')" style="cursor:pointer">
+    <div class="mark">V</div>
+    <div>VEXORIA<small>VEXORIA NETWORK</small></div>
+  </div>
+  <nav class="sky-nav">
+    <button data-r="home" onclick="go('#home')">Home</button>
+    <button data-r="rbw" onclick="go('#rbw-home')">RankedBedwars</button>
+    <button data-r="duels" onclick="go('#duels')">Duels</button>
+    <button data-r="kitpvp" onclick="go('#kitpvp')">KITPVP</button>
+  </nav>
+  <div class="sky-discord"><button class="btn primary" onclick="window.open('https://discord.gg/vexorianetwork','_blank')">Join Discord ↗</button></div>
+</div>
+</header>
+
+<main id="app"></main>
+
+<footer><div class="wrap footer"><div>© 2026 Vexoria Network</div><div>mc.vexoriannetwork.club · discord.gg/vexorianetwork</div></div></footer>
+
+<script>
+const IP='mc.vexoriannetwork.club';
+const API={
+ network:'/api/network',
+ rbwPlayer:(u,season='')=>`/api/player?username=${encodeURIComponent(u)}${season?`&season=${encodeURIComponent(season)}`:''}`,
+ rbwSeasons:'/api/rbw/seasons',
+ rbwSummary:(season='')=>`/api/rbw/summary${season?`?season=${encodeURIComponent(season)}`:''}`,
+ rbwLeaderboard:(stat='elo',season='',username='')=>`/api/rbw/leaderboard?stat=${encodeURIComponent(stat)}${season?`&season=${encodeURIComponent(season)}`:''}${username?`&username=${encodeURIComponent(username)}`:''}`,
+ rbwMatches:(username='',season='',page=1)=>`/api/rbw/matches?page=${page}${username?`&username=${encodeURIComponent(username)}`:''}${season?`&season=${encodeURIComponent(season)}`:''}`,
+ rbwAnalytics:(action,p='',p2='',season='')=>`/api/rbw/analytics?action=${encodeURIComponent(action)}${p?`&player=${encodeURIComponent(p)}`:''}${p2?`&player2=${encodeURIComponent(p2)}`:''}${season?`&season=${encodeURIComponent(season)}`:''}`,
+ duelsLeaderboard:(version='modern',stat='all')=>`/api/duels/leaderboard?version=${encodeURIComponent(version)}&stat=${encodeURIComponent(stat)}`,
+ kpPlayer:u=>`/api/kitpvp/player?username=${encodeURIComponent(u)}`,
+ kpLeaderboard:(stat='all')=>`/api/kitpvp/leaderboard?stat=${encodeURIComponent(stat)}`,
+ kpKills:u=>`/api/kitpvp/kills${u?`?username=${encodeURIComponent(u)}`:''}`,
+ kpKits:u=>`/api/kitpvp/kits?username=${encodeURIComponent(u)}`
+};
+const $=q=>document.querySelector(q), app=()=>$('#app');
+function go(h){location.hash=h}
+function esc(v){return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
+function n(v){return Number(v||0).toLocaleString()}
+function pct(v){return `${Number(v||0).toFixed(1)}%`}
+function head(u,s=31){return `https://mc-heads.net/avatar/${encodeURIComponent(u)}/${s}`}
+async function get(url){const r=await fetch(url);let d={};try{d=await r.json()}catch{}if(!r.ok)throw new Error(d.error||`Request failed (${r.status})`);return d}
+function copyIP(){navigator.clipboard?.writeText(IP);alert('Copied: '+IP)}
+function active(r){document.querySelectorAll('.gnav button[data-r]').forEach(b=>b.classList.toggle('active',b.dataset.r===r))}
+function stat(l,v){return `<div class="stat"><label>${l}</label><strong>${v}</strong></div>`}
+function row(a,b){return `<div class="row"><span>${esc(a)}</span><strong>${esc(b)}</strong></div>`}
+function rbwNav(a){
+ const t=[['home','Home'],['stats','Stats'],['rankings','Leaderboards'],['compare','Compare'],['matches','Recaps'],['rules','Rules']];
+ return `<div class="modebar"><div class="wrap"><div class="modebrand"><b>VEXORIA</b> RANKEDBEDWARS · GLOBAL</div><div class="tabs">${t.map(([id,l])=>`<button class="${id===a?'active':''}" onclick="go('#rbw-${id}')">${l}</button>`).join('')}</div></div></div>`
+}
+function feat(no,t,d,h){return `<div class="feature" onclick="go('${h}')"><div class="num">${no}</div><div><h3>${t}</h3><p>${d}</p></div><div class="arr">↗</div></div>`}
+
+function renderHome(){
+ active('home');
+ app().innerHTML=`<section class="hero"><div class="wrap"><div class="hero-inner">
+ <div class="live"><span class="dot"></span>NETWORK ONLINE</div>
+ <h1>VEXORIA <span>NETWORK</span></h1>
+ <p>A modern Minecraft network built around RankedBedwars, modern 1.21 duels and persistent KITPVP progression.</p>
+ <div class="logo-stage"><div class="v">V</div></div>
+ </div></div></section>
+ <section class="section"><div class="wrap">
+ <div class="rbw-home-card">
+   <div class="rbw-card-head"><div class="rbw-card-logo">V</div><div><h2>Vexoria Network</h2><div class="muted"><span class="dot" style="display:inline-block;margin-right:7px"></span>Online · JAVA 1.21+</div></div></div>
+   <div class="rbw-facts">
+     <div class="rbw-fact"><label>VERSION</label><strong>1.21+</strong></div>
+     <div class="rbw-fact"><label>ONLINE PLAYERS</label><strong id="home-online">—</strong></div>
+     <div class="rbw-fact"><label>LOCATION</label><strong>SINGAPORE</strong></div>
+     <div class="rbw-fact"><label>SERVER IP</label><strong>${IP}</strong></div>
+   </div>
+   <div class="rbw-ip"><div><small>SERVER ADDRESS</small><strong>${IP}</strong></div><button class="btn primary" onclick="copyIP()">Copy</button></div>
+ </div>
+ <div class="section-title" style="margin-top:60px"><div class="kicker">NETWORK MODES</div><h2>Choose your arena.</h2><p>Three distinct experiences, each with its own statistics and leaderboard system.</p></div>
+ <div class="feature-list">${feat('01','RANKEDBEDWARS','Seasonal ELO, match history, player reports and competitive analytics','#rbw-home')}${feat('02','DUELS','Modern 1.21 and Modern 1.21+ competitive leaderboards','#duels')}${feat('03','KITPVP','Persistent combat progression, economy and leaderboards','#kitpvp')}</div>
+ <div class="section-title" style="margin-top:70px"><div class="kicker">SERVER RULES</div><h2>Server Rules</h2><p>Network-wide conduct, community, account and marketplace standards.</p></div>
+ ${serverRules()}
+ </div></section>`;
+ get(API.network).then(d=>{const o=d.onlinePlayers??d.online??0;$('#home-online')&&($('#home-online').textContent=n(o))}).catch(()=>{})
+}
+
+async function renderRBWHome(){
+ active('rbw');
+ let season='Between Seasons',seasonLive=false;
+ try{const s=await get(API.rbwSeasons);if(s.activeSeason){season=s.activeSeason.name||`Season ${s.activeSeason.seasonNumber}`;seasonLive=true}}catch{}
+ app().innerHTML=rbwNav('home')+`<section class="hero"><div class="wrap"><div class="hero-inner">
+ <div class="live">${seasonLive?`NEW · ${esc(season)} LIVE NOW`:'RANKEDBEDWARS IS CURRENTLY BETWEEN SEASONS'}</div>
+ <h1>VEXORIA <span>RANKEDBEDWARS</span></h1>
+ <p>Play RankedBedwars against Vexoria's strongest players. Climb the leaderboard, build your reputation and own the season.</p>
+ <div class="logo-stage"><div class="v">V</div></div>
+ </div></div></section>
+ <section class="section"><div class="wrap">
+ <div class="rbw-home-card">
+   <div class="rbw-card-head"><div class="rbw-card-logo">V</div><div><h2>Vexoria RankedBedwars</h2><div class="muted"><span class="dot" style="display:inline-block;margin-right:7px"></span>Online · JAVA 1.21+</div></div></div>
+   <div class="rbw-facts">
+     <div class="rbw-fact"><label>VERSION</label><strong>1.21+</strong></div>
+     <div class="rbw-fact"><label>ONLINE PLAYERS</label><strong id="rbwo">—</strong></div>
+     <div class="rbw-fact"><label>LOCATION</label><strong>GLOBAL</strong></div>
+     <div class="rbw-fact"><label>SERVER IP</label><strong>${IP}</strong></div>
+   </div>
+   <div class="rbw-ip"><div><small>SERVER ADDRESS</small><strong>${IP}</strong></div><button class="btn primary" onclick="copyIP()">Copy</button></div>
+ </div>
+ <div class="archive-metrics" style="margin-top:18px">
+   <div><label>REGISTERED</label><strong id="rbwr">—</strong></div>
+   <div><label>PARTICIPATING</label><strong id="rbwp">—</strong></div>
+   <div><label>GAMES</label><strong id="rbwg">—</strong></div>
+   <div><label>SCORED</label><strong id="rbws">—</strong></div>
+   <div><label>VOIDED</label><strong id="rbwv">—</strong></div>
+ </div>
+ <div class="section-title" style="margin-top:60px"><div class="kicker">THE SEASON, LIVE</div><h2>Follow every fight.</h2><p>See who is climbing, inspect complete player careers and revisit the latest ranked results.</p></div>
+ <div class="feature-list">${feat('01','LEADERBOARDS','Current season standings','#rbw-rankings')}${feat('02','MATCH RECAPS','Maps, teams and performance','#rbw-matches')}${feat('03','PLAYER PROFILES','Search any ranked competitor','#rbw-stats')}</div>
+ </div></section>`;
+ Promise.allSettled([get(API.rbwSummary()),get(API.network)]).then(([a,b])=>{
+   if(a.status==='fulfilled'){const x=a.value;$('#rbwr')&&($('#rbwr').textContent=n(x.registeredPlayers));$('#rbwp')&&($('#rbwp').textContent=n(x.participatingPlayers));$('#rbwg')&&($('#rbwg').textContent=n(x.totalGames));$('#rbws')&&($('#rbws').textContent=n(x.scoredGames));$('#rbwv')&&($('#rbwv').textContent=n(x.voidedGames))}
+   if(b.status==='fulfilled'){$('#rbwo')&&($('#rbwo').textContent=n(b.value.onlinePlayers??b.value.online??0))}
+ })
+}
+
+function renderStats(){
+ active('rbw');
+ app().innerHTML=rbwNav('stats')+`<section class="section"><div class="wrap">
+ <div class="pagehead"><div class="kicker">PLAYER STATISTICS</div><h1>Player Statistics</h1><p>Search any registered Minecraft player and explore their complete RankedBedwars career.</p></div>
+ <div class="controls" style="grid-template-columns:1fr 220px auto;max-width:980px;margin-left:auto;margin-right:auto"><div class="field"><label>PLAYER</label><input id="rq" class="input" placeholder="Enter Minecraft username"></div><div class="field"><label>SEASON</label><select id="rseason" class="select"><option value="">Active season</option></select></div><button class="btn primary" onclick="loadPlayer()">Search →</button></div>
+ <div class="hot-searches"><span class="hot-label">HOT SEARCHES</span><span id="profile-hot">Loading…</span></div>
+ <div id="rout" class="empty"><div style="font-size:34px;margin-bottom:10px">⌕</div>A player profile will appear here.</div>
+ </div></section>`;
+ loadProfileSeasons();
+ loadHotSearches('profile-hot',u=>{if($('#rq'))$('#rq').value=u;loadPlayer(u)})
+}
+async function loadProfileSeasons(){try{const d=await get(API.rbwSeasons),select=$('#rseason');if(!select)return;(d.seasons||[]).forEach(s=>{const option=document.createElement('option');option.value=s.seasonNumber;option.textContent=`Season ${s.seasonNumber} · ${s.status}`;select.appendChild(option)})}catch{}}
+async function loadPlayer(name){
+ const q=(name||$('#rq')?.value||'').trim();if(!q)return;
+ const selectedSeason=$('#rseason')?.value||'',out=$('#rout');out.className='empty';out.textContent='Loading player profile…';
+ try{
+   const [x,m]=await Promise.all([get(API.rbwPlayer(q,selectedSeason)),get(API.rbwMatches(q,selectedSeason,1)).catch(()=>({matches:[]}))]);
+   if(x.betweenSeasons){out.className='empty';out.textContent='RankedBedwars is currently between seasons.';return}
+   const games=Number(x.wins||0)+Number(x.losses||0),wr=games?Number(x.wins||0)/games*100:0;
+   out.className='';
+   out.innerHTML=`<div class="rbw-profile-hero">
+     <img src="${head(x.username,118)}" alt="${esc(x.username)}">
+     <div><div class="kicker">VEXORIA COMPETITOR</div><h2>${esc(x.username)}</h2><div class="muted">${esc(x.seasonName||`Season ${x.seasonNumber||'Current'}`)} · Level ${n(x.level)}</div></div>
+     <div class="rbw-rating"><div class="kicker">${x.seasonStatus==='ENDED'?'FINAL RATING':'CURRENT RATING'}</div><strong>${n(x.elo)}</strong><span>ELO · Peak ${n(x.peakElo)}</span></div>
+   </div>
+   <div class="rbw-stat-strip">${strip('WINS',x.wins)}${strip('MVPS',x.mvps)}${strip('GAMES PLAYED',games)}${strip('LOSSES',x.losses)}${strip('WIN STREAK',x.winStreak)}${strip('PEAK ELO',x.peakElo)}</div>
+   <div class="rbw-performance">
+     <div class="panel"><div class="kicker">CAREER OVERVIEW</div><h2>Performance</h2><div class="rbw-perf-grid">${perfCell('Kills',x.kills)}${perfCell('Deaths',x.deaths)}${perfCell('K/D',Number(x.kd||0).toFixed(2))}${perfCell('W/L',Number(x.wl||0).toFixed(2))}${perfCell('Final Kills',x.finalKills)}${perfCell('Final Deaths',x.finalDeaths)}${perfCell('Beds',x.beds)}${perfCell('XP',x.xp)}</div></div>
+     <div class="panel"><div class="kicker">CAREER RECORD</div><div class="rbw-record-big">${wr.toFixed(2)}%</div><div class="muted">WIN / LOSS PERFORMANCE</div>${row('Best streak',x.highestWinStreak)}${row('Current loss streak',x.currentLossStreak)}${row('Best loss streak',x.highestLossStreak)}${row('Level',x.level)}</div>
+   </div>
+   <div class="section-title" style="margin-top:38px"><div class="kicker">RECENT FORM</div><h2>Latest Matches</h2></div>
+   ${matchesHTML(m.matches||[],6)}`;
+ }catch(e){out.className='empty';out.textContent=e.message}
+}
+function strip(l,v){return `<div><label>${l}</label><strong>${n(v)}</strong></div>`}
+function perfCell(l,v){return `<div><label>${l}</label><strong>${esc(v??0)}</strong></div>`}
+
+let rbwLbStat='all';
+function renderRankings(){
+ active('rbw');
+ app().innerHTML=rbwNav('rankings')+`<section class="section"><div class="wrap">
+ <div class="pagehead"><div class="kicker">GLOBAL LEADERBOARDS</div><h1>Global Leaderboards</h1><p>Top RankedBedwars players competing for current-season placement.</p></div>
+ <div class="controls"><div class="field"><label>STATISTIC</label><select id="lb-stat" class="select" onchange="rbwLbStat=this.value;loadRankings()"><option value="all">All Statistics</option><option value="elo">ELO</option><option value="peakelo">Peak ELO</option><option value="wins">Wins</option><option value="losses">Losses</option><option value="kills">Kills</option><option value="deaths">Deaths</option><option value="finalkills">Final Kills</option><option value="finaldeaths">Final Deaths</option><option value="beds">Beds</option><option value="mvps">MVPs</option><option value="beststreak">Best Streak</option></select></div><div class="field"><label>SEARCH PLAYER</label><input id="lb-u" class="input" placeholder="Search IGN…"></div><button class="btn primary" onclick="lookupLB()">Open</button></div>
+ <div class="hot-searches"><span class="hot-label">HOT SEARCHES</span><span id="lb-hot">Loading…</span></div>
+ <div id="lb-out" class="empty">Loading leaderboard…</div>
+ </div></section>`;
+ setTimeout(()=>{const s=$('#lb-stat');if(s)s.value=rbwLbStat;loadRankings();loadHotSearches('lb-hot',openRBW)},0)
+}
+async function loadRankings(){
+ const out=$('#lb-out'),stat=$('#lb-stat')?.value||rbwLbStat||'all',rankStat=stat==='all'?'elo':stat;
+ try{
+   const d=await get(API.rbwLeaderboard(rankStat)),rows=d.players||[];
+   if(!rows.length){out.className='empty';out.textContent='No leaderboard data yet.';return}
+   out.className='';
+   out.innerHTML=`<div class="sky-podium">${rows.slice(0,3).map((x,i)=>rbwPodium(x,i,rankStat)).join('')}</div>${rbwLeaderboardTable(rows,stat)}`
+ }catch(e){out.className='empty';out.textContent=e.message}
+}
+function rbwPodium(x,i,s){const order=[1,0,2],place=i+1;return `<div class="sky-pod ${place===1?'first':''}" style="order:${order[i]}"><div class="place">#${place}</div><img src="${head(x.username,96)}"><h3>${esc(x.username)}</h3><strong>${n(rbwStatValue(x,s))}</strong><div class="lab">${rbwStatName(s)}</div></div>`}
+function rbwStatValue(x,s){return ({elo:x.elo,peakelo:x.peakElo,wins:x.wins,losses:x.losses,kills:x.kills,deaths:x.deaths,finalkills:x.finalKills,finaldeaths:x.finalDeaths,beds:x.beds,mvps:x.mvps,beststreak:x.highestWinStreak})[s]??x.elo}
+function rbwStatName(s){return ({elo:'ELO',peakelo:'PEAK ELO',wins:'WINS',losses:'LOSSES',kills:'KILLS',deaths:'DEATHS',finalkills:'FINAL KILLS',finaldeaths:'FINAL DEATHS',beds:'BEDS',mvps:'MVPS',beststreak:'BEST STREAK'})[s]||'ELO'}
+function rbwLeaderboardTable(rows,stat){
+ const all=stat==='all';
+ return `<div class="board"><table><thead><tr><th>#</th><th>PLAYER</th>${all?'<th>ELO</th><th>WINS</th><th>LOSSES</th><th>KILLS</th><th>DEATHS</th><th>FINAL KILLS</th><th>BEDS</th><th>MVPS</th>':`<th>${rbwStatName(stat)}</th>`}</tr></thead><tbody>${rows.map(x=>`<tr><td class="pos">#${x.position}</td><td><div class="pcell" onclick="openRBW('${esc(x.username)}')"><img class="phead" src="${head(x.username,32)}">${esc(x.username)}</div></td>${all?`<td>${n(x.elo)}</td><td>${n(x.wins)}</td><td>${n(x.losses)}</td><td>${n(x.kills)}</td><td>${n(x.deaths)}</td><td>${n(x.finalKills)}</td><td>${n(x.beds)}</td><td>${n(x.mvps)}</td>`:`<td><strong>${n(rbwStatValue(x,stat))}</strong></td>`}</tr>`).join('')}</tbody></table></div>`
+}
+async function loadHotSearches(id,handler){
+ const el=document.getElementById(id);if(!el)return;
+ try{const d=await get(API.rbwLeaderboard('elo')),rows=(d.players||[]).slice(0,6);el.innerHTML=rows.map(x=>`<button onclick="${id==='profile-hot'?`document.getElementById('rq').value='${esc(x.username)}';loadPlayer('${esc(x.username)}')`:id==='lb-hot'?`openRBW('${esc(x.username)}')`:`void(0)`}">${esc(x.username)}</button>`).join('')||'<span class="muted">No players yet.</span>'}catch{el.innerHTML='<span class="muted">Unavailable</span>'}
+}
+async function lookupLB(){const u=$('#lb-u')?.value.trim();if(u)openRBW(u)}
+function openRBW(u){go('#rbw-stats');setTimeout(()=>{if($('#rq')){$('#rq').value=u;loadPlayer(u)}},80)}
+
+function renderCompare(){
+ active('rbw');app().innerHTML=rbwNav('compare')+`<section class="section"><div class="wrap"><div class="pagehead"><div class="kicker">HEAD-TO-HEAD COMPARISON</div><h1>Head-to-Head Comparison</h1><p>Compare ELO, combat ratios, win streaks and career statistics between two players.</p></div><div class="compare-card"><div class="kicker">SOLO ANALYSIS</div><h2 style="text-align:center;margin:8px 0 20px;font-size:28px">Player vs player</h2><div class="compare-inputs"><div class="field"><label>PLAYER ONE</label><input id="c1" class="input" placeholder="Player 1 IGN…"></div><div class="vs">VS</div><div class="field"><label>PLAYER TWO</label><input id="c2" class="input" placeholder="Player 2 IGN…"></div></div><div style="text-align:center"><button class="btn primary" style="margin-top:12px" onclick="comparePlayers()">Compare Profiles</button></div><div id="cout"></div></div>
+ <div class="team-lab"><div class="pagehead" style="margin-bottom:24px"><div class="kicker">TEAM LAB</div><h1 style="font-size:38px">Compare full lineups.</h1><p>Built for 3v3, with support for any 1v1 through 4v4 selection—including uneven groups.</p></div><div class="team-inputs"><div class="field"><label>TEAM A · COMMA-SEPARATED</label><input id="ta" class="input" placeholder="player1, player2, player3"></div><div class="vs">VS</div><div class="field"><label>TEAM B · COMMA-SEPARATED</label><input id="tb" class="input" placeholder="player4, player5, player6"></div></div><div style="text-align:center"><button class="btn primary" style="margin-top:12px" onclick="compareTeams()">Analyze Teams</button></div><div id="tout"></div></div></div></section>`
+}
+async function comparePlayers(){const a=$('#c1').value.trim(),b=$('#c2').value.trim(),out=$('#cout');if(!a||!b)return;out.innerHTML='<div class="empty" style="margin-top:16px">Building comparison…</div>';try{const [x,y,h]=await Promise.all([get(API.rbwPlayer(a)),get(API.rbwPlayer(b)),get(API.rbwAnalytics('compare',a,b))]);const ms=[['ELO',x.elo,y.elo],['Peak ELO',x.peakElo,y.peakElo],['Wins',x.wins,y.wins],['Kills',x.kills,y.kills],['Beds',x.beds,y.beds],['MVPs',x.mvps,y.mvps],['Best Streak',x.highestWinStreak,y.highestWinStreak]];out.innerHTML=`<div class="compare-result"><div class="people"><div class="person"><div class="personline"><img src="${head(x.username,52)}"><div><div class="kicker">PLAYER ONE</div><strong>${esc(x.username)}</strong></div></div></div><div class="person"><div class="personline"><img src="${head(y.username,52)}"><div><div class="kicker">PLAYER TWO</div><strong>${esc(y.username)}</strong></div></div></div></div>${ms.map(([m,a,b])=>`<div class="crow"><div class="${Number(a)>Number(b)?'lead':''}">${n(a)}</div><div class="metric">${m}</div><div class="${Number(b)>Number(a)?'lead':''}">${n(b)}</div></div>`).join('')}<div class="crow"><div>${n(h.totalMeetings||0)}</div><div class="metric">TOTAL MEETINGS</div><div>${n(h.totalMeetings||0)}</div></div></div>`}catch(e){out.innerHTML=`<div class="empty">${esc(e.message)}</div>`}}
+async function compareTeams(){const A=$('#ta').value.split(',').map(x=>x.trim()).filter(Boolean),B=$('#tb').value.split(',').map(x=>x.trim()).filter(Boolean),out=$('#tout');if(!A.length||!B.length)return;out.innerHTML='<div class="empty" style="margin-top:16px">Analyzing lineups…</div>';try{const [a,b]=await Promise.all([Promise.all(A.map(u=>get(API.rbwPlayer(u)))),Promise.all(B.map(u=>get(API.rbwPlayer(u))))]);const avg=(arr,k)=>arr.reduce((s,x)=>s+Number(x[k]||0),0)/arr.length;const g=x=>Number(x.wins||0)+Number(x.losses||0),wr=x=>g(x)?x.wins/g(x)*100:0;out.innerHTML=`<div class="compare-result"><div class="people"><div class="person"><div class="kicker">TEAM A</div><strong>${A.map(esc).join(' · ')}</strong></div><div class="person"><div class="kicker">TEAM B</div><strong>${B.map(esc).join(' · ')}</strong></div></div>${cRow('AVG ELO',avg(a,'elo'),avg(b,'elo'))}${cRow('AVG WIN RATE',a.reduce((s,x)=>s+wr(x),0)/a.length,b.reduce((s,x)=>s+wr(x),0)/b.length,true)}${cRow('AVG K/D',avg(a,'kd'),avg(b,'kd'))}${cRow('COMBINED GAMES',a.reduce((s,x)=>s+g(x),0),b.reduce((s,x)=>s+g(x),0))}</div>`}catch(e){out.innerHTML=`<div class="empty">${esc(e.message)}</div>`}}
+function cRow(m,a,b,pc=false){return `<div class="crow"><div class="${a>b?'lead':''}">${pc?pct(a):Number(a).toFixed(a%1?2:0)}</div><div class="metric">${m}</div><div class="${b>a?'lead':''}">${pc?pct(b):Number(b).toFixed(b%1?2:0)}</div></div>`}
+
+function renderMatches(){
+ active('rbw');
+ app().innerHTML=rbwNav('matches')+`<section class="section"><div class="wrap">
+ <div class="pagehead"><div class="kicker">MATCH RECAPS</div><h1>Match Recaps</h1><p>Detailed records of recent RankedBedwars games.</p></div>
+ <div class="controls"><div class="field"><label>SEARCH PLAYER</label><input id="mq" class="input" placeholder="Player IGN…"></div><div class="field"><label>MATCH STATUS</label><select id="mstatus" class="select"><option value="">All Matches</option><option value="SCORED">Finished</option><option value="VOIDED">Voided</option><option value="PLAYING">Playing</option></select></div><button class="btn primary" onclick="loadMatches()">Search</button></div>
+ <div class="hot-searches"><span class="hot-label">HOT SEARCHES</span><span id="match-hot">Loading…</span></div>
+ <div id="mout" class="empty">Loading recent matches…</div>
+ </div></section>`;
+ setTimeout(()=>{loadMatches();loadMatchHot()},0)
+}
+async function loadMatchHot(){const el=$('#match-hot');if(!el)return;try{const d=await get(API.rbwLeaderboard('elo'));el.innerHTML=(d.players||[]).slice(0,6).map(x=>`<button onclick="document.getElementById('mq').value='${esc(x.username)}';loadMatches()">${esc(x.username)}</button>`).join('')}catch{el.innerHTML='<span class="muted">Unavailable</span>'}}
+async function loadMatches(){
+ const out=$('#mout'),q=$('#mq')?.value.trim()||'',status=$('#mstatus')?.value||'';
+ try{
+   const url=`/api/rbw/matches?page=1&limit=20${q?`&username=${encodeURIComponent(q)}`:''}${status?`&status=${encodeURIComponent(status)}`:''}`;
+   const d=await get(url),ms=d.matches||[];
+   out.className='';out.innerHTML=matchesHTML(ms,20)
+ }catch(e){out.className='empty';out.textContent=e.message}
+}
+function matchesHTML(ms,limit=20){
+ if(!ms.length)return '<div class="empty">No matches found.</div>';
+ return ms.slice(0,limit).map(g=>{
+   const teams=g.teams||[];
+   return `<div class="match-sky"><div class="match-sky-head"><strong>${g.status==='SCORED'?'VICTORY / RESULT':'MATCH'} · GAME #${g.gameNumber??'—'}</strong><span class="muted">${esc(typeof g.map==='string'?g.map:g.map?.name||'Unknown Map')} · ${esc(g.queueKey||g.queue?.name||'Ranked')}</span></div>
+   <div class="match-sky-body">${skyTeam(teams[0])}<div class="match-vs">${teams[0]?.winner?'WIN':teams[1]?.winner?'LOSS':'VS'}</div>${skyTeam(teams[1])}</div></div>`
+ }).join('')
+}
+function skyTeam(t){if(!t)return `<div class="match-team muted">Team data unavailable</div>`;return `<div class="match-team"><div class="kicker">TEAM ${esc(t.team??'—')} ${t.winner?'· WINNER':''}</div>${(t.players||[]).map(z=>`<div class="match-player"><strong>${esc(z.username||'Unknown')}</strong><span>${n(z.kills)}K · ${n(z.finalKills)}FK · ${n(z.beds)}B${z.eloChange!=null?` · ${Number(z.eloChange)>=0?'+':''}${n(z.eloChange)} ELO`:''}</span></div>`).join('')}</div>`}
+
+function renderRules(){
+ active('rbw');
+ app().innerHTML=rbwNav('rules')+`<section class="section"><div class="wrap"><div class="pagehead"><div class="kicker">RANKED RULEBOOK</div><h1>Ranked Rules</h1><p>Season rules, gameplay standards and Screenshare Terms.</p></div><div class="rule-tabs"><button class="active" onclick="rule('season',this)">SEASON RULES</button><button onclick="rule('gameplay',this)">GAMEPLAY</button><button onclick="rule('screenshare',this)">SCREENSHARE TERMS</button></div><div id="rule-season" class="rule-page active">${seasonRules()}</div><div id="rule-gameplay" class="rule-page">${gameplayRules()}</div><div id="rule-screenshare" class="rule-page">${screenshareRules()}</div></div></section>`
+}
+function rule(id,b){document.querySelectorAll('.rule-page').forEach(x=>x.classList.remove('active'));$('#rule-'+id).classList.add('active');b.parentElement.querySelectorAll('button').forEach(x=>x.classList.toggle('active',x===b))}
+function textItemGroup(title,arr,desc){return `<div class="item-group"><h3>${title}</h3><div class="desc">${desc}</div>${arr.length?`<div class="text-items">${arr.map(x=>`<span class="text-item">${esc(x)}</span>`).join('')}</div>`:''}</div>`}
+function seasonRules(){return `<div class="season-card"><div class="kicker">CURRENT RULESET</div><h2>RankedBedwars Season Rules</h2><div class="muted">Text cards replace the broken external Minecraft item images.</div></div>
+${textItemGroup('ALLOWED ALL GAME',['Axe','Bedbug','Blast Proof Glass','Chainmail Armor','Diamond Armor','End Stone','Fireball','Golden Apple','Hardened Clay','Iron Armor','Iron Sword','Ladder','Oak Wood / Planks','Pickaxe','Shears','Stone Sword','Wool'],'Available throughout the game.')}
+${textItemGroup('DIAMOND II',['Magic Milk'],'Unlocked at Diamond II.')}
+${textItemGroup('DIAMOND III',['Jump V Potion','Speed II Potion','TNT'],'Unlocked at Diamond III.')}
+${textItemGroup('EMERALD II',[],'No additional unlocks; Diamond III rules continue.')}
+${textItemGroup('EMERALD III',['Invisibility Potion'],'Unlocked at Emerald III.')}
+${textItemGroup('NEVER ALLOWED',['Cobweb','Compact Pop-up Tower','Dream Defender','Ice Bridge','Obsidian','Portable Quick Buy','Sponges','Water Bucket'],'Never allowed during RankedBedwars.')}`}
+function rulesTable(rows){return `<div class="board"><table><thead><tr><th>RULE</th><th>1ST</th><th>2ND</th><th>3RD</th><th>4TH</th><th>5TH</th><th>6TH</th></tr></thead><tbody>${rows.map(x=>`<tr><td style="min-width:300px"><strong>${x[0]}</strong><div class="muted" style="margin-top:4px">${x[1]}</div></td>${x.slice(2).map(v=>`<td>${v}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`}
+function gameplayRules(){return rulesTable([['Unfair Gameplay','Stat manipulation, win trading, intentional throwing, or behavior designed to misrepresent true performance.','Warning','1-Day','3-Day','7-Day','14-Day','Permanent'],['Unauthorized Modifications','Running mods or clients outside the allowed modifications policy.','Warning','1-Day','3-Day','7-Day','14-Day','Permanent'],['Exploiting Bugs / Systems','Knowingly using a bug, glitch, or unintended interaction for advantage.','Warning','1-Day','3-Day','7-Day','14-Day','Permanent'],['Unfair Progression Assistance','Boosting, carrying alts, smurfing, or playing matches for another account.','Warning','1-Day','3-Day','7-Day','14-Day','Permanent'],['Use of Cheats','Cheat clients, scripts, macros, autoclickers, or hardware automation.','3-Day','7-Day','14-Day','30-Day','Permanent','—']])}
+function screenshareRules(){return `<div class="rule-info-grid">
+ <div class="rule-info-card"><div class="kicker">PLAYERS MUST NOT DURING SCREENSHARE</div><h3>Screenshare Restrictions</h3><p>Disconnect from the server</p><p>Close Minecraft</p><p>Modify or delete files</p><p>Refuse staff instructions</p><div class="rule-note">ADMITTING TO CHEATING MAY REDUCE PUNISHMENT.</div></div>
+ <div class="rule-info-card"><div class="kicker">A REQUEST MAY BE DENIED IF</div><h3>When and how can you deny screenshare?</h3><p>The reporter did not play against you.</p><p>The "don't log" message was not sent during the game.</p><p>Invalid or cropped screenshot evidence was provided.</p><p>The request was made over 5 minutes after match completion.</p><p>The same player screenshare-requested you multiple times in one day.</p><p>The reporter wishes to cancel the request.</p><p>The assigned Screensharer participated in the match.</p></div>
+ </div>`}
+
+const CONDUCT_RULES=[
+['Toxic Behaviour','Insults, name-calling, or sustained negativity directed at another player.',['Warning','12-Hour Mute','1-Day Mute','3-Day Mute','7-Day Mute','14-Day Mute']],
+['Spam / Flooding','Repeated messages, character flooding, or any pattern designed to bury chat.',['Warning','12-Hour Mute','1-Day Mute','3-Day Mute','7-Day Mute','14-Day Mute']],
+['Non-Primary Language Spam','Repeatedly using non-English in English-only channels after being asked to switch.',['Warning','12-Hour Mute','1-Day Mute','3-Day Mute','7-Day Mute','14-Day Mute']],
+['Excessive Profanity','Repeated heavy profanity in public channels after warnings.',['Warning','12-Hour Mute','1-Day Mute','3-Day Mute','7-Day Mute','14-Day Mute']],
+['Association with Rule Breakers','Knowingly partying or queueing with players you know are breaking rules.',['Warning','3-Day Restriction','7-Day Restriction','14-Day Restriction','—','—']],
+['Insensitive Language','Language that demeans groups based on race, gender, orientation, religion, ability, or background.',['Warning','3-Day Restriction','7-Day Restriction','14-Day Restriction','—','—']],
+['Disrespectful Conduct','Rudeness, dismissiveness, or unsporting behavior toward other players or staff.',['Warning','1-Day Mute','3-Day Mute','7-Day Mute','14-Day Mute','30-Day Mute']],
+['Encouraging Rule Breaking','Suggesting, teaching, or pressuring others to violate any rule.',['Warning','1-Day Mute','3-Day Mute','7-Day Mute','14-Day Mute','30-Day Mute']],
+['Intentional Community Disruption','Deliberately derailing chat, queues, or events to upset others or grief the community.',['Warning','1-Day Restriction','3-Day Restriction','7-Day Restriction','14-Day Restriction','30-Day Restriction']],
+['Harassment / Coercion',"Targeted, repeated unwanted contact or pressuring another player into anything they don't consent to.",['1-Day Restriction','3-Day Restriction','7-Day Restriction','14-Day Restriction','30-Day Restriction','Permanent Restriction']],
+['Threatening Behaviour','Threats of violence, doxxing, swatting, or any real-world harm.',['1-Day Restriction','3-Day Restriction','7-Day Restriction','14-Day Restriction','30-Day Restriction','Permanent Restriction']],
+['Mute Circumvention','Using signs, books, item names, or alts to talk while muted.',['14-Day Mute','Permanent Mute','—','—','—','—']],
+['Inappropriate Cosmetics','Capes, skins, or cosmetics depicting offensive, NSFW, or banned imagery.',['Warning','3-Day Restriction','7-Day Restriction','14-Day Restriction','—','—']],
+['External Media Promotion','Promoting your own social media, YouTube, Twitch, or website without staff permission.',['Warning','3-Day Restriction','7-Day Restriction','14-Day Restriction','—','—']],
+['Inappropriate Content','Posting NSFW, gore, or otherwise unwelcome content in any channel or in-game medium.',['Warning','1-Day Restriction','3-Day Restriction','7-Day Restriction','14-Day Restriction','30-Day Restriction']],
+['Flash / Triggering Content','Sharing seizure-risk imagery, jumpscares, or content known to cause harm.',['Warning','3-Day Mute','7-Day Mute','14-Day Mute','Permanent Mute','—']],
+['Inappropriate Username','Names containing slurs, NSFW terms, impersonations, or violations of platform policy.',['Username Reset Required','7-Day Restriction','Permanent Restriction','—','—','—']],
+['Staff Impersonation','Pretending to be a staff member, mod, or admin in any context.',['1-Day Restriction','3-Day Restriction','7-Day Restriction','14-Day Restriction','Permanent Restriction','—']],
+['Threats to Privacy',"Threatening to dox, leak, or share another player's private information.",['14-Day Restriction','Permanent Restriction','—','—','—','—']],
+['Restricted Content Sharing','Posting links to malware, phishing, illegal content, or anything banned by platform policy.',['14-Day Restriction','Permanent Restriction','—','—','—','—']],
+['Privacy Violations',"Sharing someone's personal info without consent.",['30-Day Restriction','Permanent Restriction','—','—','—','—']]
+];
+const MARKET_RULES=[
+['Unauthorized Promotion','Advertising other servers, services, or platforms in chat, names, or cosmetics.',['7-Day Restriction','30-Day Restriction','Permanent Restriction','—','—','—']],
+['Fraud / Scamming','Tricking another player out of items, currency, or account access.',['7-Day Restriction','30-Day Restriction','Permanent Restriction','—','—','—']],
+['Unauthorized Trading','Trading accounts, ranks, or in-game items outside official systems.',['7-Day Account Restriction','14-Day Account Restriction','Permanent Restriction','—','—','—']],
+['Evading Punishments','Using alternate accounts to bypass an active ban, mute, or restriction.',['30-Day Restriction','Permanent Restriction','—','—','—','—']],
+['Marketplace Fraud','Misrepresenting goods, refusing delivery, or scamming through the in-game shop or trades.',['30-Day Restriction','Permanent Restriction','—','—','—','—']],
+['False Reports / Evidence','Submitting fake screenshots, edited videos, or knowingly inaccurate reports.',['30-Day Restriction','Permanent Restriction','—','—','—','—']],
+['Payment Fraud','Chargebacks, stolen payment methods, or any fraudulent purchase.',['Permanent Restriction','—','—','—','—','—']]
+];
+function serverRules(){return `<div class="kicker" style="margin:25px 0 16px">CONDUCT & COMMUNITY</div><div class="server-rule-grid">${ruleCards(CONDUCT_RULES)}</div><div class="kicker" style="margin:42px 0 16px">ACCOUNT & MARKETPLACE</div><div class="server-rule-grid">${ruleCards(MARKET_RULES)}</div>`}
+function ruleCards(arr){return arr.map(x=>`<div class="server-rule"><h3>${esc(x[0])}</h3><p class="muted">${esc(x[1])}</p><div class="punish-row">${x[2].map(v=>`<span>${esc(v)}</span>`).join('')}</div></div>`).join('')}
+
+/* Duels leaderboards + KITPVP */
+let duelCategory='modern';
+let duelStat='all';
+
+const DUEL_STATS={
+ modern:{
+   title:'Modern 1.21',
+   subtitle:'StrikePractice',
+   defaultStat:'kills',
+   stats:[
+     {id:'all',label:'All Statistics'},
+     {id:'kills',label:'Kills'},
+     {id:'deaths',label:'Deaths'}
+   ]
+ },
+ 'modern-plus':{
+   title:'Modern 1.21+',
+   subtitle:'MultiDuels',
+   defaultStat:'wins',
+   stats:[
+     {id:'all',label:'All Statistics'},
+     {id:'wins',label:'Wins'},
+     {id:'losses',label:'Losses'},
+     {id:'kills',label:'Kills'}
+   ]
+ }
+};
+
+function setDuelCategory(category){
+ duelCategory=category;
+ duelStat='all';
+ renderDuels();
+}
+
+function setDuelStat(statistic){
+ duelStat=statistic;
+ loadDuelLeaderboard();
+}
+
+function duelStatLabel(statistic){
+ return {wins:'WINS',losses:'LOSSES',kills:'KILLS',deaths:'DEATHS'}[statistic]||String(statistic).toUpperCase();
+}
+
+function renderDuels(){
+ active('duels');
+ const cfg=DUEL_STATS[duelCategory];
+ app().innerHTML=`<section class="section duels-leaderboards"><div class="wrap">
+   <div class="pagehead">
+     <div class="kicker">VEXORIA DUELS</div>
+     <h1>Duels Leaderboards</h1>
+     <p>Competitive statistics across Vexoria's Modern 1.21 and Modern 1.21+ PvP systems.</p>
+   </div>
+
+   <div class="category-tabs duel-category-tabs">
+     <button class="${duelCategory==='modern'?'active':''}" onclick="setDuelCategory('modern')">Modern 1.21</button>
+     <button class="${duelCategory==='modern-plus'?'active':''}" onclick="setDuelCategory('modern-plus')">Modern 1.21+</button>
+   </div>
+
+   <div class="duel-board-heading">
+     <div>
+       <div class="kicker">${esc(cfg.subtitle)}</div>
+       <h2>${esc(cfg.title)}</h2>
+     </div>
+     <div class="field duel-stat-field">
+       <label>STATISTIC</label>
+       <select id="duel-stat" class="select" onchange="setDuelStat(this.value)">
+         ${cfg.stats.map(s=>`<option value="${s.id}" ${s.id===duelStat?'selected':''}>${esc(s.label)}</option>`).join('')}
+       </select>
+     </div>
+   </div>
+
+   <div id="duel-podium" class="duel-podium"><div class="empty">Loading top players…</div></div>
+
+   <div class="duel-list-title">
+     <div><div class="kicker">FULL RANKINGS</div><h2>Leaderboard</h2></div>
+   </div>
+   <div id="dboard" class="empty">Loading leaderboard…</div>
+ </div></section>`;
+ setTimeout(loadDuelLeaderboard,0);
+}
+
+async function loadDuelLeaderboard(){
+ const board=$('#dboard'),podium=$('#duel-podium');
+ if(!board||!podium)return;
+
+ board.className='empty';
+ board.textContent='Loading leaderboard…';
+ podium.innerHTML='<div class="empty">Loading top players…</div>';
+
+ try{
+   const data=await get(API.duelsLeaderboard(duelCategory,duelStat));
+   const rows=data.players||[];
+
+   if(!rows.length){
+     podium.innerHTML='<div class="empty">No leaderboard data yet.</div>';
+     board.className='empty';
+     board.textContent='No leaderboard data yet.';
+     return;
+   }
+
+   const cfg=DUEL_STATS[duelCategory];
+   const rankingStat=duelStat==='all'?cfg.defaultStat:duelStat;
+
+   renderDuelPodium(podium,rows.slice(0,3),rankingStat);
+   renderDuelTable(board,rows,duelCategory,duelStat,rankingStat);
+ }catch(e){
+   podium.innerHTML=`<div class="empty">${esc(e.message)}</div>`;
+   board.className='empty';
+   board.textContent=e.message;
+ }
+}
+
+function renderDuelPodium(container,players,rankingStat){
+ const byRank={
+   1:players.find(x=>Number(x.rank)===1),
+   2:players.find(x=>Number(x.rank)===2),
+   3:players.find(x=>Number(x.rank)===3)
+ };
+ const ordered=[byRank[2],byRank[1],byRank[3]].filter(Boolean);
+
+ container.innerHTML=`<div class="duel-podium-grid">${ordered.map(player=>{
+   const rank=Number(player.rank);
+   return `<div class="duel-podium-card rank-${rank}">
+     <div class="duel-podium-rank">#${rank}</div>
+     <img class="duel-podium-head" src="${head(player.username,88)}" alt="${esc(player.username)}">
+     <div class="duel-podium-name">${esc(player.username)}</div>
+     <div class="duel-podium-stat-label">${duelStatLabel(rankingStat)}</div>
+     <div class="duel-podium-value">${n(player[rankingStat]||0)}</div>
+   </div>`;
+ }).join('')}</div>`;
+}
+
+function renderDuelTable(container,players,category,statistic,rankingStat){
+ const all=statistic==='all';
+ let headers='',cells=()=>''; 
+
+ if(category==='modern'){
+   if(all){
+     headers='<th>KILLS</th><th>DEATHS</th>';
+     cells=p=>`<td class="${rankingStat==='kills'?'duel-stat-active':''}"><strong>${n(p.kills)}</strong></td><td>${n(p.deaths)}</td>`;
+   }else{
+     headers=`<th>${duelStatLabel(statistic)}</th>`;
+     cells=p=>`<td class="duel-stat-active"><strong>${n(p[statistic])}</strong></td>`;
+   }
+ }else{
+   if(all){
+     headers='<th>WINS</th><th>LOSSES</th><th>KILLS</th>';
+     cells=p=>`<td class="${rankingStat==='wins'?'duel-stat-active':''}"><strong>${n(p.wins)}</strong></td><td>${n(p.losses)}</td><td>${n(p.kills)}</td>`;
+   }else{
+     headers=`<th>${duelStatLabel(statistic)}</th>`;
+     cells=p=>`<td class="duel-stat-active"><strong>${n(p[statistic])}</strong></td>`;
+   }
+ }
+
+ container.className='board';
+ container.innerHTML=`<table><thead><tr><th>#</th><th></th><th>PLAYER</th>${headers}</tr></thead>
+ <tbody>${players.map(player=>`<tr>
+   <td class="rank">#${player.rank}</td>
+   <td><img class="head" src="${head(player.username)}" alt="${esc(player.username)}"></td>
+   <td><strong>${esc(player.username)}</strong></td>
+   ${cells(player)}
+ </tr>`).join('')}</tbody></table>`;
+}
+
+const KP_LB_STATS={
+ all:{label:'ALL STATISTICS',field:'kills'},
+ kills:{label:'KILLS',field:'kills'},
+ deaths:{label:'DEATHS',field:'deaths'},
+ coins:{label:'COINS',field:'coins'},
+ experience:{label:'EXPERIENCE',field:'experience'},
+ streak:{label:'BEST KILLSTREAK',field:'bestKillstreak'}
+};
+let kpStat='all';
+let kpView='leaderboard';
+
+function setKPView(view){
+ kpView=view;
+ renderKP();
+}
+
+function setKPStat(stat){
+ kpStat=stat;
+ loadKPLB();
+}
+
+function kpStatLabel(stat){
+ return {kills:'KILLS',deaths:'DEATHS',coins:'COINS',experience:'EXPERIENCE',streak:'BEST KILLSTREAK'}[stat]||String(stat).toUpperCase();
+}
+
+function renderKP(){
+ active('kitpvp');
+
+ if(kpView==='profile'){
+   app().innerHTML=`<section class="kp-shell"><div class="wrap">
+     <div class="pagehead">
+       <div class="kicker">VEXORIA KITPVP</div>
+       <h1>Player Statistics</h1>
+       <p>Search a KITPVP player and view their complete persistent combat record.</p>
+     </div>
+
+     <div class="kp-tabs">
+       <button onclick="setKPView('leaderboard')">Leaderboards</button>
+       <button class="active">Player Statistics</button>
+     </div>
+
+     <div class="kp-profile-search">
+       <input id="kq" class="input" placeholder="Enter Minecraft username">
+       <button class="btn primary" onclick="loadKPProfile()">Search →</button>
+     </div>
+
+     <div id="kp-profile-out" class="empty">A KITPVP player profile will appear here.</div>
+   </div></section>`;
+   return;
+ }
+
+ app().innerHTML=`<section class="kp-shell"><div class="wrap">
+   <div class="pagehead">
+     <div class="kicker">VEXORIA KITPVP</div>
+     <h1>KITPVP Leaderboards</h1>
+     <p>Persistent KITPVP progression ranked across combat and progression statistics.</p>
+   </div>
+
+   <div class="kp-tabs">
+     <button class="active">Leaderboards</button>
+     <button onclick="setKPView('profile')">Player Statistics</button>
+   </div>
+
+   <div class="kp-leader-head">
+     <div>
+       <div class="kicker">GLOBAL KITPVP</div>
+       <h2 style="margin:5px 0 0;font-size:30px;letter-spacing:-.04em">Top Players</h2>
+     </div>
+     <div class="field kp-stat-field">
+       <label>STATISTIC</label>
+       <select id="kst" class="select" onchange="setKPStat(this.value)">
+         <option value="all" ${kpStat==='all'?'selected':''}>All Statistics</option>
+         <option value="kills" ${kpStat==='kills'?'selected':''}>Kills</option>
+         <option value="deaths" ${kpStat==='deaths'?'selected':''}>Deaths</option>
+         <option value="coins" ${kpStat==='coins'?'selected':''}>Coins</option>
+         <option value="experience" ${kpStat==='experience'?'selected':''}>Experience</option>
+         <option value="streak" ${kpStat==='streak'?'selected':''}>Best Killstreak</option>
+       </select>
+     </div>
+   </div>
+
+   <div id="kp-podium" class="kp-podium"><div class="empty">Loading top players…</div></div>
+   <div id="kb" class="empty">Loading leaderboard…</div>
+ </div></section>`;
+
+ setTimeout(loadKPLB,0);
+}
+
+async function loadKPLB(){
+ const out=$('#kb'),podium=$('#kp-podium');
+ if(!out||!podium)return;
+
+ out.className='empty';
+ out.textContent='Loading leaderboard…';
+ podium.innerHTML='<div class="empty">Loading top players…</div>';
+
+ try{
+   const data=await get(API.kpLeaderboard(kpStat));
+   const rows=data.players||[];
+
+   if(!rows.length){
+     podium.innerHTML='<div class="empty">No leaderboard data yet.</div>';
+     out.className='empty';
+     out.textContent='No leaderboard data yet.';
+     return;
+   }
+
+   const rankingStat=kpStat==='all'?'kills':kpStat;
+   renderKPPodium(podium,rows.slice(0,3),rankingStat);
+   renderKPTable(out,rows,kpStat);
+ }catch(e){
+   podium.innerHTML=`<div class="empty">${esc(e.message)}</div>`;
+   out.className='empty';
+   out.textContent=e.message;
+ }
+}
+
+function renderKPPodium(container,players,rankingStat){
+ const byRank={
+   1:players.find(x=>Number(x.position)===1),
+   2:players.find(x=>Number(x.position)===2),
+   3:players.find(x=>Number(x.position)===3)
+ };
+ const ordered=[byRank[2],byRank[1],byRank[3]].filter(Boolean);
+
+ container.innerHTML=`<div class="kp-podium-grid">${ordered.map(player=>{
+   const rank=Number(player.position);
+   return `<div class="kp-podium-card rank-${rank}">
+     <div class="kp-podium-rank">#${rank}</div>
+     <img class="kp-podium-head" src="${head(player.username,88)}" alt="${esc(player.username)}">
+     <div class="kp-podium-name">${esc(player.username)}</div>
+     <div class="kp-podium-label">${kpStatLabel(rankingStat)}</div>
+     <div class="kp-podium-value">${n(player[rankingStat]||0)}</div>
+   </div>`;
+ }).join('')}</div>`;
+}
+
+function renderKPTable(container,players,statistic){
+ const all=statistic==='all';
+ let headers='',cells=()=>''; 
+
+ if(all){
+   headers='<th>KILLS</th><th>DEATHS</th><th>COINS</th><th>EXPERIENCE</th><th>BEST STREAK</th>';
+   cells=p=>`<td><strong>${n(p.kills)}</strong></td><td>${n(p.deaths)}</td><td>${n(p.coins)}</td><td>${n(p.experience)}</td><td>${n(p.bestKillstreak)}</td>`;
+ }else{
+   headers=`<th>${kpStatLabel(statistic)}</th>`;
+   cells=p=>`<td><strong>${n(p[statistic])}</strong></td>`;
+ }
+
+ container.className='board';
+ container.innerHTML=`<table><thead><tr><th>#</th><th></th><th>PLAYER</th>${headers}</tr></thead>
+ <tbody>${players.map(player=>`<tr>
+   <td class="rank">#${player.position}</td>
+   <td><img class="head" src="${head(player.username)}" alt="${esc(player.username)}"></td>
+   <td><strong>${esc(player.username)}</strong></td>
+   ${cells(player)}
+ </tr>`).join('')}</tbody></table>`;
+}
+
+async function loadKPProfile(name){
+ const q=(name||$('#kq')?.value||'').trim();
+ if(!q)return;
+
+ const out=$('#kp-profile-out');
+ out.className='empty';
+ out.textContent='Loading player statistics…';
+
+ try{
+   const [x,k,h,lb]=await Promise.all([
+     get(API.kpPlayer(q)),
+     get(API.kpKits(q)).catch(()=>({ownedKits:[]})),
+     get(API.kpKills(q)).catch(()=>({kills:[]})),
+     get(API.kpLeaderboard('kills')).catch(()=>({players:[]}))
+   ]);
+
+   const rankRow=(lb.players||[]).find(p=>String(p.uuid)===String(x.uuid)||String(p.username).toLowerCase()===String(x.username).toLowerCase());
+   const rank=rankRow?.position??'—';
+   const kd=Number(x.deaths||0)>0?Number(x.kills||0)/Number(x.deaths||0):Number(x.kills||0);
+   const progress=Math.min(100,Math.max(0,Number(x.bestKillstreak||0)*5));
+
+   out.className='';
+   out.innerHTML=`<div class="kp-hero-card">
+     <img class="kp-hero-head" src="${head(x.username,150)}" alt="${esc(x.username)}">
+     <div class="kp-hero-meta">
+       <div class="kicker">VEXORIA KITPVP COMPETITOR</div>
+       <h2>${esc(x.username)}</h2>
+       <div class="kp-badges">
+         <span class="kp-badge primary">#${rank} KILLS</span>
+         <span class="kp-badge">${esc(x.selectedKit||'No Selected Kit')}</span>
+       </div>
+     </div>
+     <div class="kp-hero-score">
+       <label>COINS</label>
+       <strong>${n(x.coins)}</strong>
+       <span>KITPVP BALANCE</span>
+     </div>
+   </div>
+
+   <div class="kp-stat-strip">
+     <div><label>KILLS</label><strong>${n(x.kills)}</strong></div>
+     <div><label>DEATHS</label><strong>${n(x.deaths)}</strong></div>
+     <div><label>K/D</label><strong>${Number(kd).toFixed(2)}</strong></div>
+     <div><label>CURRENT STREAK</label><strong>${n(x.currentKillstreak)}</strong></div>
+     <div><label>BEST STREAK</label><strong>${n(x.bestKillstreak)}</strong></div>
+     <div><label>EXPERIENCE</label><strong>${n(x.experience)}</strong></div>
+   </div>
+
+   <div class="kp-performance">
+     <div class="kp-performance-main">
+       <div class="kicker">CAREER OVERVIEW</div>
+       <h2 style="margin:8px 0 0;font-size:28px">Performance</h2>
+       <div class="kp-performance-grid">
+         <div><label>KILLS</label><strong>${n(x.kills)}</strong></div>
+         <div><label>DEATHS</label><strong>${n(x.deaths)}</strong></div>
+         <div><label>COINS</label><strong>${n(x.coins)}</strong></div>
+         <div><label>EXPERIENCE</label><strong>${n(x.experience)}</strong></div>
+         <div><label>OWNED KITS</label><strong>${n(k.ownedKitCount||k.ownedKits?.length||0)}</strong></div>
+         <div><label>SELECTED KIT</label><strong style="font-size:16px">${esc(x.selectedKit||'None')}</strong></div>
+       </div>
+     </div>
+
+     <div class="kp-record">
+       <div class="kicker">CAREER RECORD</div>
+       <strong>${n(x.bestKillstreak)}</strong>
+       <div class="muted">BEST KILLSTREAK</div>
+       <div class="kp-record-line"><span style="width:${progress}%"></span></div>
+       <div class="muted">${n(x.currentKillstreak)} current streak · ${n(x.kills)} total kills</div>
+     </div>
+   </div>
+
+   <div class="two" style="margin-top:18px">
+     <div class="panel">
+       <div class="kicker">OWNED KITS</div>
+       <h3>${n(k.ownedKitCount||k.ownedKits?.length||0)} unlocked</h3>
+       ${(k.ownedKits||[]).slice(0,30).map(z=>`<span class="live" style="margin:3px">${esc(z)}</span>`).join('')||'<div class="muted">No kit data.</div>'}
+     </div>
+     <div class="panel">
+       <div class="kicker">RECENT COMBAT</div>
+       <h3>Latest kills</h3>
+       ${(h.kills||[]).slice(0,8).map(z=>row(`${z.killer?.username||x.username} → ${z.victim?.username||'Unknown'}`,z.kit||'KITPVP')).join('')||'<div class="muted">No recent kill history.</div>'}
+     </div>
+   </div>`;
+ }catch(e){
+   out.className='empty';
+   out.textContent=e.message;
+ }
+}
+
+function router(){const h=(location.hash||'#home').slice(1);if(h==='home')return renderHome();if(h==='rbw-home')return renderRBWHome();if(h==='rbw-stats')return renderStats();if(h==='rbw-rankings')return renderRankings();if(h==='rbw-compare')return renderCompare();if(h==='rbw-matches')return renderMatches();if(h==='rbw-rules')return renderRules();if(h==='duels')return renderDuels();if(h==='kitpvp')return renderKP();if(h.startsWith('kitpvp-player/')){kpView='profile';renderKP();setTimeout(()=>{const u=decodeURIComponent(h.slice(14));if($('#kq'))$('#kq').value=u;loadKPProfile(u)},60);return;}return renderHome()}
+addEventListener('hashchange',router);router();
+</script>
+</body>
+</html>
