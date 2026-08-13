@@ -25,7 +25,7 @@ function normalizeStat(value) {
 function rowView(row, position) {
     const wins = Number(row.wins), losses = Number(row.losses), kills = Number(row.kills), deaths = Number(row.deaths);
     return {
-        position, playerId: Number(row.player_id), username: row.current_ign,
+        position, playerId: Number(row.player_id), username: row.current_ign || null,
         minecraftUUID: row.minecraft_uuid || null, elo: Number(row.elo), peakElo: Number(row.peak_elo),
         wins, losses, games: wins + losses, kills, deaths, finalKills: Number(row.final_kills), finalDeaths: Number(row.final_deaths), beds: Number(row.beds), mvps: Number(row.mvps),
         currentWinStreak: Number(row.current_win_streak), winStreak: Number(row.current_win_streak),
@@ -57,8 +57,7 @@ module.exports = async function handler(req, res) {
         const [records] = await pool.execute(
             `SELECT s.*, p.current_ign, p.minecraft_uuid
              FROM vrbw_player_season_stats s
-             JOIN vrbw_players p ON p.player_id = s.player_id
-             JOIN vrbw_seasons z ON z.season_id = s.season_id
+             LEFT JOIN vrbw_players p ON p.player_id = s.player_id
              WHERE s.season_id = ?
              ORDER BY ${order} DESC, s.elo DESC, s.wins DESC, s.kills DESC, s.player_id ASC
              LIMIT ? OFFSET ?`, [season.season_id, limit, offset]);
@@ -67,7 +66,7 @@ module.exports = async function handler(req, res) {
         if (requestedUsername) {
             const [targetRows] = await pool.execute(
                 `SELECT s.*, p.current_ign, p.minecraft_uuid, ${order} AS sort_value
-                 FROM vrbw_player_season_stats s JOIN vrbw_players p ON p.player_id=s.player_id
+                 FROM vrbw_player_season_stats s LEFT JOIN vrbw_players p ON p.player_id=s.player_id
                  WHERE s.season_id=? AND LOWER(p.current_ign)=LOWER(?) LIMIT 1`,
                 [season.season_id, requestedUsername]);
             if (targetRows[0]) {
