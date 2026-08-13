@@ -68,6 +68,14 @@ module.exports = async function handler(req, res) {
         const first = await findPlayer(pool, firstName);
         if (!first) return res.status(404).json({ error: "Player not found" });
 
+        if (action === "summary") {
+            const player = await stats(pool, first.player_id, season.season_id);
+            return res.status(200).json({
+                ...seasonJson(season), activeSeason: season.status === "ACTIVE" ? seasonJson(season) : null,
+                betweenSeasons: false, type: "summary", player
+            });
+        }
+
         if (action === "teammates" || action === "opponents") {
             const minimum = positiveInt(req.query.minimum, 3, 100, "minimum meetings");
             const teammate = action === "teammates";
