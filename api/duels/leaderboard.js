@@ -29,11 +29,9 @@ function getPool() {
             user: process.env.DB_USER,
             password: process.env.DB_PASSWORD,
             database: process.env.DB_NAME,
-
             waitForConnections: true,
             connectionLimit: 2,
             queueLimit: 0,
-
             enableKeepAlive: true,
             keepAliveInitialDelay: 0
         });
@@ -43,11 +41,13 @@ function getPool() {
 }
 
 const MODERN_121_STATS = new Set([
+    "all",
     "kills",
     "deaths"
 ]);
 
 const MODERN_121_PLUS_STATS = new Set([
+    "all",
     "wins",
     "losses",
     "kills"
@@ -81,10 +81,16 @@ function parseLimit(value) {
 }
 
 async function getModern121Leaderboard(db, statistic, limit) {
-    const orderColumn =
-        statistic === "deaths"
-            ? "`deaths`"
-            : "`kills`";
+    /*
+     * "all" defaults ranking to kills.
+     */
+    const sortStat = statistic === "all"
+        ? "kills"
+        : statistic;
+
+    const orderColumn = sortStat === "deaths"
+        ? "`deaths`"
+        : "`kills`";
 
     const sql = `
         SELECT
@@ -109,24 +115,30 @@ async function getModern121Leaderboard(db, statistic, limit) {
         username: row.username,
         kills: Number(row.kills || 0),
         deaths: Number(row.deaths || 0),
-        value: Number(row[statistic] || 0)
+        value: Number(row[sortStat] || 0)
     }));
 }
 
 async function getModern121PlusLeaderboard(db, statistic, limit) {
     /*
-     * IMPORTANT:
-     * md_stats.wins already contains casual + ranked wins.
-     * md_stats.losses already contains casual + ranked losses.
+     * "all" defaults ranking to wins.
      *
-     * DO NOT add ranked_wins/ranked_losses again.
+     * IMPORTANT:
+     * md_stats.wins already includes ranked + unranked wins.
+     * md_stats.losses already includes ranked + unranked losses.
+     *
+     * Do NOT add ranked_wins/ranked_losses again.
      */
+
+    const sortStat = statistic === "all"
+        ? "wins"
+        : statistic;
 
     const statisticExpression = {
         wins: "SUM(s.wins)",
         losses: "SUM(s.losses)",
         kills: "SUM(s.kills)"
-    }[statistic];
+    }[sortStat];
 
     const placeholders = MD_MODES.map(() => "?").join(", ");
 
@@ -164,7 +176,7 @@ async function getModern121PlusLeaderboard(db, statistic, limit) {
         wins: Number(row.wins || 0),
         losses: Number(row.losses || 0),
         kills: Number(row.kills || 0),
-        value: Number(row[statistic] || 0)
+        value: Number(row[sortStat] || 0)
     }));
 }
 
@@ -185,7 +197,7 @@ module.exports = async function handler(req, res) {
         ).toLowerCase();
 
         let statistic = String(
-            getQueryValue(req.query.stat) || ""
+            getQueryValue(req.query.stat) || "all"
         ).toLowerCase();
 
         const limit = parseLimit(
@@ -204,30 +216,25 @@ module.exports = async function handler(req, res) {
          * MODERN 1.21
          *
          * StrikePractice
-         * stats.kills / stats.deaths
          */
         if (version === "modern" || version === "1.21") {
-            if (!statistic) {
-                statistic = "kills";
-            }
-
             if (!MODERN_121_STATS.has(statistic)) {
                 return res.status(400).json({
                     error: "Invalid statistic for Modern 1.21"
                 });
             }
 
-            const players =
-                await getModern121Leaderboard(
-                    db,
-                    statistic,
-                    limit
-                );
+            const players = await getModern121Leaderboard(
+                db,
+                statistic,
+                limit
+            );
 
             return res.status(200).json({
                 category: "modern",
                 name: "Modern 1.21",
                 statistic,
+                defaultStatistic: "kills",
                 count: players.length,
                 players
             });
@@ -237,34 +244,29 @@ module.exports = async function handler(req, res) {
          * MODERN 1.21+
          *
          * MultiDuels
-         * md_stats.wins / losses / kills
          */
         if (
             version === "modern-plus" ||
             version === "1.21+" ||
             version === "plus"
         ) {
-            if (!statistic) {
-                statistic = "wins";
-            }
-
             if (!MODERN_121_PLUS_STATS.has(statistic)) {
                 return res.status(400).json({
                     error: "Invalid statistic for Modern 1.21+"
                 });
             }
 
-            const players =
-                await getModern121PlusLeaderboard(
-                    db,
-                    statistic,
-                    limit
-                );
+            const players = await getModern121PlusLeaderboard(
+                db,
+                statistic,
+                limit
+            );
 
             return res.status(200).json({
                 category: "modern-plus",
                 name: "Modern 1.21+",
                 statistic,
+                defaultStatistic: "wins",
                 count: players.length,
                 players
             });
