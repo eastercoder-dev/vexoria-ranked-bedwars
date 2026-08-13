@@ -5,6 +5,7 @@ const {
     getPool,
     positiveInt,
     publicError,
+    resolveSeason,
     seasonJson,
     username
 } = require("../../lib/rbw");
@@ -20,6 +21,12 @@ module.exports = async function handler(req, res) {
     try {
         const pool = getPool();
 
+        /*
+         * ==========================================
+         * PAGINATION
+         * ==========================================
+         */
+
         const page = positiveInt(
             req.query.page,
             1,
@@ -34,6 +41,12 @@ module.exports = async function handler(req, res) {
             "limit"
         );
 
+        /*
+         * ==========================================
+         * OPTIONAL GAME FILTER
+         * ==========================================
+         */
+
         const gameNumber =
             req.query.game === undefined ||
             req.query.game === ""
@@ -45,8 +58,20 @@ module.exports = async function handler(req, res) {
                     "game number"
                 );
 
+        /*
+         * ==========================================
+         * OPTIONAL PLAYER FILTER
+         * ==========================================
+         */
+
         const playerName =
             username(req.query.username);
+
+        /*
+         * ==========================================
+         * OPTIONAL MAP FILTER
+         * ==========================================
+         */
 
         const map =
             String(req.query.map || "")
@@ -57,6 +82,12 @@ module.exports = async function handler(req, res) {
                 error: "Invalid map"
             });
         }
+
+        /*
+         * ==========================================
+         * OPTIONAL STATUS FILTER
+         * ==========================================
+         */
 
         const status =
             String(req.query.status || "")
@@ -73,78 +104,56 @@ module.exports = async function handler(req, res) {
         }
 
         /*
-         * =========================================
-         * SEASON FILTER
-         * =========================================
+         * ==========================================
+         * SEASON LOGIC
+         * ==========================================
          *
          * IMPORTANT:
          *
-         * No season parameter:
-         *     Show matches from ALL seasons.
+         * /api/rbw/matches
+         *      -> ALL seasons
          *
-         * ?season=1:
-         *     Show only Season 1.
+         * /api/rbw/matches?season=1
+         *      -> Season 1 only
          *
-         * ?season=2:
-         *     Show only Season 2.
+         * /api/rbw/matches?season=2
+         *      -> Season 2 only
          */
 
-        const rawSeason =
-            req.query.season === undefined
-                ? ""
-                : String(req.query.season).trim();
+        const seasonQuery =
+            req.query.season === undefined ||
+            req.query.season === null ||
+            String(req.query.season).trim() === ""
+                ? null
+                : req.query.season;
 
         let selectedSeason = null;
 
-        if (rawSeason !== "") {
-            const seasonNumber =
-                Number(rawSeason);
-
-            if (
-                !Number.isInteger(seasonNumber) ||
-                seasonNumber <= 0
-            ) {
-                return res.status(400).json({
-                    error: "Invalid season"
-                });
-            }
-
-            const [seasonRows] =
-                await pool.execute(
-                    `
-                    SELECT
-                        season_id,
-                        season_number,
-                        name,
-                        type,
-                        status,
-                        started_at,
-                        ended_at,
-                        created_at
-
-                    FROM vrbw_seasons
-
-                    WHERE season_number = ?
-
-                    LIMIT 1
-                    `,
-                    [seasonNumber]
+        /*
+         * Only resolve a season when the website
+         * explicitly requested one.
+         */
+        if (seasonQuery !== null) {
+            const result =
+                await resolveSeason(
+                    pool,
+                    seasonQuery
                 );
 
-            if (!seasonRows.length) {
+            selectedSeason =
+                result.season;
+
+            if (!selectedSeason) {
                 return res.status(404).json({
                     error: "Season not found"
                 });
             }
-
-            selectedSeason =
-                seasonRows[0];
         }
 
         /*
-         * =========================================
-         * PLAYER FILTER
-         * =========================================
+         * ==========================================
+         * PLAYER LOOKUP
+         * ==========================================
          */
 
         let player = null;
@@ -164,18 +173,29 @@ module.exports = async function handler(req, res) {
         }
 
         /*
-         * =========================================
-         * BUILD WHERE CONDITIONS
-         * =========================================
+         * ==========================================
+         * BUILD SQL FILTER
+         * ==========================================
          */
 
         const conditions = [];
         const params = [];
 
         /*
-         * Only filter season when specifically
-         * requested by the website.
+         * This is THE important difference.
+         *
+         * Previously:
+         *
+         * conditions started with:
+         *
+         * g.season_id = ?
+         *
+         * which forced every request into the
+         * current season.
+         *
+         * Now season is optional.
          */
+
         if (selectedSeason) {
             conditions.push(
                 "g.season_id = ?"
@@ -191,7 +211,9 @@ module.exports = async function handler(req, res) {
                 "g.game_number = ?"
             );
 
-            params.push(gameNumber);
+            params.push(
+                gameNumber
+            );
         }
 
         if (map) {
@@ -199,7 +221,9 @@ module.exports = async function handler(req, res) {
                 "LOWER(g.map) = LOWER(?)"
             );
 
-            params.push(map);
+            params.push(
+                map
+            );
         }
 
         if (status) {
@@ -207,26 +231,31 @@ module.exports = async function handler(req, res) {
                 "g.status = ?"
             );
 
-            params.push(status);
+            params.push(
+                status
+            );
         }
 
         if (player) {
-            conditions.push(`
-                EXISTS (
+            conditions.push(
+                `EXISTS (
                     SELECT 1
-
                     FROM vrbw_ranked_game_players f
-
-                    WHERE
-                        f.game_id = g.game_id
-                        AND f.player_id = ?
-                )
-            `);
+                    WHERE f.game_id = g.game_id
+                    AND f.player_id = ?
+                )`
+            );
 
             params.push(
                 player.player_id
             );
         }
+
+        /*
+         * If there are no filters:
+         *
+         * WHERE clause is completely omitted.
+         */
 
         const where =
             conditions.length > 0
@@ -234,9 +263,9 @@ module.exports = async function handler(req, res) {
                 : "";
 
         /*
-         * =========================================
+         * ==========================================
          * COUNT MATCHES
-         * =========================================
+         * ==========================================
          */
 
         const [countRows] =
@@ -244,9 +273,7 @@ module.exports = async function handler(req, res) {
                 `
                 SELECT
                     COUNT(*) AS total
-
                 FROM vrbw_ranked_games g
-
                 ${where}
                 `,
                 params
@@ -265,8 +292,19 @@ module.exports = async function handler(req, res) {
                 );
 
         /*
-         * Pagination
+         * ==========================================
+         * SAFE LIMIT / OFFSET
+         * ==========================================
+         *
+         * Keep these directly in SQL because your
+         * MySQL server already threw:
+         *
+         * ER_WRONG_ARGUMENTS
+         * Incorrect arguments to mysqld_stmt_execute
+         *
+         * when LIMIT ? OFFSET ? was used.
          */
+
         const safeLimit =
             Math.max(
                 1,
@@ -284,9 +322,9 @@ module.exports = async function handler(req, res) {
             );
 
         /*
-         * =========================================
+         * ==========================================
          * LOAD MATCHES
-         * =========================================
+         * ==========================================
          */
 
         const [games] =
@@ -294,16 +332,14 @@ module.exports = async function handler(req, res) {
                 `
                 SELECT
                     g.*,
-
                     s.season_number,
                     s.name AS season_name,
                     s.type AS season_type
 
                 FROM vrbw_ranked_games g
 
-                INNER JOIN vrbw_seasons s
-                    ON s.season_id =
-                       g.season_id
+                JOIN vrbw_seasons s
+                    ON s.season_id = g.season_id
 
                 ${where}
 
@@ -318,9 +354,9 @@ module.exports = async function handler(req, res) {
             );
 
         /*
-         * =========================================
+         * ==========================================
          * LOAD PARTICIPANTS
-         * =========================================
+         * ==========================================
          */
 
         const participants =
@@ -330,9 +366,9 @@ module.exports = async function handler(req, res) {
             );
 
         /*
-         * =========================================
-         * BUILD MATCH OBJECTS
-         * =========================================
+         * ==========================================
+         * FORMAT MATCHES
+         * ==========================================
          */
 
         const rows =
@@ -348,47 +384,49 @@ module.exports = async function handler(req, res) {
             );
 
         /*
-         * =========================================
-         * LOAD CURRENT ACTIVE SEASON
+         * ==========================================
+         * CURRENT ACTIVE SEASON METADATA
+         * ==========================================
          *
-         * This is metadata only.
-         * It does NOT limit recap matches.
-         * =========================================
+         * We can safely use resolveSeason() here
+         * because this was already part of your
+         * working code.
+         *
+         * IMPORTANT:
+         *
+         * It is ONLY returned as metadata.
+         *
+         * It does NOT filter the matches.
          */
 
-        const [activeSeasonRows] =
-            await pool.execute(
-                `
-                SELECT
-                    season_id,
-                    season_number,
-                    name,
-                    type,
-                    status,
-                    started_at,
-                    ended_at,
-                    created_at
+        let activeSeason = null;
 
-                FROM vrbw_seasons
+        try {
+            const activeResult =
+                await resolveSeason(
+                    pool,
+                    undefined
+                );
 
-                WHERE status = 'ACTIVE'
-
-                ORDER BY
-                    season_number DESC
-
-                LIMIT 1
-                `
+            if (
+                activeResult &&
+                activeResult.season &&
+                activeResult.season.status === "ACTIVE"
+            ) {
+                activeSeason =
+                    activeResult.season;
+            }
+        } catch (seasonError) {
+            console.warn(
+                "Unable to resolve active RBW season metadata:",
+                seasonError
             );
-
-        const activeSeason =
-            activeSeasonRows.length
-                ? activeSeasonRows[0]
-                : null;
+        }
 
         /*
-         * =========================================
+         * ==========================================
          * RESPONSE
-         * =========================================
+         * ==========================================
          */
 
         return res.status(200).json({
@@ -413,19 +451,21 @@ module.exports = async function handler(req, res) {
                 selectedSeason === null,
 
             page,
-            limit: safeLimit,
+
+            limit:
+                safeLimit,
 
             total,
+
             totalPages,
-            count: rows.length,
+
+            count:
+                rows.length,
 
             filters: {
                 season:
                     selectedSeason
-                        ? Number(
-                            selectedSeason
-                                .season_number
-                        )
+                        ? selectedSeason.season_number
                         : null,
 
                 game:
@@ -442,12 +482,14 @@ module.exports = async function handler(req, res) {
             },
 
             rows,
-            matches: rows
+
+            matches:
+                rows
         });
 
     } catch (error) {
         console.error(
-            "RBW matches API failed:",
+            "RBW matches API failed",
             error
         );
 
