@@ -423,24 +423,6 @@ body::after{
 
 
 /* ===== FINAL FLOW / LOGO / RULES PATCH ===== */
-.sky-brand .site-logo{
-  width:38px;height:38px;border-radius:10px;object-fit:cover;display:block;
-  box-shadow:0 0 18px rgba(66,135,245,.18)
-}
-.rbw-card-logo-img{
-  width:58px;height:58px;border-radius:13px;object-fit:cover;display:block;
-  border:1px solid #3c70b2
-}
-.hero-home-bg{
-  position:relative;min-height:600px;
-  background:
-    linear-gradient(90deg,rgba(5,9,15,.92) 0%,rgba(5,9,15,.73) 42%,rgba(5,9,15,.30) 72%,rgba(5,9,15,.12) 100%),
-    linear-gradient(180deg,rgba(5,9,15,.12),rgba(5,9,15,.55)),
-    url('assets/vexoria-home-bg.png') center/cover no-repeat;
-}
-.hero-home-bg .wrap{position:relative;z-index:2}
-.hero-home-bg .hero-inner{max-width:650px}
-.hero-home-bg .logo-stage{display:none}
 .modebar{padding:8px 0;background:#080b10}
 .modebar .wrap{min-height:48px}
 .modebar .tabs{
@@ -478,7 +460,6 @@ body::after{
 .rule-tabs.enforcement-tabs button{min-width:132px}
 .rule-info-card p{margin:10px 0;color:#c2bdc8}
 @media(max-width:900px){
-  .hero-home-bg{min-height:520px;background-position:center}
   .modebar .wrap{gap:8px}
 }
 
@@ -488,7 +469,7 @@ body::after{
 <header class="top sky-header">
 <div class="wrap">
   <div class="sky-brand" onclick="go('#home')" style="cursor:pointer">
-    <img class="site-logo" src="assets/vexoria-logo.png" alt="Vexoria Network">
+    <div class="mark">V</div>
     <div>VEXORIA<small>VEXORIA NETWORK</small></div>
   </div>
   <nav class="sky-nav">
@@ -540,7 +521,7 @@ function feat(no,t,d,h){return `<div class="feature" onclick="go('${h}')"><div c
 
 function renderHome(){
  active('home');
- app().innerHTML=`<section class="hero hero-home-bg"><div class="wrap"><div class="hero-inner">
+ app().innerHTML=`<section class="hero"><div class="wrap"><div class="hero-inner">
  <div class="live"><span class="dot"></span>NETWORK ONLINE</div>
  <h1>VEXORIA <span>NETWORK</span></h1>
  <p>A modern Minecraft network built around RankedBedwars, modern 1.21 duels and persistent KITPVP progression.</p>
@@ -548,7 +529,7 @@ function renderHome(){
  </div></div></section>
  <section class="section"><div class="wrap">
  <div class="rbw-home-card">
-   <div class="rbw-card-head"><img class="rbw-card-logo-img" src="assets/vexoria-logo.png" alt="Vexoria Network"><div><h2>Vexoria Network</h2><div class="muted"><span class="dot" style="display:inline-block;margin-right:7px"></span>Online · JAVA 1.21+</div></div></div>
+   <div class="rbw-card-head"><div class="rbw-card-logo">V</div><div><h2>Vexoria Network</h2><div class="muted"><span class="dot" style="display:inline-block;margin-right:7px"></span>Online · JAVA 1.21+</div></div></div>
    <div class="rbw-facts">
      <div class="rbw-fact"><label>VERSION</label><strong>1.21+</strong></div>
      <div class="rbw-fact"><label>ONLINE PLAYERS</label><strong id="home-online">—</strong></div>
@@ -577,7 +558,7 @@ async function renderRBWHome(){
  </div></div></section>
  <section class="section"><div class="wrap">
  <div class="rbw-home-card">
-   <div class="rbw-card-head"><img class="rbw-card-logo-img" src="assets/vexoria-logo.png" alt="Vexoria RankedBedwars"><div><h2>Vexoria RankedBedwars</h2><div class="muted"><span class="dot" style="display:inline-block;margin-right:7px"></span>Online · JAVA 1.21+</div></div></div>
+   <div class="rbw-card-head"><div class="rbw-card-logo">V</div><div><h2>Vexoria RankedBedwars</h2><div class="muted"><span class="dot" style="display:inline-block;margin-right:7px"></span>Online · JAVA 1.21+</div></div></div>
    <div class="rbw-facts">
      <div class="rbw-fact"><label>VERSION</label><strong>1.21+</strong></div>
      <div class="rbw-fact"><label>ONLINE PLAYERS</label><strong id="rbwo">—</strong></div>
