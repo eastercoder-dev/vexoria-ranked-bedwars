@@ -1,17 +1,59 @@
 const mysql = require("mysql2/promise");
 
-const pool = mysql.createPool({
-    host: process.env.DB_HOST,
-    port: Number(process.env.DB_PORT || 3306),
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME,
-    waitForConnections: true,
-    connectionLimit: 5,
-    queueLimit: 0
-});
+let pool;
 
-const COMPETITIVE_MODES = [
+function getPool() {
+    if (!pool) {
+        const required = [
+            "DB_HOST",
+            "DB_USER",
+            "DB_PASSWORD",
+            "DB_NAME"
+        ];
+
+        for (const key of required) {
+            if (!process.env[key]) {
+                throw new Error(`Missing environment variable: ${key}`);
+            }
+        }
+
+        const port = Number(process.env.DB_PORT || 3306);
+
+        if (!Number.isInteger(port) || port <= 0 || port > 65535) {
+            throw new Error("Invalid DB_PORT");
+        }
+
+        pool = mysql.createPool({
+            host: process.env.DB_HOST,
+            port,
+            user: process.env.DB_USER,
+            password: process.env.DB_PASSWORD,
+            database: process.env.DB_NAME,
+
+            waitForConnections: true,
+            connectionLimit: 2,
+            queueLimit: 0,
+
+            enableKeepAlive: true,
+            keepAliveInitialDelay: 0
+        });
+    }
+
+    return pool;
+}
+
+const MODERN_121_STATS = new Set([
+    "kills",
+    "deaths"
+]);
+
+const MODERN_121_PLUS_STATS = new Set([
+    "wins",
+    "losses",
+    "kills"
+]);
+
+const MD_MODES = [
     "BEDFIGHT",
     "FIREBALL_FIGHT",
     "FIREBALL_MACE",
@@ -20,383 +62,222 @@ const COMPETITIVE_MODES = [
     "BATTLERUSH"
 ];
 
-let cachedStatsColumns = null;
-
-async function getStatsColumns() {
-    if (cachedStatsColumns) {
-        return cachedStatsColumns;
-    }
-
-    const [rows] = await pool.query("SHOW COLUMNS FROM stats");
-
-    cachedStatsColumns = new Set(
-        rows.map(row => String(row.Field).toLowerCase())
-    );
-
-    return cachedStatsColumns;
+function getQueryValue(value) {
+    return Array.isArray(value) ? value[0] : value;
 }
 
-function firstExisting(columns, candidates) {
-    for (const candidate of candidates) {
-        if (columns.has(candidate.toLowerCase())) {
-            return candidate;
-        }
+function parseLimit(value) {
+    if (value === undefined) {
+        return 100;
     }
 
-    return null;
-}
+    const parsed = Number(value);
 
-function selectOrZero(column, alias) {
-    return column
-        ? `COALESCE(\`${column}\`, 0) AS \`${alias}\``
-        : `0 AS \`${alias}\``;
-}
-
-async function loadPracticeLeaderboard() {
-    const columns = await getStatsColumns();
-
-    if (
-        !columns.has("uuid") ||
-        !columns.has("username") ||
-        !columns.has("kills")
-    ) {
-        throw new Error(
-            "stats table must contain uuid, username and kills"
-        );
+    if (!Number.isInteger(parsed) || parsed < 1 || parsed > 100) {
+        return null;
     }
 
-    const deathsColumn = firstExisting(columns, [
-        "deaths",
-        "death",
-        "total_deaths"
-    ]);
+    return parsed;
+}
 
-    const currentStreakColumn = firstExisting(columns, [
-        "current_kill_streak",
-        "current_killstreak",
-        "kill_streak",
-        "killstreak",
-        "current_streak",
-        "streak"
-    ]);
+async function getModern121Leaderboard(db, statistic, limit) {
+    const orderColumn =
+        statistic === "deaths"
+            ? "`deaths`"
+            : "`kills`";
 
-    const bestStreakColumn = firstExisting(columns, [
-        "best_kill_streak",
-        "best_killstreak",
-        "highest_kill_streak",
-        "highest_killstreak",
-        "best_streak",
-        "highest_streak",
-        "max_streak"
-    ]);
-
-    const [rows] = await pool.query(
-        `
+    const sql = `
         SELECT
             uuid,
             username,
-
-            COALESCE(kills, 0) AS kills,
-
-            ${selectOrZero(deathsColumn, "deaths")},
-
-            ${selectOrZero(
-                currentStreakColumn,
-                "current_kill_streak"
-            )},
-
-            ${selectOrZero(
-                bestStreakColumn,
-                "best_kill_streak"
-            )}
-
-        FROM stats
-
-        WHERE COALESCE(kills, 0) > 0
-
-        ORDER BY
-            kills DESC,
-            username ASC
-
-        LIMIT 100
-        `
-    );
-
-    return rows.map((player, index) => {
-        const kills = Number(player.kills || 0);
-        const deaths = Number(player.deaths || 0);
-
-        return {
-            position: index + 1,
-
-            type: "PRACTICE",
-
-            uuid: player.uuid,
-            username: player.username,
-
             kills,
-            deaths,
+            deaths
+        FROM stats
+        WHERE ${orderColumn} > 0
+        ORDER BY
+            ${orderColumn} DESC,
+            username ASC,
+            uuid ASC
+        LIMIT ?
+    `;
 
-            kd:
-                deaths === 0
-                    ? kills
-                    : Number((kills / deaths).toFixed(2)),
+    const [rows] = await db.query(sql, [limit]);
 
-            currentKillStreak:
-                Number(player.current_kill_streak || 0),
-
-            bestKillStreak:
-                Number(player.best_kill_streak || 0)
-        };
-    });
+    return rows.map((row, index) => ({
+        rank: index + 1,
+        uuid: row.uuid,
+        username: row.username,
+        kills: Number(row.kills || 0),
+        deaths: Number(row.deaths || 0),
+        value: Number(row[statistic] || 0)
+    }));
 }
 
-async function loadCompetitiveLeaderboard(mode) {
-    if (mode) {
-        const [rows] = await pool.execute(
-            `
-            SELECT
-                p.uuid,
-                p.username,
+async function getModern121PlusLeaderboard(db, statistic, limit) {
+    /*
+     * IMPORTANT:
+     * md_stats.wins already contains casual + ranked wins.
+     * md_stats.losses already contains casual + ranked losses.
+     *
+     * DO NOT add ranked_wins/ranked_losses again.
+     */
 
-                s.mode,
+    const statisticExpression = {
+        wins: "SUM(s.wins)",
+        losses: "SUM(s.losses)",
+        kills: "SUM(s.kills)"
+    }[statistic];
 
-                COALESCE(s.ranked_wins, 0) AS wins,
-                COALESCE(s.ranked_losses, 0) AS losses,
+    const placeholders = MD_MODES.map(() => "?").join(", ");
 
-                COALESCE(
-                    s.current_ranked_win_streak,
-                    0
-                ) AS current_win_streak,
-
-                COALESCE(
-                    s.best_ranked_win_streak,
-                    0
-                ) AS best_win_streak
-
-            FROM md_stats s
-
-            JOIN md_players p
-                ON p.uuid = s.uuid
-
-            WHERE s.mode = ?
-
-            ORDER BY
-                wins DESC,
-                losses ASC,
-                p.username ASC
-
-            LIMIT 100
-            `,
-            [mode]
-        );
-
-        return rows.map((player, index) => {
-            const wins = Number(player.wins || 0);
-            const losses = Number(player.losses || 0);
-            const games = wins + losses;
-
-            return {
-                position: index + 1,
-
-                type: "COMPETITIVE",
-
-                uuid: player.uuid,
-                username: player.username,
-
-                mode: player.mode,
-
-                games,
-                wins,
-                losses,
-
-                wlr:
-                    losses === 0
-                        ? wins
-                        : Number((wins / losses).toFixed(2)),
-
-                winRate:
-                    games === 0
-                        ? 0
-                        : Number(
-                            ((wins / games) * 100).toFixed(2)
-                        ),
-
-                currentWinStreak:
-                    Number(player.current_win_streak || 0),
-
-                bestWinStreak:
-                    Number(player.best_win_streak || 0)
-            };
-        });
-    }
-
-    const placeholders =
-        COMPETITIVE_MODES.map(() => "?").join(", ");
-
-    const [rows] = await pool.execute(
-        `
+    const sql = `
         SELECT
             p.uuid,
             p.username,
-
-            SUM(
-                COALESCE(s.ranked_wins, 0)
-            ) AS wins,
-
-            SUM(
-                COALESCE(s.ranked_losses, 0)
-            ) AS losses,
-
-            MAX(
-                COALESCE(
-                    s.best_ranked_win_streak,
-                    0
-                )
-            ) AS best_win_streak
-
+            COALESCE(SUM(s.wins), 0) AS wins,
+            COALESCE(SUM(s.losses), 0) AS losses,
+            COALESCE(SUM(s.kills), 0) AS kills
         FROM md_players p
-
-        JOIN md_stats s
+        INNER JOIN md_stats s
             ON s.uuid = p.uuid
-
         WHERE s.mode IN (${placeholders})
-
         GROUP BY
             p.uuid,
             p.username
-
-        HAVING
-            (
-                SUM(COALESCE(s.ranked_wins, 0)) +
-                SUM(COALESCE(s.ranked_losses, 0))
-            ) > 0
-
+        HAVING ${statisticExpression} > 0
         ORDER BY
-            wins DESC,
-            losses ASC,
-            p.username ASC
+            ${statisticExpression} DESC,
+            p.username ASC,
+            p.uuid ASC
+        LIMIT ?
+    `;
 
-        LIMIT 100
-        `,
-        COMPETITIVE_MODES
-    );
+    const [rows] = await db.query(sql, [
+        ...MD_MODES,
+        limit
+    ]);
 
-    return rows.map((player, index) => {
-        const wins = Number(player.wins || 0);
-        const losses = Number(player.losses || 0);
-        const games = wins + losses;
-
-        return {
-            position: index + 1,
-
-            type: "COMPETITIVE",
-
-            uuid: player.uuid,
-            username: player.username,
-
-            mode: "OVERALL",
-
-            games,
-            wins,
-            losses,
-
-            wlr:
-                losses === 0
-                    ? wins
-                    : Number((wins / losses).toFixed(2)),
-
-            winRate:
-                games === 0
-                    ? 0
-                    : Number(
-                        ((wins / games) * 100).toFixed(2)
-                    ),
-
-            currentWinStreak: null,
-
-            bestWinStreak:
-                Number(player.best_win_streak || 0)
-        };
-    });
+    return rows.map((row, index) => ({
+        rank: index + 1,
+        uuid: row.uuid,
+        username: row.username,
+        wins: Number(row.wins || 0),
+        losses: Number(row.losses || 0),
+        kills: Number(row.kills || 0),
+        value: Number(row[statistic] || 0)
+    }));
 }
 
 module.exports = async function handler(req, res) {
-    const requestedType =
-        String(req.query.type || "")
-            .trim()
-            .toUpperCase();
+    res.setHeader("Cache-Control", "no-store");
 
-    const requestedMode =
-        String(req.query.mode || "")
-            .trim()
-            .toUpperCase();
+    if (req.method !== "GET") {
+        res.setHeader("Allow", "GET");
 
-    let type = requestedType;
-
-    if (!type) {
-        type =
-            requestedMode &&
-            COMPETITIVE_MODES.includes(requestedMode)
-                ? "COMPETITIVE"
-                : "PRACTICE";
-    }
-
-    if (!["PRACTICE", "COMPETITIVE"].includes(type)) {
-        return res.status(400).json({
-            error: "Invalid leaderboard type",
-            allowedTypes: [
-                "PRACTICE",
-                "COMPETITIVE"
-            ]
-        });
-    }
-
-    if (
-        type === "COMPETITIVE" &&
-        requestedMode &&
-        !COMPETITIVE_MODES.includes(requestedMode)
-    ) {
-        return res.status(400).json({
-            error: "Invalid Competitive Duels mode",
-            allowedModes: COMPETITIVE_MODES
+        return res.status(405).json({
+            error: "Method not allowed"
         });
     }
 
     try {
-        if (type === "PRACTICE") {
+        const version = String(
+            getQueryValue(req.query.version) || "modern"
+        ).toLowerCase();
+
+        let statistic = String(
+            getQueryValue(req.query.stat) || ""
+        ).toLowerCase();
+
+        const limit = parseLimit(
+            getQueryValue(req.query.limit)
+        );
+
+        if (limit === null) {
+            return res.status(400).json({
+                error: "limit must be between 1 and 100"
+            });
+        }
+
+        const db = getPool();
+
+        /*
+         * MODERN 1.21
+         *
+         * StrikePractice
+         * stats.kills / stats.deaths
+         */
+        if (version === "modern" || version === "1.21") {
+            if (!statistic) {
+                statistic = "kills";
+            }
+
+            if (!MODERN_121_STATS.has(statistic)) {
+                return res.status(400).json({
+                    error: "Invalid statistic for Modern 1.21"
+                });
+            }
+
             const players =
-                await loadPracticeLeaderboard();
+                await getModern121Leaderboard(
+                    db,
+                    statistic,
+                    limit
+                );
 
             return res.status(200).json({
-                type: "PRACTICE",
-                statistic: "kills",
+                category: "modern",
+                name: "Modern 1.21",
+                statistic,
                 count: players.length,
                 players
             });
         }
 
-        const players =
-            await loadCompetitiveLeaderboard(
-                requestedMode || null
-            );
+        /*
+         * MODERN 1.21+
+         *
+         * MultiDuels
+         * md_stats.wins / losses / kills
+         */
+        if (
+            version === "modern-plus" ||
+            version === "1.21+" ||
+            version === "plus"
+        ) {
+            if (!statistic) {
+                statistic = "wins";
+            }
 
-        return res.status(200).json({
-            type: "COMPETITIVE",
-            statistic: "wins",
-            mode: requestedMode || "OVERALL",
-            count: players.length,
-            players
+            if (!MODERN_121_PLUS_STATS.has(statistic)) {
+                return res.status(400).json({
+                    error: "Invalid statistic for Modern 1.21+"
+                });
+            }
+
+            const players =
+                await getModern121PlusLeaderboard(
+                    db,
+                    statistic,
+                    limit
+                );
+
+            return res.status(200).json({
+                category: "modern-plus",
+                name: "Modern 1.21+",
+                statistic,
+                count: players.length,
+                players
+            });
+        }
+
+        return res.status(400).json({
+            error: "Invalid leaderboard category"
         });
-
     } catch (error) {
-        console.error(
-            "Duels leaderboard API error:",
-            error
-        );
+        console.error("Duels leaderboard error:", error);
 
         return res.status(500).json({
-            error: "Unable to load duel leaderboard"
+            error: "Failed to load leaderboard"
         });
     }
 };
