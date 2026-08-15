@@ -453,7 +453,9 @@ body::after{
   border-radius:8px;padding:10px 6px;text-align:center;display:flex;flex-direction:column;
   justify-content:center;align-items:center;gap:7px
 }
-.mc-item .emoji{font-size:30px;line-height:1;filter:drop-shadow(0 3px 4px rgba(0,0,0,.3))}
+.mc-item .mc-icon{width:38px;height:38px;object-fit:contain;image-rendering:pixelated;filter:drop-shadow(0 3px 4px rgba(0,0,0,.34))}
+.mc-item.upgrade{border-color:#36557e;background:linear-gradient(180deg,#101c2d,#0b1016)}
+.mc-item.permanent{border-color:#60343a;background:linear-gradient(180deg,#201115,#0b1016) }
 .mc-item .name{font-size:9px;font-weight:850;color:#d7dce6}
 .rules-enforcement-title{margin:42px 0 14px}
 .rule-tabs.enforcement-tabs{margin-bottom:18px}
@@ -715,27 +717,95 @@ function rule(id,b){
  $('#rule-'+id).classList.add('active');
  b.parentElement.querySelectorAll('button').forEach(x=>x.classList.toggle('active',x===b))
 }
+const MC_ASSET='https://mcasset.cloud/1.21.10/assets/minecraft/textures/';
 const MC_ICONS={
- 'Axe':'🪓','Bedbug':'🥚','Blast Proof Glass':'⬜','Chainmail Armor':'🛡️','Diamond Armor':'💎',
- 'End Stone':'🟨','Fireball':'🔥','Golden Apple':'🍎','Hardened Clay':'🧱','Iron Armor':'🛡️',
- 'Iron Sword':'🗡️','Ladder':'🪜','Oak Wood / Planks':'🪵','Pickaxe':'⛏️','Shears':'✂️',
- 'Stone Sword':'⚔️','Wool':'⬜','Magic Milk':'🥛','Jump V Potion':'🧪','Speed II Potion':'💨',
- 'TNT':'🧨','Invisibility Potion':'🫥','Cobweb':'🕸️','Compact Pop-up Tower':'🏰',
- 'Dream Defender':'🐺','Ice Bridge':'🧊','Obsidian':'⬛','Portable Quick Buy':'🛒',
- 'Sponges':'🧽','Water Bucket':'🪣'
+ 'Axe':'item/iron_axe.png',
+ 'BedBug':'item/snowball.png',
+ 'BlastProofGlass':'block/glass.png',
+ 'ChainmailArmor':'item/chainmail_boots.png',
+ 'EndStone':'block/end_stone.png',
+ 'GoldenApple':'item/golden_apple.png',
+ 'HardenedClay':'block/terracotta.png',
+ 'IronArmor':'item/iron_boots.png',
+ 'Ladder':'block/ladder.png',
+ 'MagicMilk':'item/milk_bucket.png',
+ 'Pickaxe':'item/iron_pickaxe.png',
+ 'Shears':'item/shears.png',
+ 'StoneSword':'item/stone_sword.png',
+ 'Wool':'block/white_wool.png',
+
+ 'OakWoodPlanks':'block/oak_planks.png',
+ 'IronSword':'item/iron_sword.png',
+ 'Stick':'item/stick.png',
+ 'DiamondArmor':'item/diamond_boots.png',
+ 'Bow':'item/bow.png',
+ 'BOW2':'item/bow.png',
+ 'BOW3':'item/bow.png',
+ 'Arrows':'item/arrow.png',
+ 'SpeedII':'item/potion.png',
+ 'JumpV':'item/potion.png',
+ 'Invisibility':'item/potion.png',
+ 'DreamDefender':'item/wolf_spawn_egg.png',
+ 'TNT':'block/tnt_side.png',
+ 'EnderPearl':'item/ender_pearl.png',
+ 'WaterBucket':'item/water_bucket.png',
+ 'BridgeEgg':'item/egg.png',
+ 'Sponge':'block/sponge.png',
+ 'CompactPopUpTower':'item/chest.png',
+ 'Cobweb':'block/cobweb.png',
+ 'IceBridge':'block/ice.png',
+ 'PortableQuickBuy':'item/emerald.png',
+ 'Obsidian':'block/obsidian.png',
+ 'DiamondSword':'item/diamond_sword.png',
+ 'Fireball':'item/fire_charge.png',
+
+ 'ReinforcedArmor':'item/iron_chestplate.png',
+ 'HealPool':'item/ghast_tear.png',
+ 'DragonBuff':'item/dragon_breath.png',
+ 'IronForge':'item/iron_ingot.png'
 };
-function seasonItemGroup(title,items,desc){
- return `<div class="season-item-group"><h3>${title}</h3><div class="muted">${desc}</div>${items.length?`<div class="season-item-grid">${items.map(name=>`<div class="mc-item"><div class="emoji">${MC_ICONS[name]||'◈'}</div><div class="name">${esc(name)}</div></div>`).join('')}</div>`:''}</div>`
+function mcItem(name,extra=''){
+ const path=MC_ICONS[name]||'item/barrier.png';
+ return `<div class="mc-item ${extra}"><img class="mc-icon" src="${MC_ASSET}${path}" alt="" loading="lazy" onerror="this.style.display='none'"><div class="name">${esc(name)}</div></div>`
+}
+function seasonItemGroup(title,items,desc,extra=''){
+ return `<div class="season-item-group"><h3>${title}</h3><div class="muted">${desc}</div>${items.length?`<div class="season-item-grid">${items.map(name=>mcItem(name,extra)).join('')}</div>`:''}</div>`
+}
+function seasonStage(title,disabledItems,disabledUpgrades=[],desc=''){
+ return `<div class="season-item-group">
+   <h3>${title}</h3>
+   ${desc?`<div class="muted">${desc}</div>`:''}
+   ${disabledItems.length?`<div class="kicker" style="margin-top:15px">DISABLED ITEMS</div><div class="season-item-grid">${disabledItems.map(name=>mcItem(name)).join('')}</div>`:''}
+   ${disabledUpgrades.length?`<div class="kicker" style="margin-top:18px">DISABLED UPGRADES</div><div class="season-item-grid">${disabledUpgrades.map(name=>mcItem(name,'upgrade')).join('')}</div>`:''}
+ </div>`
 }
 function seasonRules(){
+ const allowedAllGame=[
+   'Axe','BedBug','BlastProofGlass','ChainmailArmor','EndStone','GoldenApple','HardenedClay',
+   'IronArmor','Ladder','MagicMilk','Pickaxe','Shears','StoneSword','Wool'
+ ];
+ const permanent=[
+   'Cobweb','CompactPopUpTower','DreamDefender','IceBridge',
+   'Obsidian','PortableQuickBuy','Sponge','WaterBucket'
+ ];
  return `<div class="season-card"><div class="kicker">RULE SEASON</div><h2 style="font-size:40px;margin:8px 0">Season 1</h2><div class="muted">Modern RankedBedwars Ruleset</div></div>
  <div class="season-item-groups">
- ${seasonItemGroup('ALLOWED ALL GAME',['Axe','Bedbug','Blast Proof Glass','Chainmail Armor','Diamond Armor','End Stone','Fireball','Golden Apple','Hardened Clay','Iron Armor','Iron Sword','Ladder','Oak Wood / Planks','Pickaxe','Shears','Stone Sword','Wool'],'Available throughout the entire game.')}
- ${seasonItemGroup('DIAMOND II',['Magic Milk'],'Unlocked at Diamond II.')}
- ${seasonItemGroup('DIAMOND III',['Jump V Potion','Speed II Potion','TNT'],'Unlocked at Diamond III.')}
- ${seasonItemGroup('EMERALD II',[],'No additional unlocks. Diamond III availability continues.')}
- ${seasonItemGroup('EMERALD III',['Invisibility Potion'],'Unlocked at Emerald III.')}
- ${seasonItemGroup('NEVER ALLOWED',['Cobweb','Compact Pop-up Tower','Dream Defender','Ice Bridge','Obsidian','Portable Quick Buy','Sponges','Water Bucket'],'Disabled for the entire RankedBedwars match.')}
+ ${seasonItemGroup('ALLOWED ALL GAME',allowedAllGame,'These 14 items are never disabled by any stage.')}
+ ${seasonStage('DIAMOND II',[
+   'OakWoodPlanks','IronSword','Stick','DiamondArmor','Bow','BOW2','BOW3','Arrows',
+   'SpeedII','JumpV','Invisibility','DreamDefender','TNT','EnderPearl','WaterBucket',
+   'BridgeEgg','Sponge','CompactPopUpTower','Cobweb','IceBridge','PortableQuickBuy','Obsidian'
+ ],['ReinforcedArmor','HealPool','DragonBuff'],'These items and upgrades are disabled during Diamond II.')}
+ ${seasonStage('EMERALD II',[
+   'DiamondSword','Stick','Bow','BOW2','BOW3','JumpV','Invisibility','Cobweb',
+   'CompactPopUpTower','DreamDefender','IceBridge','Obsidian','PortableQuickBuy','Sponge','WaterBucket'
+ ],['DragonBuff','IronForge'],'These items and upgrades are disabled during Emerald II.')}
+ ${seasonStage('DIAMOND III',[
+   'BOW2','BOW3','Invisibility','SpeedII','DiamondArmor','Fireball','Cobweb',
+   'CompactPopUpTower','DreamDefender','IceBridge','Obsidian','PortableQuickBuy','Sponge','WaterBucket'
+ ],['DragonBuff'],'These items and upgrades are disabled during Diamond III.')}
+ ${seasonStage('EMERALD III',[],[],'Everything previously stage-restricted is unlocked. Only the permanently disabled items below remain unavailable.')}
+ ${seasonItemGroup('PERMANENTLY DISABLED — ALL STAGES',permanent,'These 8 items never become available, regardless of stage.','permanent')}
  </div>`
 }
 function rulesTable(rows){
