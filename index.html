@@ -465,6 +465,25 @@ body::after{
   .modebar .wrap{gap:8px}
 }
 
+
+/* ===== RBW LEADERBOARD PLAYER ALIGNMENT FIX ===== */
+.rbw-lb-player{padding-left:15px!important}
+.rbw-lb-player .pcell{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:flex-start!important;
+  gap:12px!important;
+  width:100%!important;
+  text-align:left!important
+}
+.rbw-lb-player .phead{
+  width:34px!important;
+  height:34px!important;
+  flex:0 0 34px!important;
+  margin:0!important;
+  display:block!important
+}
+
 </style>
 </head>
 <body>
@@ -717,7 +736,7 @@ function rule(id,b){
  $('#rule-'+id).classList.add('active');
  b.parentElement.querySelectorAll('button').forEach(x=>x.classList.toggle('active',x===b))
 }
-const MC_ASSET='https://mcasset.cloud/1.21.10/assets/minecraft/textures/';
+const MC_ASSET='https://raw.githubusercontent.com/InventivetalentDev/minecraft-assets/1.21.10/assets/minecraft/textures/';
 const MC_ICONS={
  'Axe':'item/iron_axe.png',
  'BedBug':'item/snowball.png',
