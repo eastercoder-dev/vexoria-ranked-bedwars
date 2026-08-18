@@ -781,7 +781,19 @@ const MC_ICONS={
  'ReinforcedArmor':'item/iron_chestplate.png',
  'HealPool':'item/ghast_tear.png',
  'DragonBuff':'item/dragon_breath.png',
- 'IronForge':'item/iron_ingot.png'
+ 'IronForge':'item/iron_ingot.png',
+
+ 'Fireballing Diamonds':'item/fire_charge.png',
+ 'Diamond Armor':'item/diamond_boots.png',
+ 'Diamond Sword':'item/diamond_sword.png',
+ 'KB Stick':'item/stick.png',
+ 'Ender Pearl':'item/ender_pearl.png',
+ 'Bridge Egg':'item/egg.png',
+ 'Potions':'item/potion.png',
+ 'Water':'item/water_bucket.png',
+ 'Bows':'item/bow.png',
+ 'Pop-Up Towers':'item/chest.png',
+ 'Dream Defender':'item/wolf_spawn_egg.png'
 };
 function mcItem(name,extra=''){
  const path=MC_ICONS[name]||'item/barrier.png';
@@ -790,41 +802,27 @@ function mcItem(name,extra=''){
 function seasonItemGroup(title,items,desc,extra=''){
  return `<div class="season-item-group"><h3>${title}</h3><div class="muted">${desc}</div>${items.length?`<div class="season-item-grid">${items.map(name=>mcItem(name,extra)).join('')}</div>`:''}</div>`
 }
-function seasonStage(title,disabledItems,disabledUpgrades=[],desc=''){
- return `<div class="season-item-group">
-   <h3>${title}</h3>
-   ${desc?`<div class="muted">${desc}</div>`:''}
-   ${disabledItems.length?`<div class="kicker" style="margin-top:15px">DISABLED ITEMS</div><div class="season-item-grid">${disabledItems.map(name=>mcItem(name)).join('')}</div>`:''}
-   ${disabledUpgrades.length?`<div class="kicker" style="margin-top:18px">DISABLED UPGRADES</div><div class="season-item-grid">${disabledUpgrades.map(name=>mcItem(name,'upgrade')).join('')}</div>`:''}
- </div>`
-}
 function seasonRules(){
  const allowedAllGame=[
    'Axe','BedBug','BlastProofGlass','ChainmailArmor','EndStone','GoldenApple','HardenedClay',
-   'IronArmor','Ladder','MagicMilk','Pickaxe','Shears','StoneSword','Wool'
+   'IronArmor','Ladder','MagicMilk','Pickaxe','Shears','StoneSword','Wool',
+   'Fireballing Diamonds','Diamond Armor'
  ];
- const permanent=[
-   'Cobweb','CompactPopUpTower','DreamDefender','IceBridge',
-   'Obsidian','PortableQuickBuy','Sponge','WaterBucket'
+ const afterBedBreak=[
+   'Diamond Sword','KB Stick','Ender Pearl','Bridge Egg','TNT','Sponge','Potions'
  ];
- return `<div class="season-card"><div class="kicker">RULE SEASON</div><h2 style="font-size:40px;margin:8px 0">Season 1</h2><div class="muted">Modern RankedBedwars Ruleset</div></div>
+ const neverAllowed=[
+   'Obsidian','Water','Bows','Pop-Up Towers','Dream Defender'
+ ];
+ return `<div class="season-card"><div class="kicker">RULE SEASON</div><h2 style="font-size:40px;margin:8px 0">Season 1</h2><div class="muted">4V4 & 3V3 RankedBedwars Rules</div></div>
  <div class="season-item-groups">
- ${seasonItemGroup('ALLOWED ALL GAME',allowedAllGame,'These 14 items are never disabled by any stage.')}
- ${seasonStage('DIAMOND II',[
-   'OakWoodPlanks','IronSword','Stick','DiamondArmor','Bow','BOW2','BOW3','Arrows',
-   'SpeedII','JumpV','Invisibility','DreamDefender','TNT','EnderPearl','WaterBucket',
-   'BridgeEgg','Sponge','CompactPopUpTower','Cobweb','IceBridge','PortableQuickBuy','Obsidian'
- ],['ReinforcedArmor','HealPool','DragonBuff'],'These items and upgrades are disabled during Diamond II.')}
- ${seasonStage('EMERALD II',[
-   'DiamondSword','Stick','Bow','BOW2','BOW3','JumpV','Invisibility','Cobweb',
-   'CompactPopUpTower','DreamDefender','IceBridge','Obsidian','PortableQuickBuy','Sponge','WaterBucket'
- ],['DragonBuff','IronForge'],'These items and upgrades are disabled during Emerald II.')}
- ${seasonStage('DIAMOND III',[
-   'BOW2','BOW3','Invisibility','SpeedII','DiamondArmor','Fireball','Cobweb',
-   'CompactPopUpTower','DreamDefender','IceBridge','Obsidian','PortableQuickBuy','Sponge','WaterBucket'
- ],['DragonBuff'],'These items and upgrades are disabled during Diamond III.')}
- ${seasonStage('EMERALD III',[],[],'Everything previously stage-restricted is unlocked. Only the permanently disabled items below remain unavailable.')}
- ${seasonItemGroup('PERMANENTLY DISABLED — ALL STAGES',permanent,'These 8 items never become available, regardless of stage.','permanent')}
+ ${seasonItemGroup('ALLOWED ALL GAME',allowedAllGame,'These items are allowed for the entire game.')}
+ ${seasonItemGroup('ALLOWED AFTER BED BREAK',afterBedBreak,'These items are only allowed after beds are broken.')}
+ <div class="season-item-group" style="border-color:rgba(103,213,140,.52);background:linear-gradient(180deg,rgba(103,213,140,.07),#0b1016)">
+   <h3 style="color:var(--good)">GREEN BASE RULE</h3>
+   <div style="color:var(--good);font-weight:900">Green Base is only allowed after Bed Break.</div>
+ </div>
+ ${seasonItemGroup('NEVER ALLOWED',neverAllowed,'These items are never allowed at any point in the game.','permanent')}
  </div>`
 }
 function rulesTable(rows){
